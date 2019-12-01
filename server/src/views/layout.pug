@@ -1,0 +1,18 @@
+doctype html
+html(lang='zh-CN')
+  head
+    title= title
+    meta(charset='UTF-8')
+    meta(name="keywords" content="")
+    meta(name="description" content="")
+    link(rel="shortcut icon" href="/favicon.ico")
+    if iconfontUrl
+      link(rel="stylesheet" href=iconfontUrl)
+    if process.env.NODE_ENV === 'production'
+      link(
+        rel="stylesheet"
+        href=publicPath + '/css/main.css'
+      )
+    block head
+  body
+    block content

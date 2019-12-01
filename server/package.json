@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "gulp",
+    "build": "gulp build"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "express": "~4.16.1",
+    "express-ws": "^4.0.0",
+    "http-errors": "~1.6.3",
+    "knex": "^0.20.3",
+    "morgan": "~1.9.1",
+    "mysql": "^2.17.1",
+    "objection": "^1.6.11",
+    "pug": "2.0.0-beta11",
+    "ws": "^7.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/node": "^7.7.0",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/register": "^7.7.0",
+    "babel-loader": "^8.0.6",
+    "gulp": "^4.0.2",
+    "gulp-nodemon": "^2.4.2",
+    "webpack": "^4.41.2",
+    "webpack-node-externals": "^1.7.2"
+  }
+}

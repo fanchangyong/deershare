@@ -1,0 +1,13 @@
+{
+  "presets": [
+    ["@babel/env", {
+      "targets": {
+        "node": "current",
+        "browsers": "since 2012"
+      }
+    }]
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-object-rest-spread",
+  ]
+}
