@@ -12,11 +12,11 @@ import HomePage from '../pages/HomePage';
 import './App.cm.styl';
 
 class App extends React.Component {
-  constructor () {
+  constructor() {
     super();
   }
 
-  render () {
+  render() {
     return (
       <Router>
         <Switch>
@@ -34,7 +34,7 @@ App.propTypes = {
   user: PropTypes.object,
 };
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     user: state.user,
   };
