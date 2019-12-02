@@ -1,29 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { sendHello } from '../actions/user';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
+
+import HomePage from '../pages/HomePage';
+
+import './App.cm.styl';
 
 class App extends React.Component {
   constructor () {
     super();
-    this.onClickBtn = this.onClickBtn.bind(this);
-  }
-
-  onClickBtn () {
-    this.props.sendHello('hello server');
   }
 
   render () {
     return (
-      <div>
-        <h1 style={{ textAlign: 'center' }}>
-          Hello React
-        </h1>
-        <button onClick={this.onClickBtn}>
-          Hello Server
-        </button>
-        <div style={{ background: 'green' }}>{this.props.user.msg}</div>
-      </div>
+      <Router>
+        <Switch>
+          <Route path="/">
+            <HomePage />
+          </Route>
+        </Switch>
+      </Router>
     );
   }
 }
@@ -40,5 +41,4 @@ function mapStateToProps (state) {
 }
 
 export default connect(mapStateToProps, {
-  sendHello,
 })(App);

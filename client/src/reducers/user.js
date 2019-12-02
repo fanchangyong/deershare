@@ -6,7 +6,6 @@ const initialState = {
 };
 
 const userReducer = produce((draft = initialState, action) => {
-  console.log('### user reducer');
   switch (action.type) {
     case types.UPDATE_HELLO_MSG: {
       draft.msg = action.payload;
@@ -14,17 +13,5 @@ const userReducer = produce((draft = initialState, action) => {
   }
   return draft;
 });
-
-// function userReducer (state = initialState, action) {
-//   console.log('### user reducer')
-//   return produce((draft, action) => {
-//     console.log('### user reducer')
-//     switch (action.type) {
-//       case types.UPDATE_HELLO_MSG: {
-//         draft.msg = action.payload;
-//       }
-//     }
-//   });
-// }
 
 export default userReducer;
