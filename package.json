@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/fanchangyong/react-starter-kit#readme",
   "devDependencies": {
-    "autoprefixer": "^9.7.2",
     "eslint": "^6.7.1",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
