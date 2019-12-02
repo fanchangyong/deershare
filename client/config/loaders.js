@@ -10,7 +10,6 @@ exports.babelLoader = {
 exports.styleLoader = {
   loader: 'style-loader',
   options: {
-    singleton: true,
   },
 };
 
@@ -32,7 +31,7 @@ exports.postcssLoader = {
           '>1%',
           'last 4 versions',
           'Firefox ESR',
-          'not id < 9',
+          'not ie < 9',
         ],
         flexbox: 'no-2009',
       }),
@@ -41,7 +40,7 @@ exports.postcssLoader = {
 };
 
 exports.stylusLoader = {
-  loader: 'sstylus-loader',
+  loader: 'stylus-loader',
   options: {
     sourceMap: true,
   },
