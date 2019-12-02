@@ -1,6 +1,7 @@
 const {
   styleLoader,
-  cssLoader,
+  cssLoaderWithoutModules,
+  cssLoaderWithModules,
   postcssLoader,
   stylusLoader,
   babelLoader,
@@ -27,11 +28,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [styleLoader, cssLoader, postcssLoader],
+        use: [styleLoader, cssLoaderWithoutModules, postcssLoader],
       },
       {
         test: /\.cm\.styl$/,
-        use: [styleLoader, cssLoader, postcssLoader, stylusLoader],
+        use: [styleLoader, cssLoaderWithModules, postcssLoader, stylusLoader],
       },
     ],
   },

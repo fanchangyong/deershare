@@ -13,7 +13,7 @@ exports.styleLoader = {
   },
 };
 
-exports.cssLoader = {
+exports.cssLoaderWithModules = {
   loader: 'css-loader',
   options: {
     importLoaders: 1,
@@ -23,6 +23,13 @@ exports.cssLoader = {
       mode: 'local',
       localIdentName: '[path][name]---[local]---[hash:base64:5]',
     },
+  },
+};
+
+exports.cssLoaderWithoutModules = {
+  loader: 'css-loader',
+  options: {
+    importLoaders: 1,
   },
 };
 
