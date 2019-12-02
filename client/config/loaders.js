@@ -17,6 +17,12 @@ exports.cssLoader = {
   loader: 'css-loader',
   options: {
     importLoaders: 1,
+    localsConvention: 'camelCase',
+    sourceMap: true,
+    modules: {
+      mode: 'local',
+      localIdentName: '[path][name]---[local]---[hash:base64:5]',
+    },
   },
 };
 
