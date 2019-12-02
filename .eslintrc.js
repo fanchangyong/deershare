@@ -40,5 +40,6 @@ module.exports = {
       MemberExpression: 'off',
       SwitchCase: 1,
     }],
+    "space-before-function-paren": ["error", "never"],
   },
 }
