@@ -9,8 +9,9 @@ const { Step } = Steps;
 class SendFileModal extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      fileList: [],
+      fileList: props.initFileList,
     };
 
     this.onChangeFile = this.onChangeFile.bind(this);
@@ -21,6 +22,14 @@ class SendFileModal extends Component {
     this.setState(produce(draft => {
       draft.fileList.push(e.file);
     }));
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.initFileList !== prevProps.initFileList) {
+      this.setState({
+        fileList: this.state.fileList.concat(this.props.initFileList),
+      });
+    }
   }
 
   onRemoveFile(uid) {
@@ -50,8 +59,6 @@ class SendFileModal extends Component {
     const {
       fileList,
     } = this.state;
-
-    console.log('filelist: ', fileList);
 
     return (
       <div className={styles.base}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import produce from 'immer';
 import { Input, Button, Upload } from 'antd';
 import SendFileModal from '../components/SendFileModal';
 
@@ -9,13 +10,23 @@ class HomePage extends React.Component {
     super();
     this.state = {
       showSendFileModal: false,
+      fileList: [],
     };
+
+    this.onChangeFile = this.onChangeFile.bind(this);
 
     this.onShowSendFileModal = () => this.setState({ showSendFileModal: true });
     this.onHideSendFileModal = () => this.setState({ showSendFileModal: false });
   }
 
-  render () {
+  onChangeFile(e) {
+    this.setState(produce(draft => {
+      draft.fileList.push(e.file);
+    }));
+    this.onShowSendFileModal();
+  }
+
+  render() {
     return (
       <div className={styles.content}>
         <div className={styles.left}>
@@ -29,9 +40,17 @@ class HomePage extends React.Component {
           <h1 className={styles.title}>
             我要发文件
           </h1>
-          <Button type="primary" onClick={this.onShowSendFileModal} >添加文件</Button>
+          <Upload
+            multiple
+            onChange={this.onChangeFile}
+            showUploadList={null}
+            beforeUpload={() => false}
+          >
+            <Button type="primary">添加文件</Button>
+          </Upload>
         </div>
         <SendFileModal
+          initFileList={this.state.fileList}
           isOpen={this.state.showSendFileModal}
           onCancel={this.onHideSendFileModal}
         />
