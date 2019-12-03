@@ -38,7 +38,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Hello React',
+      title: '小鹿快传',
       template: paths.appHtml,
     }),
   ],
