@@ -16,7 +16,7 @@ class HomePage extends React.Component {
     this.onChangeFile = this.onChangeFile.bind(this);
 
     this.onShowSendFileModal = () => this.setState({ showSendFileModal: true });
-    this.onHideSendFileModal = () => this.setState({ showSendFileModal: false });
+    this.onHideSendFileModal = () => this.setState({ showSendFileModal: false, fileList: [] });
   }
 
   onChangeFile(e) {

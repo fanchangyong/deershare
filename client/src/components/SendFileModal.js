@@ -24,10 +24,16 @@ class SendFileModal extends Component {
     }));
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.initFileList !== prevProps.initFileList) {
       this.setState({
         fileList: this.state.fileList.concat(this.props.initFileList),
+      });
+    }
+
+    if (!this.props.isOpen && !!prevProps.isOpen) {
+      this.setState({
+        fileList: [],
       });
     }
   }
