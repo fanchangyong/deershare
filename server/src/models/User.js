@@ -1,7 +1,7 @@
 import { Model } from 'objection';
 
 class User extends Model {
-  static get tableName () {
+  static get tableName() {
     return 'user';
   }
 }

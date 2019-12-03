@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+const fileRouter = require('./routes/file');
 const initDb = require('./initDb').default;
 const WebSocketServer = require('./WebSocketServer').default;
 
@@ -42,6 +43,7 @@ app.use(express.static(path.join(path.resolve(__dirname, '../'), 'public')));
 app.locals.publicPath = 'http://localhost:3000/static';
 
 app.use('/', indexRouter);
+app.use('/api/file', fileRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
