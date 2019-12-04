@@ -24,7 +24,7 @@ export default class WebSocketServer {
   }
 
   onMessage(id, _msg) {
-    const msg =JSON.parse(_msg);
+    const msg = JSON.parse(_msg);
     const {
       type,
       payload,

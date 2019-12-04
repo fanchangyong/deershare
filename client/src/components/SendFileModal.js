@@ -131,7 +131,6 @@ class SendFileModal extends Component {
             1. 将链接发送给对方：
           </span>
           <span>https://deershare.com/s/ssjk78L</span>
-
           <CopyToClipboard text="https://deershare.com/s/ssjk78L" onCopy={() => message.success('复制成功')}>
             <Button type="link">复制</Button>
           </CopyToClipboard>
