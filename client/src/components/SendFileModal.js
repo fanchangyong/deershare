@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import produce from 'immer';
 import PropTypes from 'prop-types';
-import { Modal, Input, Empty, Button, Icon, Upload, Steps } from 'antd';
+import { message, Modal, Input, Empty, Button, Icon, Upload, Steps } from 'antd';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import styles from './SendFileModal.cm.styl';
 
 const { Step } = Steps;
@@ -124,20 +125,26 @@ class SendFileModal extends Component {
   renderStep1Content() {
     return (
       <div>
-        <div>你可以选择通过以下三种方式之一将文件共享给对方：</div>
+        <div className={styles.tips}>你可以选择通过以下三种方式之一将文件共享给对方：</div>
         <div>
           <span>
             1. 将链接发送给对方：
           </span>
           <span>https://deershare.com/s/ssjk78L</span>
-          <Button type="link">复制</Button>
+
+          <CopyToClipboard text="https://deershare.com/s/ssjk78L" onCopy={() => message.success('复制成功')}>
+            <Button type="link">复制</Button>
+          </CopyToClipboard>
         </div>
         <div>
           <span>
             2. 将取件码发送给对方：
           </span>
           <span>ssjk78L</span>
-          <Button type="link">复制</Button>
+          <CopyToClipboard text="ssjk78L" onCopy={() => message.success('复制成功')}>
+            <Button type="link">复制</Button>
+          </CopyToClipboard>
+
         </div>
         <div>
           <span>3. 扫描二维码：</span>
