@@ -25,13 +25,13 @@ export default class Peer extends EventEmitter {
 
   onDescription(description) {
     this.pc.setLocalDescription(description)
-    .then(() =>{
+    .then(() => {
       this.webSocket.sendObject({
         type: 'C2S_SIGNAL',
         payload: {
           targetId: this.targetId,
           sdp: description,
-        }
+        },
       });
     })
     .catch(e => console.log('onDescription error: ', e));
@@ -46,7 +46,7 @@ export default class Peer extends EventEmitter {
   }
 
   onConnectionStateChange(e) {
-    console.log('onConnectionStateChange: ', e)
+    console.log('onConnectionStateChange: ', e);
   }
 
   onRTCMessage(e) {
@@ -63,17 +63,17 @@ export default class Peer extends EventEmitter {
           urls: 'turn:0.peerjs.com:3478',
           username: 'peerjs',
           credential: 'peerjsp',
-        }
-      ]
+        },
+      ],
     };
     const pc = new RTCPeerConnection(config);
     this.pc = pc;
     pc.onicecandidate = this.onIceCandidate;
     pc.onconnectionstatechange = e => this.onConnectionStateChange(e);
-    pc.oniceconnectionstatechange = e=> this.onIceConnectionStateChange(e);
+    pc.oniceconnectionstatechange = e => this.onIceConnectionStateChange(e);
 
     if (isCaller) {
-      const dc = pc.createDataChannel('data-channel', { reliable: true })
+      const dc = pc.createDataChannel('data-channel', { reliable: true });
       this.dc = dc;
       dc.binaryType = 'arraybuffer';
       dc.onopen = this.onChannelOpen;
@@ -90,17 +90,17 @@ export default class Peer extends EventEmitter {
         dc.onopen = this.onChannelOpen;
         dc.onclose = this.onChannelClose;
         dc.onerror = this.onChannelError;
-      }
+      };
     }
   }
 
   handleWSMessage(msg) {
     const type = msg.type;
     const payload = msg.payload;
-    switch(type) {
+    switch (type) {
       case 'S2C_OPEN': {
         this.id = payload.id;
-        this.emit('peerId', this.id)
+        this.emit('peerId', this.id);
         return;
       }
 
@@ -118,7 +118,7 @@ export default class Peer extends EventEmitter {
               return this.pc.createAnswer()
               .then(d => this.onDescription(d));
             }
-          })
+          });
         } else if (payload.ice) {
           this.pc.addIceCandidate(new RTCIceCandidate(payload.ice));
         }
@@ -151,11 +151,11 @@ export default class Peer extends EventEmitter {
   }
 
   onChannelClose(e) {
-    console.log('## channel close: ', e)
+    console.log('## channel close: ', e);
   }
 
   onChannelError(e) {
-    console.log('## channel error: ', e)
+    console.log('## channel error: ', e);
   }
 
   send(data) {
@@ -163,7 +163,7 @@ export default class Peer extends EventEmitter {
       try {
         this.dc.send(data);
       } catch (e) {
-        console.log('send error: ', e)
+        console.log('send error: ', e);
       }
     }
   }
