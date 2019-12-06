@@ -1,5 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import {
+  Route,
+} from 'react-router-dom';
 import produce from 'immer';
 import { Input, Button, Upload } from 'antd';
 import PropTypes from 'prop-types';
@@ -31,7 +35,7 @@ class HomePage extends React.Component {
 
     this.onChangeDownloadCode = e => this.setState({ downloadCode: e.target.value });
     this.onClickPrepareDownload = this.onClickPrepareDownload.bind(this);
-    this.onHideRecvFileModal = () => this.setState({ showRecvFileModal: false });
+    this.onHideRecvFileModal = () => this.props.history.push('/');
     this.handlePrepareDownloadRes = this.handlePrepareDownloadRes.bind(this);
 
     this.onShowSendFileModal = () => this.setState({ showSendFileModal: true });
@@ -63,14 +67,7 @@ class HomePage extends React.Component {
   }
 
   onClickPrepareDownload() {
-    const ws = getWebSocket();
-    ws.sendJson({
-      type: 'C2S_PREPARE_DOWNLOAD',
-      payload: {
-        downloadCode: this.state.downloadCode,
-      },
-    });
-    ws.on('message', this.handlePrepareDownloadRes);
+    this.props.history.push(`/r/${this.state.downloadCode}`);
   }
 
   render() {
@@ -103,13 +100,15 @@ class HomePage extends React.Component {
           prepareUpload={this.props.prepareUpload}
           onCancel={this.onHideSendFileModal}
         />
-        <RecvFileModal
-          isOpen={this.state.showRecvFileModal}
-          targetId={this.state.uploadInfo.targetId}
-          message={this.state.uploadInfo.message}
-          files={this.state.uploadInfo.files}
-          onCancel={this.onHideRecvFileModal}
-        />
+        <Route path="/r/:downloadCode">
+          <RecvFileModal
+            isOpen={true}
+            targetId={this.state.uploadInfo.targetId}
+            message={this.state.uploadInfo.message}
+            files={this.state.uploadInfo.files}
+            onCancel={this.onHideRecvFileModal}
+          />
+        </Route>
       </div>
     );
   }
@@ -120,6 +119,7 @@ HomePage.defaultProps = {};
 HomePage.propTypes = {
   prepareUpload: PropTypes.func,
   downloadCode: PropTypes.string,
+  history: PropTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -128,6 +128,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {
+export default withRouter(connect(mapStateToProps, {
   prepareUpload,
-})(HomePage);
+})(HomePage));

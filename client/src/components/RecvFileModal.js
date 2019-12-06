@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 import produce from 'immer';
 import { Modal, Button } from 'antd';
 import Peer from '../Peer';
@@ -19,26 +20,62 @@ class DownloadFileModal extends Component {
       receivingFileId: null,
       downloadUrls: {},
       recvSizes: {},
+      targetId: '',
+      message: '',
+      files: [],
     };
 
     this.onDownload = this.onDownload.bind(this);
     this.onRecvData = this.onRecvData.bind(this);
     this.handleMsg = this.handleMsg.bind(this);
+    this.handlePrepareDownloadRes = this.handlePrepareDownloadRes.bind(this);
 
     this.recvBuffer = [];
     this.recvSizes = {};
 
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.setState(produce(draft => {
         draft.recvSizes = { ...this.recvSizes };
       }));
     }, 1000);
   }
 
+  componentDidMount() {
+    const ws = getWebSocket();
+    ws.sendJson({
+      type: 'C2S_PREPARE_DOWNLOAD',
+      payload: {
+        downloadCode: this.props.match.params.downloadCode,
+      },
+    });
+    ws.on('message', this.handlePrepareDownloadRes);
+  }
+
+  handlePrepareDownloadRes(msg) {
+    const {
+      type,
+      payload,
+    } = msg;
+    if (type === 'S2C_PREPARE_DOWNLOAD') {
+      this.setState(produce(draft => {
+        draft.showRecvFileModal = true;
+        draft.targetId = payload.clientId;
+        draft.message = payload.message;
+        draft.files = payload.files;
+      }));
+      const ws = getWebSocket();
+      ws.removeListener('message', this.handlePrepareDownloadRes);
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
   onDownload() {
     const ws = getWebSocket();
     const peer = new Peer(ws);
-    peer.connectPeer(this.props.targetId);
+    peer.connectPeer(this.state.targetId);
     peer.on('data', this.onRecvData);
   }
 
@@ -77,9 +114,12 @@ class DownloadFileModal extends Component {
   render() {
     const {
       isOpen,
+    } = this.props;
+
+    const {
       message,
       files,
-    } = this.props;
+    } = this.state;
 
     // const isOpen = true;
     // const message = 'test message';
@@ -160,10 +200,7 @@ class DownloadFileModal extends Component {
 
 DownloadFileModal.propTypes = {
   isOpen: PropTypes.bool,
-  targetId: PropTypes.string,
-  message: PropTypes.string,
-  files: PropTypes.array,
   onCancel: PropTypes.func,
 };
 
-export default DownloadFileModal;
+export default withRouter(DownloadFileModal);

@@ -6,7 +6,6 @@ import * as types from '../common/actionTypes';
 
 export default function configureWS(dispatch) {
   const ws = getWebSocket();
-  ws.connect();
   ws.on('message', (msg) => {
     const {
       type,

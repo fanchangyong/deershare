@@ -4,10 +4,14 @@ class WebSocket extends EventEmitter {
   constructor() {
     super();
     this.ws = null;
+    this.connected = false;
     this.onMessage = this.onMessage.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onError = this.onError.bind(this);
+    if (this.ws === null) {
+      this.connect();
+    }
   }
 
   getWsUri() {
@@ -24,23 +28,35 @@ class WebSocket extends EventEmitter {
   }
 
   connect() {
-    const uri = this.getWsUri();
-    this.ws = new window.WebSocket(uri);
-    this.ws.onopen = this.onOpen;
-    this.ws.onclose = this.onClose;
-    this.ws.onerror = this.onError;
-    this.ws.onmessage = this.onMessage;
+    return new Promise((resolve, reject) => {
+      const uri = this.getWsUri();
+      this.ws = new window.WebSocket(uri);
+      this.ws.onopen = () => {
+        this.onOpen();
+        resolve();
+      };
+      this.ws.onclose = this.onClose;
+      this.ws.onerror = this.onError;
+      this.ws.onmessage = this.onMessage;
+    });
   }
 
   send(data) {
-    this.ws.send(data);
+    if (!this.connected) {
+      setTimeout(() => {
+        this.send(data);
+      }, 100);
+    } else {
+      this.ws.send(data);
+    }
   }
 
   sendJson(data) {
-    this.ws.send(JSON.stringify(data));
+    this.send(JSON.stringify(data));
   }
 
   onOpen() {
+    this.connected = true;
     this.sendJson({
       type: 'C2S_OPEN',
     });

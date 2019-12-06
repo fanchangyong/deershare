@@ -192,7 +192,7 @@ class SendFileModal extends Component {
       downloadCode,
     } = this.props;
 
-    const downloadLink = `https://deershare.com/s/${downloadCode}`;
+    const downloadLink = `http://${document.location.host}/r/${downloadCode}`;
 
     return (
       <div>

@@ -9,6 +9,8 @@ const {
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const paths = require('./paths');
 
+const publicPath = '/static/js';
+
 module.exports = {
   mode: 'development',
   entry: {
@@ -16,8 +18,8 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   output: {
-    path: paths.appBuild,
     filename: '[name].bundle.js',
+    publicPath,
   },
   module: {
     rules: [
@@ -43,8 +45,10 @@ module.exports = {
     }),
   ],
   devServer: {
+    index: '',
+    publicPath,
     proxy: {
-      '/api': {
+      '/': {
         target: 'http://localhost:3001',
       },
       '/ws': {
