@@ -44,7 +44,7 @@ export default class WebSocketServer {
 
   prepareUpload(clientId, socket, payload) {
     const {
-      uploads,
+      files,
       message,
     } = payload;
 
@@ -52,7 +52,7 @@ export default class WebSocketServer {
     this.uploads.set(downloadCode, {
       clientId,
       message,
-      uploads,
+      files,
     });
     socket.send(JSON.stringify({
       type: 'S2C_PREPARE_UPLOAD',
@@ -69,7 +69,11 @@ export default class WebSocketServer {
 
     const uploadInfo = this.uploads.get(downloadCode);
     socket.send(JSON.stringify({
-      ...uploadInfo,
+      type: 'S2C_PREPARE_DOWNLOAD',
+      payload: {
+        message: uploadInfo.message,
+        files: uploadInfo.files,
+      },
     }));
   }
 
@@ -89,7 +93,6 @@ export default class WebSocketServer {
       }
 
       case 'C2S_PREPARE_UPLOAD': {
-        console.log('## prepare upload')
         this.prepareUpload(id, socket, payload);
         break;
       }

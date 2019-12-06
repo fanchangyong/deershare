@@ -13,3 +13,14 @@ export function prepareUpload(message, files) {
     });
   };
 }
+
+export function prepareDownload(downloadCode) {
+  return () => {
+    sendWSJson({
+      type: 'C2S_PREPARE_DOWNLOAD',
+      payload: {
+        downloadCode,
+      },
+    });
+  };
+}

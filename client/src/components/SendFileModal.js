@@ -44,7 +44,16 @@ class SendFileModal extends Component {
       draft.currentStep += 1;
     }));
 
-    this.props.prepareUpload(message, fileList);
+    const files = fileList.map(f => {
+      return {
+        uid: f.uid,
+        name: f.name,
+        size: f.size,
+        type: f.type,
+      };
+    });
+
+    this.props.prepareUpload(message, files);
   }
 
   onChangeFile(e) {

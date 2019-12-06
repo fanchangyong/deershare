@@ -11,6 +11,10 @@ const fileReducer = produce((draft = initialState, action) => {
       draft.downloadCode = action.payload.downloadCode;
       break;
     }
+    case types.UPDATE_DOWNLOAD_INFO: {
+      console.log('## update download info: ', action.payload)
+      break;
+    }
   }
   return draft;
 });

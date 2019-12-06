@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import produce from 'immer';
 import { Input, Button, Upload } from 'antd';
 import PropTypes from 'prop-types';
-import { prepareUpload } from '../actions/file';
+import { prepareUpload, prepareDownload } from '../actions/file';
 import SendFileModal from '../components/SendFileModal';
 
 import styles from './HomePage.cm.styl';
@@ -12,11 +12,15 @@ class HomePage extends React.Component {
   constructor() {
     super();
     this.state = {
+      downloadCode: '',
       showSendFileModal: false,
       fileList: [],
     };
 
     this.onChangeFile = this.onChangeFile.bind(this);
+
+    this.onChangeDownloadCode = e => this.setState({ downloadCode: e.target.value });
+    this.onClickPrepareDownlod = this.onClickPrepareDownlod.bind(this);
 
     this.onShowSendFileModal = () => this.setState({ showSendFileModal: true });
     this.onHideSendFileModal = () => this.setState({ showSendFileModal: false, fileList: [] });
@@ -29,6 +33,10 @@ class HomePage extends React.Component {
     this.onShowSendFileModal();
   }
 
+  onClickPrepareDownlod() {
+    this.props.prepareDownload(this.state.downloadCode);
+  }
+
   render() {
     return (
       <div className={styles.content}>
@@ -36,8 +44,8 @@ class HomePage extends React.Component {
           <h1 className={styles.title}>
             我要收文件
           </h1>
-          <Input placeholder="请输入取件码" className={styles.input} />
-          <Button type="primary">开始接收</Button>
+          <Input placeholder="请输入取件码" className={styles.input} onChange={this.onChangeDownloadCode} />
+          <Button type="primary" onClick={this.onClickPrepareDownlod}>开始接收</Button>
         </div>
         <div className={styles.right}>
           <h1 className={styles.title}>
@@ -68,6 +76,7 @@ HomePage.defaultProps = {};
 
 HomePage.propTypes = {
   prepareUpload: PropTypes.func,
+  prepareDownload: PropTypes.func,
   downloadCode: PropTypes.string,
 };
 
@@ -78,5 +87,6 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
+  prepareDownload,
   prepareUpload,
 })(HomePage);
