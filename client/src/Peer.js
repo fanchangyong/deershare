@@ -100,7 +100,7 @@ export default class Peer extends EventEmitter {
       case 'S2C_OPEN': {
         this.id = payload.id;
         this.emit('peerId', this.id);
-        return;
+        break;
       }
 
       case 'S2C_SIGNAL': {
@@ -121,6 +121,7 @@ export default class Peer extends EventEmitter {
         } else if (payload.ice) {
           this.pc.addIceCandidate(new RTCIceCandidate(payload.ice));
         }
+        break;
       }
     }
   }
