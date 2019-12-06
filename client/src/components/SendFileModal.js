@@ -66,7 +66,7 @@ class SendFileModal extends Component {
     peer.on('connected', async() => {
       for (let i = 0; i < fileList.length; i++) {
         const file = fileList[i];
-        peer.sendJson({
+        await peer.sendJson({
           type: 'fileStart',
           fileId: file.uid,
         });
@@ -77,10 +77,10 @@ class SendFileModal extends Component {
           const result = await chunker.getNextChunk();
           done = result.done;
           const chunk = result.chunk;
-          peer.send(chunk);
+          await peer.send(chunk);
         }
 
-        peer.sendJson({
+        await peer.sendJson({
           type: 'fileEnd',
           fileId: file.uid,
         });

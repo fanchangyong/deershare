@@ -159,22 +159,26 @@ export default class Peer extends EventEmitter {
   }
 
   send(data) {
-    if (this.dc.readyState === 'open') {
-      if (this.dc.bufferedAmount >= 15 * 1024 * 1024) {
-        setTimeout(() => {
-          this.send(data);
-        }, 100);
-      } else {
-        try {
-          this.dc.send(data);
-        } catch (e) {
-          console.log('send error: ', e);
+    return new Promise((resolve, reject) => {
+      if (this.dc.readyState === 'open') {
+        if (this.dc.bufferedAmount >= 15 * 1024 * 1024) {
+          setTimeout(() => {
+            this.send(data);
+          }, 100);
+        } else {
+          try {
+            this.dc.send(data);
+            resolve();
+          } catch (e) {
+            console.log('send error: ', e);
+            reject(e);
+          }
         }
       }
-    }
+    });
   }
 
   sendJson(obj) {
-    this.send(JSON.stringify(obj));
+    return this.send(JSON.stringify(obj));
   }
 }
