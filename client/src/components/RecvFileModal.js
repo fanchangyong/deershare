@@ -50,7 +50,9 @@ class DownloadFileModal extends Component {
           visible={isOpen}
         >
           <h4>对方发送给您以下文件及信息：</h4>
-          <div className={styles.message}>{message}</div>
+          {!!message && (
+            <div className={styles.message}>{message}</div>
+          )}
           <div className={styles.fileBox}>
             {files.map(f => (
               <div key={f.uid} className={styles.file}>
