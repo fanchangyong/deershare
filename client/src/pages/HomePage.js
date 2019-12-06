@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import produce from 'immer';
 import { Input, Button, Upload } from 'antd';
 import PropTypes from 'prop-types';
-import { prepareUpload, prepareDownload } from '../actions/file';
+import { prepareUpload } from '../actions/file';
+import {
+  getWebSocket,
+} from '../WebSocket';
 import SendFileModal from '../components/SendFileModal';
 import RecvFileModal from '../components/RecvFileModal';
 
@@ -15,13 +18,19 @@ class HomePage extends React.Component {
     this.state = {
       downloadCode: '',
       showSendFileModal: false,
+      showRecvFileModal: false,
       fileList: [],
+      uploadInfo: {
+        files: [],
+      },
     };
 
     this.onChangeFile = this.onChangeFile.bind(this);
 
     this.onChangeDownloadCode = e => this.setState({ downloadCode: e.target.value });
-    this.onClickPrepareDownlod = this.onClickPrepareDownlod.bind(this);
+    this.onClickPrepareDownload = this.onClickPrepareDownload.bind(this);
+    this.onHideRecvFileModal = () => this.setState({ showRecvFileModal: false });
+    this.handlePrepareDownloadRes = this.handlePrepareDownloadRes.bind(this);
 
     this.onShowSendFileModal = () => this.setState({ showSendFileModal: true });
     this.onHideSendFileModal = () => this.setState({ showSendFileModal: false, fileList: [] });
@@ -34,8 +43,31 @@ class HomePage extends React.Component {
     this.onShowSendFileModal();
   }
 
-  onClickPrepareDownlod() {
-    this.props.prepareDownload(this.state.downloadCode);
+  handlePrepareDownloadRes(msg) {
+    const {
+      type,
+      payload,
+    } = msg;
+    if (type === 'S2C_PREPARE_DOWNLOAD') {
+      this.setState(produce(draft => {
+        draft.showRecvFileModal = true;
+        draft.uploadInfo.message = payload.message;
+        draft.uploadInfo.files = payload.files;
+      }));
+      const ws = getWebSocket();
+      ws.removeListener('message', this.handlePrepareDownloadRes);
+    }
+  }
+
+  onClickPrepareDownload() {
+    const ws = getWebSocket();
+    ws.sendJson({
+      type: 'C2S_PREPARE_DOWNLOAD',
+      payload: {
+        downloadCode: this.state.downloadCode,
+      },
+    });
+    ws.on('message', this.handlePrepareDownloadRes);
   }
 
   render() {
@@ -46,7 +78,7 @@ class HomePage extends React.Component {
             我要收文件
           </h1>
           <Input placeholder="请输入取件码" className={styles.input} onChange={this.onChangeDownloadCode} />
-          <Button type="primary" onClick={this.onClickPrepareDownlod}>开始接收</Button>
+          <Button type="primary" onClick={this.onClickPrepareDownload}>开始接收</Button>
         </div>
         <div className={styles.right}>
           <h1 className={styles.title}>
@@ -69,9 +101,10 @@ class HomePage extends React.Component {
           onCancel={this.onHideSendFileModal}
         />
         <RecvFileModal
-          isOpen={this.props.uploadInfo.files.length > 0}
-          message={this.props.uploadInfo.message}
-          files={this.props.uploadInfo.files}
+          isOpen={this.state.showRecvFileModal}
+          message={this.state.uploadInfo.message}
+          files={this.state.uploadInfo.files}
+          onCancel={this.onHideRecvFileModal}
         />
       </div>
     );
@@ -82,19 +115,15 @@ HomePage.defaultProps = {};
 
 HomePage.propTypes = {
   prepareUpload: PropTypes.func,
-  prepareDownload: PropTypes.func,
-  uploadInfo: PropTypes.object,
   downloadCode: PropTypes.string,
 };
 
 function mapStateToProps(state) {
   return {
     downloadCode: state.file.downloadCode,
-    uploadInfo: state.file.uploadInfo,
   };
 }
 
 export default connect(mapStateToProps, {
-  prepareDownload,
   prepareUpload,
 })(HomePage);

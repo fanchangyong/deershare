@@ -17,10 +17,10 @@ export default function configureWS(dispatch) {
         dispatch({ type: types.UPDATE_UPLOAD_INFO, payload });
         break;
       }
-      case 'S2C_PREPARE_DOWNLOAD': {
-        dispatch({ type: types.UPDATE_DOWNLOAD_INFO, payload });
-        break;
-      }
+      // case 'S2C_PREPARE_DOWNLOAD': {
+      //   dispatch({ type: types.UPDATE_DOWNLOAD_INFO, payload });
+      //   break;
+      // }
       default: {
         console.log('unhandled ws msg: ', msg);
       }

@@ -36,7 +36,7 @@ class WebSocket extends EventEmitter {
     this.ws.send(data);
   }
 
-  sendObject(data) {
+  sendJson(data) {
     this.ws.send(JSON.stringify(data));
   }
 

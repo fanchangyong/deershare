@@ -26,7 +26,7 @@ export default class Peer extends EventEmitter {
   onDescription(description) {
     this.pc.setLocalDescription(description)
     .then(() => {
-      this.webSocket.sendObject({
+      this.webSocket.sendJson({
         type: 'C2S_SIGNAL',
         payload: {
           targetId: this.targetId,
@@ -136,7 +136,7 @@ export default class Peer extends EventEmitter {
       return;
     }
 
-    this.webSocket.sendObject({
+    this.webSocket.sendJson({
       type: 'C2S_SIGNAL',
       payload: {
         targetId: this.targetId,

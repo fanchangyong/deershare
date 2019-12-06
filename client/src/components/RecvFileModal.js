@@ -8,10 +8,6 @@ import {
 import styles from './RecvFileModal.cm.styl';
 
 class DownloadFileModal extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       isOpen,
@@ -48,6 +44,7 @@ class DownloadFileModal extends Component {
           title="接收文件"
           footer={null}
           visible={isOpen}
+          onCancel={this.props.onCancel}
         >
           <h4>对方发送给您以下文件及信息：</h4>
           {!!message && (
@@ -79,6 +76,7 @@ DownloadFileModal.propTypes = {
   isOpen: PropTypes.bool,
   message: PropTypes.string,
   files: PropTypes.array,
+  onCancel: PropTypes.func,
 };
 
 export default DownloadFileModal;
