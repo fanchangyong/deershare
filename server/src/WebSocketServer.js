@@ -23,7 +23,7 @@ export default class WebSocketServer {
 
   genId() {
     this.currentId += 1;
-    return this.currentId;
+    return this.currentId + '';
   }
 
   onConnection(socket, req) {
@@ -34,12 +34,12 @@ export default class WebSocketServer {
   }
 
   onOpen(socket, id) {
-    socket.send({
+    socket.send(JSON.stringify({
       type: 'S2C_OPEN',
       payload: {
         id,
       },
-    });
+    }));
   }
 
   prepareUpload(clientId, socket, payload) {
@@ -68,13 +68,23 @@ export default class WebSocketServer {
     } = payload;
 
     const uploadInfo = this.uploads.get(downloadCode);
-    socket.send(JSON.stringify({
-      type: 'S2C_PREPARE_DOWNLOAD',
-      payload: {
-        message: uploadInfo.message,
-        files: uploadInfo.files,
-      },
-    }));
+    if (uploadInfo) {
+      socket.send(JSON.stringify({
+        type: 'S2C_PREPARE_DOWNLOAD',
+        payload: {
+          message: uploadInfo.message,
+          files: uploadInfo.files,
+          clientId: uploadInfo.clientId,
+        },
+      }));
+    } else {
+      socket.send(JSON.stringify({
+        type: 'S2C_ERROR',
+        payload: {
+          message: 'downloadCode无效',
+        },
+      }));
+    }
   }
 
   onMessage(id, _msg) {

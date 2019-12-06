@@ -4,6 +4,13 @@ import PropTypes from 'prop-types';
 import { message, Modal, Input, Empty, Button, Icon, Upload, Steps } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
+import {
+  getWebSocket,
+} from '../WebSocket';
+
+import Peer from '../Peer';
+
+import FileChunker from '../FileChunker';
 
 import styles from './SendFileModal.cm.styl';
 
@@ -54,6 +61,31 @@ class SendFileModal extends Component {
     });
 
     this.props.prepareUpload(message, files);
+    const ws = getWebSocket();
+    const peer = new Peer(ws);
+    peer.on('connected', async() => {
+      for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+        peer.sendJson({
+          type: 'fileStart',
+          fileId: file.uid,
+        });
+
+        const chunker = new FileChunker(file);
+        let done = false;
+        while (!done) {
+          const result = await chunker.getNextChunk();
+          done = result.done;
+          const chunk = result.chunk;
+          peer.send(chunk);
+        }
+
+        peer.sendJson({
+          type: 'fileEnd',
+          fileId: file.uid,
+        });
+      }
+    });
   }
 
   onChangeFile(e) {

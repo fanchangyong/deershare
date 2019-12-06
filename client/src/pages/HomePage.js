@@ -21,6 +21,8 @@ class HomePage extends React.Component {
       showRecvFileModal: false,
       fileList: [],
       uploadInfo: {
+        targetId: '', // 对方的peerid
+        message: '',
         files: [],
       },
     };
@@ -51,6 +53,7 @@ class HomePage extends React.Component {
     if (type === 'S2C_PREPARE_DOWNLOAD') {
       this.setState(produce(draft => {
         draft.showRecvFileModal = true;
+        draft.uploadInfo.targetId = payload.clientId;
         draft.uploadInfo.message = payload.message;
         draft.uploadInfo.files = payload.files;
       }));
@@ -102,6 +105,7 @@ class HomePage extends React.Component {
         />
         <RecvFileModal
           isOpen={this.state.showRecvFileModal}
+          targetId={this.state.uploadInfo.targetId}
           message={this.state.uploadInfo.message}
           files={this.state.uploadInfo.files}
           onCancel={this.onHideRecvFileModal}

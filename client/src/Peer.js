@@ -11,7 +11,6 @@ export default class Peer extends EventEmitter {
 
     this.handleWSMessage = this.handleWSMessage.bind(this);
     this.onIceCandidate = this.onIceCandidate.bind(this);
-    this.onChannelOpen = this.onChannelOpen.bind(this);
     this.onDescription = this.onDescription.bind(this);
     this.connectPeer = this.connectPeer.bind(this);
     this.onIceConnectionStateChange = this.onIceConnectionStateChange.bind(this);
@@ -166,5 +165,9 @@ export default class Peer extends EventEmitter {
         console.log('send error: ', e);
       }
     }
+  }
+
+  sendJson(obj) {
+    this.send(JSON.stringify(obj));
   }
 }

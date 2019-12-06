@@ -41,6 +41,9 @@ class WebSocket extends EventEmitter {
   }
 
   onOpen() {
+    this.sendJson({
+      type: 'C2S_OPEN',
+    });
     console.log('socket onopen');
   }
 

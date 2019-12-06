@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import produce from 'immer';
 import { Modal, Button } from 'antd';
+import Peer from '../Peer';
+import {
+  getWebSocket,
+} from '../WebSocket';
 import {
   formatBytes,
 } from '../common/util';
@@ -8,6 +13,56 @@ import {
 import styles from './RecvFileModal.cm.styl';
 
 class DownloadFileModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      receivingFileId: null,
+      recvSizes: {},
+      downloadUrls: {},
+    };
+    this.onDownload = this.onDownload.bind(this);
+    this.onRecvData = this.onRecvData.bind(this);
+    this.handleMsg = this.handleMsg.bind(this);
+
+    this.recvBuffer = [];
+  }
+
+  onDownload() {
+    const ws = getWebSocket();
+    const peer = new Peer(ws);
+    peer.connectPeer(this.props.targetId);
+    peer.on('data', this.onRecvData);
+  }
+
+  onRecvData(data) {
+    if (typeof data === 'string') {
+      const msg = JSON.parse(data);
+      this.handleMsg(msg);
+    } else {
+      this.recvBuffer.push(data);
+      this.setState(produce(draft => {
+        const curRecvBytes = draft.recvSizes[draft.receivingFileId] || 0;
+        const newRecvBytes = curRecvBytes + data.byteLength;
+        draft.recvSizes[draft.receivingFileId] = newRecvBytes;
+      }));
+    }
+  }
+
+  handleMsg(msg) {
+    if (msg.type === 'fileStart') {
+      this.setState({
+        receivingFileId: msg.fileId,
+      });
+    } else if (msg.type === 'fileEnd') {
+      const fileId = msg.fileId;
+      const blob = new Blob(this.recvBuffer);
+      const url = window.URL.createObjectURL(blob);
+      this.setState(produce(draft => {
+        draft.downloadUrls[fileId] = url;
+      }));
+    }
+  }
+
   render() {
     const {
       isOpen,
@@ -51,19 +106,39 @@ class DownloadFileModal extends Component {
             <div className={styles.message}>{message}</div>
           )}
           <div className={styles.fileBox}>
-            {files.map(f => (
-              <div key={f.uid} className={styles.file}>
-                <span className={styles.fileName}>
-                  {f.name}
-                </span>
-                <span>{formatBytes(f.size)}</span>
-              </div>
-            ))}
+            {files.map(f => {
+              const {
+                uid,
+                name,
+                size,
+              } = f;
+              const downloadUrl = this.state.downloadUrls[uid];
+              const recvBytes = this.state.recvSizes[uid];
+
+              let downloadInfo = null;
+              if (downloadUrl) {
+                downloadInfo = <a href={downloadUrl} download={name}>下载</a>;
+              } else if (uid === this.state.receivingFileId) {
+                downloadInfo = <span>{((recvBytes / size) * 100).toFixed(2)}%</span>;
+              } else {
+                downloadInfo = <span>等待中</span>;
+              }
+
+              return (
+                <div key={uid} className={styles.file}>
+                  <span className={styles.fileName}>
+                    {name}
+                  </span>
+                  <span>{formatBytes(size)}</span>
+                  {downloadInfo}
+                </div>
+              );
+            })}
           </div>
           <div className={styles.summary}>
             {files.length} 个文件，共 {formatBytes(totalBytes)}
           </div>
-          <Button type="primary" block size="large">
+          <Button type="primary" block size="large" onClick={this.onDownload}>
             开始下载
           </Button>
         </Modal>
@@ -74,6 +149,7 @@ class DownloadFileModal extends Component {
 
 DownloadFileModal.propTypes = {
   isOpen: PropTypes.bool,
+  targetId: PropTypes.string,
   message: PropTypes.string,
   files: PropTypes.array,
   onCancel: PropTypes.func,
