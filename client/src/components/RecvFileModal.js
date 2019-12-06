@@ -17,14 +17,22 @@ class DownloadFileModal extends Component {
     super(props);
     this.state = {
       receivingFileId: null,
-      recvSizes: {},
       downloadUrls: {},
+      recvSizes: {},
     };
+
     this.onDownload = this.onDownload.bind(this);
     this.onRecvData = this.onRecvData.bind(this);
     this.handleMsg = this.handleMsg.bind(this);
 
     this.recvBuffer = [];
+    this.recvSizes = {};
+
+    setInterval(() => {
+      this.setState(produce(draft => {
+        draft.recvSizes = { ...this.recvSizes };
+      }));
+    }, 1000);
   }
 
   onDownload() {
@@ -40,11 +48,14 @@ class DownloadFileModal extends Component {
       this.handleMsg(msg);
     } else {
       this.recvBuffer.push(data);
-      this.setState(produce(draft => {
-        const curRecvBytes = draft.recvSizes[draft.receivingFileId] || 0;
-        const newRecvBytes = curRecvBytes + data.byteLength;
-        draft.recvSizes[draft.receivingFileId] = newRecvBytes;
-      }));
+      const curRecvBytes = this.recvSizes[this.state.receivingFileId] || 0;
+      const newRecvBytes = curRecvBytes + data.byteLength;
+      this.recvSizes[this.state.receivingFileId] = newRecvBytes;
+      // this.setState(produce(draft => {
+      //   const curRecvBytes = draft.recvSizes[draft.receivingFileId] || 0;
+      //   const newRecvBytes = curRecvBytes + data.byteLength;
+      //   draft.recvSizes[draft.receivingFileId] = newRecvBytes;
+      // }));
     }
   }
 
@@ -113,7 +124,7 @@ class DownloadFileModal extends Component {
                 size,
               } = f;
               const downloadUrl = this.state.downloadUrls[uid];
-              const recvBytes = this.state.recvSizes[uid];
+              const recvBytes = this.state.recvSizes[uid] || 0;
 
               let downloadInfo = null;
               if (downloadUrl) {
