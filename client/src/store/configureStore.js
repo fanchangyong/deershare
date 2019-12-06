@@ -4,7 +4,7 @@ import rootReducer from '../reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export default function configureStore (preloadedState) {
+export default function configureStore(preloadedState) {
   const middlewares = [thunk];
   const store = createStore(rootReducer, preloadedState, composeEnhancers(applyMiddleware(...middlewares)));
   return store;

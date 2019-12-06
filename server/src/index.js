@@ -25,7 +25,7 @@ const wsInstance = expressWs(app, server);
 const wss = new WebSocketServer(wsInstance.getWss());
 
 // new ws connection
-app.ws('/ws', function (ws, req) {
+app.ws('/ws', function(ws, req) {
   wss.onConnection(ws, req);
 });
 
@@ -46,12 +46,12 @@ app.use('/', indexRouter);
 app.use('/api/file', fileRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -84,7 +84,7 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort (val) {
+function normalizePort(val) {
   var port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -104,7 +104,7 @@ function normalizePort (val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError (error) {
+function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -132,7 +132,7 @@ function onError (error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening () {
+function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr

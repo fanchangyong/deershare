@@ -1,13 +1,13 @@
 import EventEmitter from 'eventemitter3';
 
-export default class WebSocket extends EventEmitter {
+class WebSocket extends EventEmitter {
   constructor() {
     super();
     this.ws = null;
     this.onMessage = this.onMessage.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.onOpen = this.onOpen.bind(this);
     this.onError = this.onError.bind(this);
-    this.connect();
   }
 
   getWsUri() {
@@ -26,6 +26,7 @@ export default class WebSocket extends EventEmitter {
   connect() {
     const uri = this.getWsUri();
     this.ws = new window.WebSocket(uri);
+    this.ws.onopen = this.onOpen;
     this.ws.onclose = this.onClose;
     this.ws.onerror = this.onError;
     this.ws.onmessage = this.onMessage;
@@ -39,12 +40,16 @@ export default class WebSocket extends EventEmitter {
     this.ws.send(JSON.stringify(data));
   }
 
-  onClose() {
-    console.log('socket onclose');
+  onOpen() {
+    console.log('socket onopen');
   }
 
-  onError() {
-    console.log('socket onerror');
+  onClose(evt) {
+    console.log('socket onclose: ', evt);
+  }
+
+  onError(err) {
+    console.log('socket onerror: ', err);
   }
 
   onMessage(evt) {
@@ -52,3 +57,33 @@ export default class WebSocket extends EventEmitter {
     this.emit('message', msg);
   }
 }
+
+let webSocket = null;
+
+function getWebSocket() {
+  if (!webSocket) {
+    webSocket = new WebSocket();
+  }
+  return webSocket;
+}
+
+function connectWS() {
+  const webSocket = getWebSocket();
+  webSocket.connect();
+}
+
+function sendWS(data) {
+  const webSocket = getWebSocket();
+  webSocket.send(data);
+}
+
+function sendWSJson(data) {
+  sendWS(JSON.stringify(data));
+}
+
+export {
+  getWebSocket,
+  connectWS,
+  sendWS,
+  sendWSJson,
+};

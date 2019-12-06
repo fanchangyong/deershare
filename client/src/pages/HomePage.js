@@ -1,6 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import produce from 'immer';
 import { Input, Button, Upload } from 'antd';
+import PropTypes from 'prop-types';
+import { prepareUpload } from '../actions/file';
 import SendFileModal from '../components/SendFileModal';
 
 import styles from './HomePage.cm.styl';
@@ -50,8 +53,10 @@ class HomePage extends React.Component {
           </Upload>
         </div>
         <SendFileModal
+          downloadCode={this.props.downloadCode}
           initFileList={this.state.fileList}
           isOpen={this.state.showSendFileModal}
+          prepareUpload={this.props.prepareUpload}
           onCancel={this.onHideSendFileModal}
         />
       </div>
@@ -62,6 +67,16 @@ class HomePage extends React.Component {
 HomePage.defaultProps = {};
 
 HomePage.propTypes = {
+  prepareUpload: PropTypes.func,
+  downloadCode: PropTypes.string,
 };
 
-export default HomePage;
+function mapStateToProps(state) {
+  return {
+    downloadCode: state.file.downloadCode,
+  };
+}
+
+export default connect(mapStateToProps, {
+  prepareUpload,
+})(HomePage);

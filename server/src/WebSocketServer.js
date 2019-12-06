@@ -18,6 +18,7 @@ export default class WebSocketServer {
     this.onMessage = this.onMessage.bind(this);
 
     this.prepareUpload = this.prepareUpload.bind(this);
+    this.onOpen = this.onOpen.bind(this);
   }
 
   genId() {
@@ -26,15 +27,19 @@ export default class WebSocketServer {
   }
 
   onConnection(socket, req) {
+    console.log('on new connection');
     const id = this.genId();
     this.clients.set(id, socket);
+    socket.on('message', msg => this.onMessage(id, msg));
+  }
+
+  onOpen(socket, id) {
     socket.send({
       type: 'S2C_OPEN',
       payload: {
         id,
       },
     });
-    socket.on('message', msg => this.onMessage(id, msg));
   }
 
   prepareUpload(clientId, socket, payload) {
@@ -43,26 +48,29 @@ export default class WebSocketServer {
       message,
     } = payload;
 
-    const code = getRandomString(8);
-    this.uploads.set(code, {
+    const downloadCode = getRandomString(8);
+    this.uploads.set(downloadCode, {
       clientId,
       message,
       uploads,
     });
-    socket.send({
-      code,
-    });
+    socket.send(JSON.stringify({
+      type: 'S2C_PREPARE_UPLOAD',
+      payload: {
+        downloadCode,
+      },
+    }));
   }
 
   prepareDownload(clientId, socket, payload) {
     const {
-      code,
+      downloadCode,
     } = payload;
 
-    const uploadInfo = this.uploads.get(code);
-    socket.send({
+    const uploadInfo = this.uploads.get(downloadCode);
+    socket.send(JSON.stringify({
       ...uploadInfo,
-    });
+    }));
   }
 
   onMessage(id, _msg) {
@@ -75,7 +83,13 @@ export default class WebSocketServer {
     const socket = this.clients.get(id);
 
     switch (type) {
+      case 'C2S_OPEN': {
+        this.onOpen(socket, id);
+        break;
+      }
+
       case 'C2S_PREPARE_UPLOAD': {
+        console.log('## prepare upload')
         this.prepareUpload(id, socket, payload);
         break;
       }

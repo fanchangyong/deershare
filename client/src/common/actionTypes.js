@@ -1,1 +1,3 @@
 export const UPDATE_HELLO_MSG = 'UPDATE_HELLO_MSG';
+
+export const UPDATE_UPLOAD_INFO = 'UPDATE_UPLOAD_INFO';
