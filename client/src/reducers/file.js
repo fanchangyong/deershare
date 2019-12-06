@@ -3,6 +3,10 @@ import * as types from '../common/actionTypes';
 
 const initialState = {
   downloadCode: '',
+  uploadInfo: {
+    message: '',
+    files: [],
+  },
 };
 
 const fileReducer = produce((draft = initialState, action) => {
@@ -12,7 +16,8 @@ const fileReducer = produce((draft = initialState, action) => {
       break;
     }
     case types.UPDATE_DOWNLOAD_INFO: {
-      console.log('## update download info: ', action.payload)
+      draft.uploadInfo.message = action.payload.message;
+      draft.uploadInfo.files = action.payload.files;
       break;
     }
   }

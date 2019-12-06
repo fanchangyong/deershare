@@ -5,6 +5,7 @@ import { Input, Button, Upload } from 'antd';
 import PropTypes from 'prop-types';
 import { prepareUpload, prepareDownload } from '../actions/file';
 import SendFileModal from '../components/SendFileModal';
+import RecvFileModal from '../components/RecvFileModal';
 
 import styles from './HomePage.cm.styl';
 
@@ -61,11 +62,16 @@ class HomePage extends React.Component {
           </Upload>
         </div>
         <SendFileModal
+          isOpen={this.state.showSendFileModal}
           downloadCode={this.props.downloadCode}
           initFileList={this.state.fileList}
-          isOpen={this.state.showSendFileModal}
           prepareUpload={this.props.prepareUpload}
           onCancel={this.onHideSendFileModal}
+        />
+        <RecvFileModal
+          isOpen={this.props.uploadInfo.files.length > 0}
+          message={this.props.uploadInfo.message}
+          files={this.props.uploadInfo.files}
         />
       </div>
     );
@@ -77,12 +83,14 @@ HomePage.defaultProps = {};
 HomePage.propTypes = {
   prepareUpload: PropTypes.func,
   prepareDownload: PropTypes.func,
+  uploadInfo: PropTypes.object,
   downloadCode: PropTypes.string,
 };
 
 function mapStateToProps(state) {
   return {
     downloadCode: state.file.downloadCode,
+    uploadInfo: state.file.uploadInfo,
   };
 }
 
