@@ -160,10 +160,16 @@ export default class Peer extends EventEmitter {
 
   send(data) {
     if (this.dc.readyState === 'open') {
-      try {
-        this.dc.send(data);
-      } catch (e) {
-        console.log('send error: ', e);
+      if (this.dc.bufferedAmount >= 15 * 1024 * 1024) {
+        setTimeout(() => {
+          this.send(data);
+        }, 100);
+      } else {
+        try {
+          this.dc.send(data);
+        } catch (e) {
+          console.log('send error: ', e);
+        }
       }
     }
   }
