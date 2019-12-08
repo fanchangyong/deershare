@@ -97,27 +97,32 @@ export default class Peer extends EventEmitter {
     pc.onicecandidate = this.onIceCandidate;
     pc.onconnectionstatechange = e => this.onConnectionStateChange(e);
     pc.oniceconnectionstatechange = e => this.onIceConnectionStateChange(e);
+    pc.onnegotiationneeded = e => this.onNegotiationNeeded(e);
 
     if (isCaller) {
       const dc = pc.createDataChannel('file-transfer', { reliable: true });
-      this.dc = dc;
-      dc.binaryType = 'arraybuffer';
-      dc.onopen = this.onChannelOpen;
-      dc.onclose = this.onChannelClose;
-      dc.onerror = this.onChannelError;
-      pc.createOffer()
-      .then(description => {
-        return this.onDescription(description);
-      });
+      this.setupDataChannel(dc);
     } else {
       this.pc.ondatachannel = e => {
         const dc = e.channel || e.target;
-        this.dc = dc;
-        dc.onopen = this.onChannelOpen;
-        dc.onclose = this.onChannelClose;
-        dc.onerror = this.onChannelError;
+        this.setupDataChannel(dc);
       };
     }
+  }
+
+  setupDataChannel(dc) {
+    this.dc = dc;
+    dc.binaryType = 'arraybuffer';
+    dc.onopen = this.onChannelOpen;
+    dc.onclose = this.onChannelClose;
+    dc.onerror = this.onChannelError;
+  }
+
+  onNegotiationNeeded(event) {
+    this.pc.createOffer()
+    .then(description => {
+      return this.onDescription(description);
+    });
   }
 
   connectPeer(targetId) {
@@ -168,6 +173,8 @@ export default class Peer extends EventEmitter {
             reject(e);
           }
         }
+      } else {
+        console.error('send but channel is not open, now state is: ', this.dc.readyState);
       }
     });
   }
