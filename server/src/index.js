@@ -49,7 +49,7 @@ const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
 app.set('view engine', 'pug');
 
-app.locals.publicPath = 'http://localhost:3000/static';
+app.locals.publicPath = '/static';
 
 // Routers
 app.use('/', indexRouter);
