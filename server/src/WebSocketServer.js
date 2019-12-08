@@ -19,6 +19,8 @@ export default class WebSocketServer {
 
     this.prepareUpload = this.prepareUpload.bind(this);
     this.onOpen = this.onOpen.bind(this);
+    this.onClose = this.onClose.bind(this);
+    this.onError = this.onError.bind(this);
   }
 
   genId() {
@@ -30,7 +32,16 @@ export default class WebSocketServer {
     console.log('on new connection');
     const id = this.genId();
     this.clients.set(id, socket);
+    socket.on('close', (code, reason) => this.onClose(id, code, reason));
     socket.on('message', msg => this.onMessage(id, msg));
+  }
+
+  onClose(id) {
+    this.clients.delete(id);
+  }
+
+  onError(err) {
+    console.log('## socket on error: ', err);
   }
 
   onOpen(socket, id) {
