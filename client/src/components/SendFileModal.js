@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import produce from 'immer';
 import PropTypes from 'prop-types';
-import { message, Modal, Input, Empty, Button, Icon, Upload, Steps } from 'antd';
+import { message as toast, Modal, Input, Empty, Button, Icon, Upload, Steps } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 
@@ -95,7 +95,11 @@ class SendFileModal extends Component {
             chunk,
             offset,
           } = result;
-          await peer.send(chunk);
+          try {
+            await peer.send(chunk);
+          } catch (err) {
+            toast.error('传输错误：' + err);
+          }
           this.sendSizes[uid] = offset;
         }
 
@@ -224,7 +228,7 @@ class SendFileModal extends Component {
             1. 将链接发送给对方：
           </span>
           <span>{downloadLink}</span>
-          <CopyToClipboard text={downloadLink} onCopy={() => message.success('复制成功')}>
+          <CopyToClipboard text={downloadLink} onCopy={() => toast.success('复制成功')}>
             <Button type="link">复制</Button>
           </CopyToClipboard>
         </div>
@@ -233,7 +237,7 @@ class SendFileModal extends Component {
             2. 将取件码发送给对方：
           </span>
           <span>{downloadCode}</span>
-          <CopyToClipboard text={downloadCode} onCopy={() => message.success('复制成功')}>
+          <CopyToClipboard text={downloadCode} onCopy={() => toast.success('复制成功')}>
             <Button type="link">复制</Button>
           </CopyToClipboard>
 

@@ -69,12 +69,20 @@ export default class Peer extends EventEmitter {
     .catch(e => console.log('onDescription error: ', e));
   }
 
-  onIceConnectionStateChange(e) {
-    console.log('ice connection state change: ', e.target.iceConnectionState);
+  onIceConnectionStateChange() {
+    console.log('ice connection state change: ', this.pc.iceConnectionState);
   }
 
-  onConnectionStateChange(e) {
-    console.log('onConnectionStateChange: ', e.target.connectionState);
+  onConnectionStateChange() {
+    if (this.pc.connectionState === 'disconnected') {
+      this.dc.close();
+      if (this.waitingCallback) {
+        this.waitingCallback(new Error('peer disconnected, cannot send'));
+        this.waitingCallback = null;
+      }
+      // this.emit('disconnected');
+    }
+    console.log('onConnectionStateChange: ', this.pc.connectionState);
   }
 
   onRTCMessage(e) {
@@ -172,7 +180,13 @@ export default class Peer extends EventEmitter {
     return new Promise((resolve, reject) => {
       if (this.dc.readyState === 'open') {
         if (this.dc.bufferedAmount >= BUF_WAITING_THRESHOLD) {
-          this.waitingCallback = resolve;
+          this.waitingCallback = (err) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve();
+            }
+          };
         } else {
           try {
             this.dc.send(data);
