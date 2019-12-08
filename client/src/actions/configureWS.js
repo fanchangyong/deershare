@@ -1,28 +1,12 @@
-import {
-  getWebSocket,
-} from '../WebSocket';
+import ws from '../ws';
 
 import * as types from '../common/actionTypes';
 
 export default function configureWS(dispatch) {
-  const ws = getWebSocket();
-  ws.on('message', (msg) => {
-    const {
-      type,
-      payload,
-    } = msg;
-    switch (type) {
-      case 'S2C_PREPARE_UPLOAD': {
-        dispatch({ type: types.UPDATE_UPLOAD_INFO, payload });
-        break;
-      }
-      // case 'S2C_PREPARE_DOWNLOAD': {
-      //   dispatch({ type: types.UPDATE_DOWNLOAD_INFO, payload });
-      //   break;
-      // }
-      default: {
-        console.log('unhandled ws msg: ', msg);
-      }
-    }
-  });
+  function s2cPrepareUpload(payload) {
+    console.log('## s2c prepare upload: ', payload)
+    dispatch({ type: types.UPDATE_UPLOAD_INFO, payload });
+  }
+
+  ws.registerMessageHandler('s2c_prepare_upload', s2cPrepareUpload);
 }

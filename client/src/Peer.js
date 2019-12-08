@@ -1,15 +1,14 @@
 import EventEmitter from 'eventemitter3';
+import ws from './ws';
 
 export default class Peer extends EventEmitter {
-  constructor(webSocket) {
+  constructor() {
     super();
     this.id = null;
     this.targetId = null;
-    this.webSocket = webSocket;
     this.pc = null; // RTCPeerConnection
     this.dc = null; // RTCDataChannel
 
-    this.handleWSMessage = this.handleWSMessage.bind(this);
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.onDescription = this.onDescription.bind(this);
     this.connectPeer = this.connectPeer.bind(this);
@@ -19,14 +18,42 @@ export default class Peer extends EventEmitter {
     this.onChannelOpen = this.onChannelOpen.bind(this);
     this.onChannelClose = this.onChannelClose.bind(this);
 
-    this.webSocket.on('message', this.handleWSMessage);
+    this.onS2cSignal = this.onS2cSignal.bind(this);
+    this.onS2cOpen = this.onS2cOpen.bind(this);
+    ws.registerMessageHandler('s2c_open', this.onS2cOpen);
+    ws.registerMessageHandler('s2c_signal', this.onS2cSignal);
+  }
+
+  onS2cOpen(payload) {
+    this.id = payload.id;
+    this.emit('peerId', this.id);
+  }
+
+  onS2cSignal(payload) {
+    if (!this.targetId) {
+      this.targetId = payload.srcId;
+    }
+    if (!this.pc) {
+      this.createRTCConnection(false);
+    }
+    if (payload.sdp) {
+      this.pc.setRemoteDescription(new RTCSessionDescription(payload.sdp))
+      .then(_ => {
+        if (payload.sdp.type === 'offer') {
+          return this.pc.createAnswer()
+          .then(d => this.onDescription(d));
+        }
+      });
+    } else if (payload.ice) {
+      this.pc.addIceCandidate(new RTCIceCandidate(payload.ice));
+    }
   }
 
   onDescription(description) {
     this.pc.setLocalDescription(description)
     .then(() => {
-      this.webSocket.sendJson({
-        type: 'C2S_SIGNAL',
+      ws.sendJSON({
+        type: 'c2s_signal',
         payload: {
           targetId: this.targetId,
           sdp: description,
@@ -93,39 +120,6 @@ export default class Peer extends EventEmitter {
     }
   }
 
-  handleWSMessage(msg) {
-    const type = msg.type;
-    const payload = msg.payload;
-    switch (type) {
-      case 'S2C_OPEN': {
-        this.id = payload.id;
-        this.emit('peerId', this.id);
-        break;
-      }
-
-      case 'S2C_SIGNAL': {
-        if (!this.targetId) {
-          this.targetId = payload.srcId;
-        }
-        if (!this.pc) {
-          this.createRTCConnection(false);
-        }
-        if (payload.sdp) {
-          this.pc.setRemoteDescription(new RTCSessionDescription(payload.sdp))
-          .then(_ => {
-            if (payload.sdp.type === 'offer') {
-              return this.pc.createAnswer()
-              .then(d => this.onDescription(d));
-            }
-          });
-        } else if (payload.ice) {
-          this.pc.addIceCandidate(new RTCIceCandidate(payload.ice));
-        }
-        break;
-      }
-    }
-  }
-
   connectPeer(targetId) {
     this.targetId = targetId;
     this.createRTCConnection(true);
@@ -136,8 +130,8 @@ export default class Peer extends EventEmitter {
       return;
     }
 
-    this.webSocket.sendJson({
-      type: 'C2S_SIGNAL',
+    ws.sendJSON({
+      type: 'c2s_signal',
       payload: {
         targetId: this.targetId,
         ice: e.candidate,
@@ -178,7 +172,7 @@ export default class Peer extends EventEmitter {
     });
   }
 
-  sendJson(obj) {
+  sendJSON(obj) {
     return this.send(JSON.stringify(obj));
   }
 }

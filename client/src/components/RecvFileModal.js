@@ -4,9 +4,8 @@ import { withRouter } from 'react-router';
 import produce from 'immer';
 import { Modal, Button } from 'antd';
 import Peer from '../Peer';
-import {
-  getWebSocket,
-} from '../WebSocket';
+import ws from '../ws';
+
 import {
   formatBytes,
 } from '../common/util';
@@ -41,31 +40,23 @@ class DownloadFileModal extends Component {
   }
 
   componentDidMount() {
-    const ws = getWebSocket();
-    ws.sendJson({
-      type: 'C2S_PREPARE_DOWNLOAD',
+    ws.sendJSON({
+      type: 'c2s_prepare_download',
       payload: {
         downloadCode: this.props.match.params.downloadCode,
       },
     });
-    ws.on('message', this.handlePrepareDownloadRes);
+    ws.registerMessageHandler('s2c_prepare_download', this.handlePrepareDownloadRes);
   }
 
-  handlePrepareDownloadRes(msg) {
-    const {
-      type,
-      payload,
-    } = msg;
-    if (type === 'S2C_PREPARE_DOWNLOAD') {
-      this.setState(produce(draft => {
-        draft.showRecvFileModal = true;
-        draft.targetId = payload.clientId;
-        draft.message = payload.message;
-        draft.files = payload.files;
-      }));
-      const ws = getWebSocket();
-      ws.removeListener('message', this.handlePrepareDownloadRes);
-    }
+  handlePrepareDownloadRes(payload) {
+    this.setState(produce(draft => {
+      draft.showRecvFileModal = true;
+      draft.targetId = payload.clientId;
+      draft.message = payload.message;
+      draft.files = payload.files;
+    }));
+    ws.removeMessageHandler('s2c_prepare_download', this.handlePrepareDownloadRes);
   }
 
   componentWillUnmount() {
@@ -73,8 +64,7 @@ class DownloadFileModal extends Component {
   }
 
   onDownload() {
-    const ws = getWebSocket();
-    const peer = new Peer(ws);
+    const peer = new Peer();
     peer.connectPeer(this.state.targetId);
     peer.on('data', this.onRecvData);
   }
@@ -201,6 +191,7 @@ class DownloadFileModal extends Component {
 DownloadFileModal.propTypes = {
   isOpen: PropTypes.bool,
   onCancel: PropTypes.func,
+  match: PropTypes.object,
 };
 
 export default withRouter(DownloadFileModal);

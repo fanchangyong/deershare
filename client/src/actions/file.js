@@ -1,11 +1,9 @@
-import {
-  sendWSJson,
-} from '../WebSocket';
+import ws from '../ws';
 
 export function prepareUpload(message, files) {
   return () => {
-    sendWSJson({
-      type: 'C2S_PREPARE_UPLOAD',
+    ws.sendJSON({
+      type: 'c2s_prepare_upload',
       payload: {
         message,
         files,
@@ -16,8 +14,8 @@ export function prepareUpload(message, files) {
 
 export function prepareDownload(downloadCode) {
   return () => {
-    sendWSJson({
-      type: 'C2S_PREPARE_DOWNLOAD',
+    ws.sendJSON({
+      type: 'c2s_prepare_download',
       payload: {
         downloadCode,
       },

@@ -7,17 +7,11 @@ import {
   Route,
 } from 'react-router-dom';
 
-import { connectWS } from '../WebSocket';
-
 import HomePage from '../pages/HomePage';
 
 import './App.cm.styl';
 
 class App extends React.Component {
-  componentDidMount() {
-    // connectWS();
-  }
-
   render() {
     return (
       <Router>

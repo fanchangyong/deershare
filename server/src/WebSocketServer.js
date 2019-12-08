@@ -1,8 +1,4 @@
 import {
-  MESSAGE_TYPES,
-} from './constants';
-
-import {
   getRandomString,
 } from './common/util';
 
@@ -11,7 +7,6 @@ export default class WebSocketServer {
     this._wss = wss;
     this._req = req;
     this.clients = new Map();
-    // code => file info
     this.uploads = new Map();
     this.currentId = 0;
 
@@ -29,7 +24,6 @@ export default class WebSocketServer {
   }
 
   onConnection(socket, req) {
-    console.log('on new connection');
     const id = this.genId();
     this.clients.set(id, socket);
     socket.on('close', (code, reason) => this.onClose(id, code, reason));
@@ -46,7 +40,7 @@ export default class WebSocketServer {
 
   onOpen(socket, id) {
     socket.send(JSON.stringify({
-      type: 'S2C_OPEN',
+      type: 's2c_open',
       payload: {
         id,
       },
@@ -66,7 +60,7 @@ export default class WebSocketServer {
       files,
     });
     socket.send(JSON.stringify({
-      type: 'S2C_PREPARE_UPLOAD',
+      type: 's2c_prepare_upload',
       payload: {
         downloadCode,
       },
@@ -81,7 +75,7 @@ export default class WebSocketServer {
     const uploadInfo = this.uploads.get(downloadCode);
     if (uploadInfo) {
       socket.send(JSON.stringify({
-        type: 'S2C_PREPARE_DOWNLOAD',
+        type: 's2c_prepare_download',
         payload: {
           message: uploadInfo.message,
           files: uploadInfo.files,
@@ -90,7 +84,7 @@ export default class WebSocketServer {
       }));
     } else {
       socket.send(JSON.stringify({
-        type: 'S2C_ERROR',
+        type: 's2c_error',
         payload: {
           message: 'downloadCode无效',
         },
@@ -108,22 +102,22 @@ export default class WebSocketServer {
     const socket = this.clients.get(id);
 
     switch (type) {
-      case 'C2S_OPEN': {
+      case 'c2s_open': {
         this.onOpen(socket, id);
         break;
       }
 
-      case 'C2S_PREPARE_UPLOAD': {
+      case 'c2s_prepare_upload': {
         this.prepareUpload(id, socket, payload);
         break;
       }
 
-      case 'C2S_PREPARE_DOWNLOAD': {
+      case 'c2s_prepare_download': {
         this.prepareDownload(id, socket, payload);
         break;
       }
 
-      case 'C2S_SIGNAL': {
+      case 'c2s_signal': {
         const {
           targetId,
           ...others
@@ -135,7 +129,7 @@ export default class WebSocketServer {
           return;
         }
         targetSocket.send(JSON.stringify({
-          type: 'S2C_SIGNAL',
+          type: 's2c_signal',
           payload: {
             srcId: id,
             ...others,
