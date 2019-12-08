@@ -78,11 +78,6 @@ class RecvFileModal extends Component {
       const curRecvBytes = this.recvSizes[this.state.receivingFileId] || 0;
       const newRecvBytes = curRecvBytes + data.byteLength;
       this.recvSizes[this.state.receivingFileId] = newRecvBytes;
-      // this.setState(produce(draft => {
-      //   const curRecvBytes = draft.recvSizes[draft.receivingFileId] || 0;
-      //   const newRecvBytes = curRecvBytes + data.byteLength;
-      //   draft.recvSizes[draft.receivingFileId] = newRecvBytes;
-      // }));
     }
   }
 
@@ -110,21 +105,6 @@ class RecvFileModal extends Component {
       message,
       files,
     } = this.state;
-
-    // const isOpen = true;
-    // const message = 'test message';
-    // const files = [
-    //   {
-    //     uid: '1',
-    //     name: 'file1.txt',
-    //     size: 102400,
-    //   },
-    //   {
-    //     uid: '2',
-    //     name: 'file2.txt',
-    //     size: 102400,
-    //   },
-    // ];
 
     if (!isOpen) {
       return null;

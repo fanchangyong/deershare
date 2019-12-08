@@ -70,15 +70,11 @@ export default class Peer extends EventEmitter {
   }
 
   onIceConnectionStateChange(e) {
-    if (this.pc.iceConnectionState === 'failed') {
-      console.error('ICE Gathering failed');
-    } else {
-      console.log('ICE Gathering: ', this.pc.iceConnectionState);
-    }
+    console.log('ice connection state change: ', e.target.iceConnectionState);
   }
 
   onConnectionStateChange(e) {
-    console.log('onConnectionStateChange: ', e);
+    console.log('onConnectionStateChange: ', e.target.connectionState);
   }
 
   onRTCMessage(e) {
@@ -182,7 +178,7 @@ export default class Peer extends EventEmitter {
             this.dc.send(data);
             resolve();
           } catch (e) {
-            console.log('send error: ', e);
+            console.error('send error: ', e);
             reject(e);
           }
         }

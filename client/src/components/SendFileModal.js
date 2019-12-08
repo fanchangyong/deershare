@@ -8,6 +8,9 @@ import QRCode from 'qrcode.react';
 import Peer from '../Peer';
 
 import FileChunker from '../FileChunker';
+import {
+  formatBytes,
+} from '../common/util';
 
 import styles from './SendFileModal.cm.styl';
 
@@ -18,6 +21,8 @@ function getInitialState(props) {
     currentStep: 0,
     fileList: props ? props.initFileList : [],
     message: '',
+    curFileId: '',
+    sendSizes: {},
   };
 }
 
@@ -36,6 +41,14 @@ class SendFileModal extends Component {
     this.renderStep0Content = this.renderStep0Content.bind(this);
     this.renderStep1Content = this.renderStep1Content.bind(this);
     this.renderStep2Content = this.renderStep2Content.bind(this);
+
+    this.sendSizes = {};
+
+    setInterval(() => {
+      this.setState(produce(draft => {
+        draft.sendSizes = { ...this.sendSizes };
+      }));
+    }, 1000);
   }
 
   onPrepareUpload() {
@@ -66,18 +79,24 @@ class SendFileModal extends Component {
 
       for (let i = 0; i < fileList.length; i++) {
         const file = fileList[i];
+        const uid = file.uid;
         await peer.sendJSON({
           type: 'fileStart',
           fileId: file.uid,
         });
+        this.setState({ curFileId: uid });
 
         const chunker = new FileChunker(file);
         let done = false;
         while (!done) {
           const result = await chunker.getNextChunk();
           done = result.done;
-          const chunk = result.chunk;
+          const {
+            chunk,
+            offset,
+          } = result;
           await peer.send(chunk);
+          this.sendSizes[uid] = offset;
         }
 
         await peer.sendJSON({
@@ -183,6 +202,9 @@ class SendFileModal extends Component {
             onChange={this.onChangeMessage}
           />
         </div>
+        <Button type="primary" block size="large" onClick={this.onPrepareUpload}>
+          下一步
+        </Button>
       </div>
     );
   }
@@ -226,12 +248,60 @@ class SendFileModal extends Component {
         </div>
         <div className={styles.tips}>文件在10分钟内有效，请尽快将收件码或链接发送给对方<br /> 对方输入收件码后会自动开始发送
         </div>
+        <Button type="primary" block size="large" loading>
+          等待连接...
+        </Button>
       </div>
     );
   }
 
   renderStep2Content() {
+    const {
+      fileList,
+    } = this.state;
 
+    const totalBytes = fileList.reduce((sum, cur) => {
+      return sum + cur.size;
+    }, 0);
+
+    return (
+      <div>
+        <h4>正在发送以下文件：</h4>
+        <div className={styles.fileBox}>
+          {fileList.map(f => {
+            const {
+              uid,
+              name,
+              size,
+            } = f;
+
+            let uploadPct = null;
+            const sendSize = this.state.sendSizes[uid] || 0;
+            if (sendSize > 0) {
+              uploadPct = ((sendSize / size) * 100).toFixed(2);
+            } else {
+              uploadPct = '等待中';
+            }
+
+            return (
+              <div key={uid} className={styles.file}>
+                <span className={styles.fileName}>
+                  {name}
+                </span>
+                <span>{formatBytes(size)}</span>
+                <span>{uploadPct}%</span>
+              </div>
+            );
+          })}
+        </div>
+        <div className={styles.summary}>
+          {fileList.length} 个文件，共 {formatBytes(totalBytes)}
+        </div>
+        <Button type="primary" block size="large">
+          发送中...
+        </Button>
+      </div>
+    );
   }
 
   render() {
@@ -257,24 +327,6 @@ class SendFileModal extends Component {
           {currentStep === 0 && this.renderStep0Content()}
           {currentStep === 1 && this.renderStep1Content()}
           {currentStep === 2 && this.renderStep2Content()}
-
-          {currentStep === 0 && (
-            <Button type="primary" block size="large" onClick={this.onPrepareUpload}>
-              下一步
-            </Button>
-          )}
-
-          {currentStep === 1 && (
-            <Button type="primary" block size="large" loading>
-              等待连接...
-            </Button>
-          )}
-
-          {currentStep === 2 && (
-            <Button type="primary" block size="large">
-              发送中...
-            </Button>
-          )}
         </Modal>
       </div>
     );
