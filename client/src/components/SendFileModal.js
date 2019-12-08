@@ -45,7 +45,7 @@ class SendFileModal extends Component {
     } = this.state;
 
     this.setState(produce(draft => {
-      draft.currentStep += 1;
+      draft.currentStep = 1;
     }));
 
     const files = fileList.map(f => {
@@ -60,6 +60,10 @@ class SendFileModal extends Component {
     this.props.prepareUpload(message, files);
     const peer = new Peer();
     peer.on('connected', async() => {
+      this.setState(produce(draft => {
+        draft.currentStep = 2;
+      }));
+
       for (let i = 0; i < fileList.length; i++) {
         const file = fileList[i];
         await peer.sendJSON({
@@ -262,7 +266,7 @@ class SendFileModal extends Component {
 
           {currentStep === 1 && (
             <Button type="primary" block size="large" loading>
-              等待对方...
+              等待连接...
             </Button>
           )}
 
