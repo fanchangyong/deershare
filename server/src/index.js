@@ -2,6 +2,7 @@ require('@babel/register');
 
 var http = require('http');
 const expressWs = require('express-ws');
+const session = require('express-session');
 
 var createError = require('http-errors');
 var express = require('express');
@@ -16,15 +17,29 @@ const WebSocketServer = require('./WebSocketServer').default;
 
 initDb();
 
-var app = express();
+const app = express();
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
+// Middlewares
+app.use(session({
+  name: 'deershare.sid',
+  secret: 'deershare2019',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  },
+}));
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(path.resolve(__dirname, '../'), 'public')));
+
+// WebSocket
 const wsInstance = expressWs(app, server);
-
 const wss = new WebSocketServer(wsInstance.getWss());
-
-// new ws connection
 app.ws('/ws', function(ws, req) {
   wss.onConnection(ws, req);
 });
@@ -34,14 +49,9 @@ const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(path.resolve(__dirname, '../'), 'public')));
-
 app.locals.publicPath = 'http://localhost:3000/static';
 
+// Routers
 app.use('/', indexRouter);
 app.use('/api/file', fileRouter);
 
