@@ -1,4 +1,3 @@
-
 const CHUNK_SIZE = 16 * 1024;
 
 class FileChunker {
@@ -13,26 +12,27 @@ class FileChunker {
       if (this.offset >= this.file.size) {
         resolve({
           done: true,
-        })
+        });
       }
 
       this.reader.onload = (e) => {
-        this.offset += CHUNK_SIZE
+        this.offset += CHUNK_SIZE;
         resolve({
           done: this.offset >= this.file.size,
-          chunk: e.target.result
-        })
-      }
+          chunk: e.target.result,
+          offset: this.offset,
+        });
+      };
       this.reader.onabort = () => {
-        reject('abort')
-      }
+        reject(new Error('FileReader abort'));
+      };
       this.reader.onerror = (evt) => {
-        reject('error' + evt)
-      }
-      const blob = this.file.slice(this.offset, this.offset + CHUNK_SIZE)
-      this.reader.readAsArrayBuffer(blob)
-    })
+        reject(new Error('FileReader onerror' + evt));
+      };
+      const blob = this.file.slice(this.offset, this.offset + CHUNK_SIZE);
+      this.reader.readAsArrayBuffer(blob);
+    });
   }
 }
 
-export default FileChunker
+export default FileChunker;
