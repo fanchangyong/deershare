@@ -12,7 +12,7 @@ import {
 
 import styles from './RecvFileModal.cm.styl';
 
-class DownloadFileModal extends Component {
+class RecvFileModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -188,10 +188,10 @@ class DownloadFileModal extends Component {
   }
 }
 
-DownloadFileModal.propTypes = {
+RecvFileModal.propTypes = {
   isOpen: PropTypes.bool,
   onCancel: PropTypes.func,
   match: PropTypes.object,
 };
 
-export default withRouter(DownloadFileModal);
+export default withRouter(RecvFileModal);
