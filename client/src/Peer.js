@@ -1,6 +1,9 @@
 import EventEmitter from 'eventemitter3';
 import ws from './ws';
 
+const BUFFERED_AMOUNT_LOW_THRESHOLD = 8 * 1024 * 1024; // 8MB
+const BUF_WAITING_THRESHOLD = 15 * 1024 * 1024;
+
 export default class Peer extends EventEmitter {
   constructor() {
     super();
@@ -8,6 +11,8 @@ export default class Peer extends EventEmitter {
     this.targetId = null;
     this.pc = null; // RTCPeerConnection
     this.dc = null; // RTCDataChannel
+
+    this.waitingCallback = null;
 
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.onDescription = this.onDescription.bind(this);
@@ -17,6 +22,7 @@ export default class Peer extends EventEmitter {
     this.onRTCMessage = this.onRTCMessage.bind(this);
     this.onChannelOpen = this.onChannelOpen.bind(this);
     this.onChannelClose = this.onChannelClose.bind(this);
+    this.onBufferedAmountLow = this.onBufferedAmountLow.bind(this);
 
     this.onS2cSignal = this.onS2cSignal.bind(this);
     this.onS2cOpen = this.onS2cOpen.bind(this);
@@ -112,10 +118,12 @@ export default class Peer extends EventEmitter {
 
   setupDataChannel(dc) {
     this.dc = dc;
+    dc.bufferedAmountLowThreshold = BUFFERED_AMOUNT_LOW_THRESHOLD;
     dc.binaryType = 'arraybuffer';
     dc.onopen = this.onChannelOpen;
     dc.onclose = this.onChannelClose;
     dc.onerror = this.onChannelError;
+    dc.onbufferedamountlow = this.onBufferedAmountLow;
   }
 
   onNegotiationNeeded(event) {
@@ -157,13 +165,18 @@ export default class Peer extends EventEmitter {
     console.log('## channel error: ', e);
   }
 
+  onBufferedAmountLow() {
+    if (this.waitingCallback) {
+      this.waitingCallback();
+      this.waitingCallback = null;
+    }
+  }
+
   send(data) {
     return new Promise((resolve, reject) => {
       if (this.dc.readyState === 'open') {
-        if (this.dc.bufferedAmount >= 15 * 1024 * 1024) {
-          setTimeout(() => {
-            this.send(data);
-          }, 100);
+        if (this.dc.bufferedAmount >= BUF_WAITING_THRESHOLD) {
+          this.waitingCallback = resolve;
         } else {
           try {
             this.dc.send(data);
