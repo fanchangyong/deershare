@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'webrtc-adapter'
 import { Provider } from 'react-redux';
 import App from './components/App';
 import configureStore from './store/configureStore';

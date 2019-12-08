@@ -99,7 +99,7 @@ export default class Peer extends EventEmitter {
     pc.oniceconnectionstatechange = e => this.onIceConnectionStateChange(e);
 
     if (isCaller) {
-      const dc = pc.createDataChannel('data-channel', { reliable: true });
+      const dc = pc.createDataChannel('file-transfer', { reliable: true });
       this.dc = dc;
       dc.binaryType = 'arraybuffer';
       dc.onopen = this.onChannelOpen;
