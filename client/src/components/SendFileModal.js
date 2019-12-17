@@ -23,6 +23,7 @@ function getInitialState(props) {
     message: '',
     curFileId: '',
     sendSizes: {},
+    peerState: '', // 连接状态
   };
 }
 
@@ -72,9 +73,39 @@ class SendFileModal extends Component {
 
     this.props.prepareUpload(message, files);
     const peer = new Peer();
-    peer.on('connected', async() => {
+
+    peer.on('connecting', () => {
+      this.setState({
+        peerState: '正在连接',
+      });
+    });
+
+    peer.on('connected', () => {
+      toast.success('已连接');
+      this.setState({
+        peerState: '已连接',
+      });
+    });
+
+    peer.on('connectFailed', () => {
+      toast.error('连接失败');
+      this.setState({
+        peerState: '连接失败',
+      });
+    });
+
+    peer.on('disconnected', async() => {
+      toast.error('连接断开');
       this.setState(produce(draft => {
-        draft.currentStep = 2;
+        draft.peerState = '未连接';
+      }));
+    });
+
+    peer.on('channelOpen', async() => {
+      this.setState(produce(draft => {
+        if (draft.currentStep === 1) {
+          draft.currentStep = 2;
+        }
       }));
 
       for (let i = 0; i < fileList.length; i++) {
@@ -99,14 +130,17 @@ class SendFileModal extends Component {
             await peer.send(chunk);
           } catch (err) {
             toast.error('传输错误：' + err);
+            break;
           }
           this.sendSizes[uid] = offset;
         }
 
-        await peer.sendJSON({
-          type: 'fileEnd',
-          fileId: file.uid,
-        });
+        if (done) {
+          await peer.sendJSON({
+            type: 'fileEnd',
+            fileId: file.uid,
+          });
+        }
       }
     });
   }
@@ -311,6 +345,7 @@ class SendFileModal extends Component {
   render() {
     const {
       currentStep,
+      peerState,
     } = this.state;
 
     return (
@@ -322,6 +357,9 @@ class SendFileModal extends Component {
           onCancel={this.props.onCancel}
         >
           <div className={styles.steps}>
+            <div>
+              连接状态：{peerState}
+            </div>
             <Steps current={currentStep}>
               <Step title="添加文件" />
               <Step title="收件码" />

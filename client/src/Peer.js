@@ -17,7 +17,6 @@ export default class Peer extends EventEmitter {
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.onDescription = this.onDescription.bind(this);
     this.connectPeer = this.connectPeer.bind(this);
-    this.onIceConnectionStateChange = this.onIceConnectionStateChange.bind(this);
     this.onConnectionStateChange = this.onConnectionStateChange.bind(this);
     this.onRTCMessage = this.onRTCMessage.bind(this);
     this.onChannelOpen = this.onChannelOpen.bind(this);
@@ -69,10 +68,6 @@ export default class Peer extends EventEmitter {
     .catch(e => console.log('onDescription error: ', e));
   }
 
-  onIceConnectionStateChange() {
-    console.log('ice connection state change: ', this.pc.iceConnectionState);
-  }
-
   onConnectionStateChange() {
     if (this.pc.connectionState === 'disconnected') {
       this.dc.close();
@@ -80,7 +75,13 @@ export default class Peer extends EventEmitter {
         this.waitingCallback(new Error('peer disconnected, cannot send'));
         this.waitingCallback = null;
       }
-      // this.emit('disconnected');
+      this.emit('disconnected');
+    } else if (this.pc.connectionState === 'connected') {
+      this.emit('connected');
+    } else if (this.pc.connectionState === 'connecting') {
+      this.emit('connecting');
+    } else if (this.pc.connectionState === 'failed') {
+      this.emit('connectFailed');
     }
     console.log('onConnectionStateChange: ', this.pc.connectionState);
   }
@@ -106,7 +107,6 @@ export default class Peer extends EventEmitter {
     this.pc = pc;
     pc.onicecandidate = this.onIceCandidate;
     pc.onconnectionstatechange = e => this.onConnectionStateChange(e);
-    pc.oniceconnectionstatechange = e => this.onIceConnectionStateChange(e);
     pc.onnegotiationneeded = e => this.onNegotiationNeeded(e);
 
     if (isCaller) {
@@ -157,7 +157,7 @@ export default class Peer extends EventEmitter {
   }
 
   onChannelOpen(e) {
-    this.emit('connected');
+    this.emit('channelOpen');
     this.dc.onmessage = this.onRTCMessage;
   }
 
@@ -197,7 +197,9 @@ export default class Peer extends EventEmitter {
           }
         }
       } else {
-        console.error('send but channel is not open, now state is: ', this.dc.readyState);
+        const errMsg = 'send but channel is not open, now state is: ' + this.dc.readyState;
+        console.error(errMsg);
+        reject(new Error(errMsg));
       }
     });
   }

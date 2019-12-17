@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import produce from 'immer';
-import { Modal, Button } from 'antd';
+import { Modal, Button, message } from 'antd';
 import Peer from '../Peer';
 import ws from '../ws';
 
@@ -22,6 +22,7 @@ class RecvFileModal extends Component {
       targetId: '',
       message: '',
       files: [],
+      peerState: '',
     };
 
     this.onDownload = this.onDownload.bind(this);
@@ -65,6 +66,34 @@ class RecvFileModal extends Component {
 
   onDownload() {
     const peer = new Peer();
+
+    peer.on('connecting', () => {
+      this.setState({
+        peerState: '正在连接',
+      });
+    });
+
+    peer.on('connected', () => {
+      message.success('已连接');
+      this.setState({
+        peerState: '已连接',
+      });
+    });
+
+    peer.on('disconnected', async() => {
+      message.error('连接断开');
+      this.setState(produce(draft => {
+        draft.peerState = '未连接';
+      }));
+    });
+
+    peer.on('connectFailed', () => {
+      message.error('连接失败');
+      this.setState({
+        peerState: '连接失败',
+      });
+    });
+
     peer.connectPeer(this.state.targetId);
     peer.on('data', this.onRecvData);
   }
