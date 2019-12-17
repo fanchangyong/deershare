@@ -12,8 +12,6 @@ import {
 import styles from './NavBar.cm.styl';
 
 function NavBar(props) {
-  console.log('thisprops: ', props);
-
   const pathname = props.location.pathname;
 
   return (

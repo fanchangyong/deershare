@@ -9,6 +9,7 @@ import {
 
 import HomePage from '../pages/HomePage';
 
+import './App.css';
 import './App.cm.styl';
 
 class App extends React.Component {

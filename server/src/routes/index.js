@@ -3,7 +3,7 @@ import { hello } from '../controllers/hello';
 var express = require('express');
 var router = express.Router();
 
-const clientRoutes = ['/', '/r/*'];
+const clientRoutes = ['/', '/send', '/recv', '/r/*'];
 
 /* GET home page. */
 clientRoutes.forEach(r => {

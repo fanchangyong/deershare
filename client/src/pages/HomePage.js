@@ -2,15 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {
+  Switch,
   Route,
 } from 'react-router-dom';
 import produce from 'immer';
-import { Input, Button, Upload } from 'antd';
 import PropTypes from 'prop-types';
 import NavBar from '../components/NavBar';
 import { prepareUpload } from '../actions/file';
-import SendFileModal from '../components/SendFileModal';
-import RecvFileModal from '../components/RecvFileModal';
 
 import styles from './HomePage.cm.styl';
 
@@ -49,6 +47,11 @@ class HomePage extends React.Component {
     return (
       <div className={styles.content}>
         <NavBar />
+        <Switch>
+          <Route path="/">
+
+          </Route>
+        </Switch>
       </div>
     );
   }

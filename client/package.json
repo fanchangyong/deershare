@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "antd": "^3.26.0",
     "axios": "^0.19.0",
     "babel-plugin-import": "^1.13.0",
     "classnames": "^2.2.6",
@@ -48,16 +47,6 @@
   "babel": {
     "presets": [
       "react-app"
-    ],
-    "plugins": [
-      [
-        "import",
-        {
-          "libraryName": "antd",
-          "libraryDirectory": "es",
-          "style": "css"
-        }
-      ]
     ]
   },
   "browserslist": {
