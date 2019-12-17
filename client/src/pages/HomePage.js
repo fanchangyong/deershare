@@ -7,6 +7,7 @@ import {
 import produce from 'immer';
 import { Input, Button, Upload } from 'antd';
 import PropTypes from 'prop-types';
+import NavBar from '../components/NavBar';
 import { prepareUpload } from '../actions/file';
 import SendFileModal from '../components/SendFileModal';
 import RecvFileModal from '../components/RecvFileModal';
@@ -47,39 +48,7 @@ class HomePage extends React.Component {
   render() {
     return (
       <div className={styles.content}>
-        <div className={styles.left}>
-          <h1 className={styles.title}>
-            我要收文件
-          </h1>
-          <Input placeholder="请输入取件码" className={styles.input} onChange={this.onChangeDownloadCode} />
-          <Button type="primary" onClick={this.onClickPrepareDownload}>开始接收</Button>
-        </div>
-        <div className={styles.right}>
-          <h1 className={styles.title}>
-            我要发文件
-          </h1>
-          <Upload
-            multiple
-            onChange={this.onChangeFile}
-            showUploadList={null}
-            beforeUpload={() => false}
-          >
-            <Button type="primary">添加文件</Button>
-          </Upload>
-        </div>
-        <SendFileModal
-          isOpen={this.state.showSendFileModal}
-          downloadCode={this.props.downloadCode}
-          initFileList={this.state.fileList}
-          prepareUpload={this.props.prepareUpload}
-          onCancel={this.onHideSendFileModal}
-        />
-        <Route path="/r/:downloadCode">
-          <RecvFileModal
-            isOpen={true}
-            onCancel={this.onHideRecvFileModal}
-          />
-        </Route>
+        <NavBar />
       </div>
     );
   }
