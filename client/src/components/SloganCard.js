@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Icon from './common/Icon';
 import styles from './SloganCard.cm.styl';
 
 function SloganCard({ title, desc, icon }) {
@@ -22,7 +21,7 @@ SloganCard.defaultProps = {};
 SloganCard.propTypes = {
   title: PropTypes.string,
   desc: PropTypes.string,
-  iconName: PropTypes.string,
+  icon: PropTypes.element,
 };
 
 export default SloganCard;
