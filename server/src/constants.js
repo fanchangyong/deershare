@@ -1,2 +1,2 @@
 export const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
-export const ICONFONT_URL = '//at.alicdn.com/t/font_1569256_ivr3st27fja.css';
+export const ICONFONT_URL = '//at.alicdn.com/t/font_1569256_uygtbegcep.css';

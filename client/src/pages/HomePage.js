@@ -10,6 +10,7 @@ import produce from 'immer';
 import PropTypes from 'prop-types';
 import NavBar from '../components/NavBar';
 import SendFilePanel from '../components/SendFilePanel';
+import RecvFilePanel from '../components/RecvFilePanel';
 import Icon from '../components/common/Icon';
 import SloganCard from '../components/SloganCard';
 import { prepareUpload } from '../actions/file';
@@ -55,7 +56,14 @@ class HomePage extends React.Component {
           <Redirect to="/send" />
         </Route>
         <div className={styles.content}>
-          <SendFilePanel />
+          <Switch>
+            <Route path="/send">
+              <SendFilePanel />
+            </Route>
+            <Route path="/recv">
+              <RecvFilePanel />
+            </Route>
+          </Switch>
           <div className={styles.cardsArea}>
             <div className={styles.cardRow}>
               <SloganCard
