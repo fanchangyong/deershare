@@ -3,7 +3,7 @@ import { ICONFONT_URL } from '../constants';
 var express = require('express');
 var router = express.Router();
 
-const clientRoutes = ['/', '/send', '/recv', '/r/*'];
+const clientRoutes = ['/', '/send', '/recv', '/contact', '/r/*'];
 
 /* GET home page. */
 clientRoutes.forEach(r => {

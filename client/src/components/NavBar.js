@@ -20,7 +20,7 @@ function NavBar(props) {
         <img src="/images/logo.png" alt="logo" className={styles.logo} />
       </a>
       <div className={styles.slogan}>
-        简单安全高效的P2P文件传输工具
+        简单安全高效的P2P文件传输服务
       </div>
       <div className={styles.menus}>
         <Link to="/send">
