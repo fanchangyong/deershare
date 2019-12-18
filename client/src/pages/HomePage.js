@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {
   Switch,
+  Redirect,
   Route,
 } from 'react-router-dom';
 import produce from 'immer';
 import PropTypes from 'prop-types';
 import NavBar from '../components/NavBar';
+import SendFilePanel from '../components/SendFilePanel';
 import { prepareUpload } from '../actions/file';
 
 import styles from './HomePage.cm.styl';
@@ -45,13 +47,14 @@ class HomePage extends React.Component {
 
   render() {
     return (
-      <div className={styles.content}>
+      <div className={styles.container}>
         <NavBar />
-        <Switch>
-          <Route path="/">
-
-          </Route>
-        </Switch>
+        <Route exact path="/">
+          <Redirect to="/send" />
+        </Route>
+        <div className={styles.content}>
+          <SendFilePanel />
+        </div>
       </div>
     );
   }
