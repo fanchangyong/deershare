@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import NavBar from '../components/NavBar';
 import SendFilePanel from '../components/SendFilePanel';
 import RecvFilePanel from '../components/RecvFilePanel';
+import ContactPanel from '../components/ContactPanel';
 import Icon from '../components/common/Icon';
 import SloganCard from '../components/SloganCard';
 import { prepareUpload } from '../actions/file';
@@ -62,6 +63,9 @@ class HomePage extends React.Component {
             </Route>
             <Route path="/recv">
               <RecvFilePanel />
+            </Route>
+            <Route path="/contact">
+              <ContactPanel />
             </Route>
           </Switch>
           <div className={styles.cardsArea}>
