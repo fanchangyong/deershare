@@ -181,6 +181,43 @@ class SendFilePanel extends Component {
     );
   }
 
+  renderStep3() {
+    const {
+      fileList,
+    } = this.state;
+
+    let totalSize = '0MB';
+
+    return (
+      <>
+        <div className={styles.sendingBox}>
+          {fileList.map(f => {
+            return (
+              <div key={f.uid} className={styles.sendingFileRow}>
+                <Icon name="file" className={styles.fileIcon} />
+                <div className={styles.fileInfo}>
+                  <div className={styles.fileName}>
+                    {f.name}
+                  </div>
+                  <div className={styles.fileSize}>
+                    {f.size}
+                  </div>
+                </div>
+                <div className={styles.sendPct}>80%</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className={styles.sendingSummary}>
+          正在发送{fileList.length}个文件，共{totalSize}
+        </div>
+        <Button type="primary" className={styles.btnSending} disabled>
+          正在发送...（3.5MB/s）
+        </Button>
+      </>
+    );
+  }
+
   render() {
     const {
       curStep,
@@ -209,6 +246,7 @@ class SendFilePanel extends Component {
         </Steps>
         {curStep === 1 && this.renderStep1()}
         {curStep === 2 && this.renderStep2()}
+        {curStep === 3 && this.renderStep3()}
         <input type="file" hidden ref={this.inputRef} onChange={this.onChangeFile} multiple />
       </div>
     );
