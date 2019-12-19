@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Link,
-} from 'react-router-dom';
 import Icon from './common/Icon';
 import Button from './common/Button';
 import Input from './common/Input';

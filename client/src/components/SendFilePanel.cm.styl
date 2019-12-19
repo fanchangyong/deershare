@@ -1,6 +1,6 @@
 .base
-  width 480px
-  padding 20px 20px
+  width 380px
+  padding 20px 25px 10px
   background white
   box-shadow 0px 2px 4px 0px rgba(197, 197, 197, 0.5)
 
@@ -10,11 +10,18 @@
   color #757575
 
 .upload-area
-  height 260px
-  border 1px dotted #D1D1D1
-  padding-top 50px
-  margin 20px auto
+  height 300px
+  padding 0px 8px
+  border 2px dashed #D1D1D1
+  background #fafafa
+  margin 8px auto
   text-align center
+
+.recv-guide
+  margin-top 20px
+
+.icon-plus-wrapper
+  margin-top 60px
 
 .icon-plus
   font-size 42px
@@ -33,3 +40,57 @@
   color #40AF9C
   &:hover
     color lighten(#40AF9C, 30%)
+
+.file-row
+  position relative
+  text-align left
+  padding-left 8px
+  height 50px
+  line-height @height
+  vertical-align middle
+  background white
+  border-radius 2px
+  margin 10px auto
+
+.file-icon
+  font-size 28px
+  color #8e8e8e
+
+.file-info
+  display inline-block
+
+.file-name
+  font-size 16px
+  line-height 1
+  max-width 12em
+  overflow hidden
+  text-overflow ellipsis
+  white-space nowrap
+
+.file-size
+  font-size 12px
+  line-height 1
+  color #adadad
+
+.close-icon
+  position absolute
+  right 12px
+  cursor pointer
+  color #8e8e8e
+
+.upload-more
+  display flex
+  justify-content space-between
+  align-items center
+
+.add-more
+  cursor pointer
+  color #40af9c
+
+.file-summary
+  text-align right
+  color #adadad
+
+.btn-select-file-done
+  width 100%
+  margin-top 20px
