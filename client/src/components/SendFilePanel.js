@@ -16,7 +16,7 @@ class SendFilePanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      curStep: 2,
+      curStep: 1,
       fileList: [],
     };
     this.inputRef = React.createRef();
