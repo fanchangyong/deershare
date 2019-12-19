@@ -16,7 +16,7 @@ class SendFilePanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      curStep: 1,
+      curStep: 2,
       fileList: [],
     };
     this.inputRef = React.createRef();
@@ -125,6 +125,53 @@ class SendFilePanel extends Component {
     }
   }
 
+  renderStep2() {
+    return (
+      <>
+        <div className={styles.selectSendMethod}>
+          请选择发送方式：
+        </div>
+        <div className={styles.sendMethod1}>
+          1. 通过链接发送（对方打开链接即可下载文件）
+        </div>
+        <div className={styles.downloadLinkContainer}>
+          <span className={styles.downloadLink}>
+            https://deershare.com/s/786699
+          </span>
+          <span className={styles.btnCopy}>
+            复制
+          </span>
+        </div>
+        <div>
+          2. 通过6位数取件码（对方在小鹿快传网站输入即可下载文件）
+        </div>
+        <div className={styles.downloadCodeContainer}>
+          <span className={styles.downloadCode}>
+            786699
+          </span>
+          <span className={styles.btnCopy}>
+            复制
+          </span>
+        </div>
+        <div>
+          3. 扫描下方二维码：
+        </div>
+        <div className={styles.qrcodeContainer}>
+          <img src="/images/qrcode_wechat.jpg" alt="qrcode" className={styles.recvQrcode}/>
+        </div>
+
+        <div className={styles.connectTips}>
+          温馨提示：<br />
+          以上取件码在10分钟内有效，请尽快发送给对方 <br />
+          对方输入取件码并确认之后会自动开始发送
+        </div>
+        <Button type="primary" className={styles.btnWaitConnect} disabled>
+          等待连接...
+        </Button>
+      </>
+    );
+  }
+
   render() {
     const {
       curStep,
@@ -145,6 +192,7 @@ class SendFilePanel extends Component {
           <Step index={3} title="发送" active={curStep === 3} />
         </Steps>
         {curStep === 1 && this.renderStep1()}
+        {curStep === 2 && this.renderStep2()}
         <input type="file" hidden ref={this.inputRef} onChange={this.onChangeFile} multiple />
       </div>
     );
