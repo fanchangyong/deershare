@@ -24,6 +24,7 @@ class SendFilePanel extends Component {
     this.onChangeFile = this.onChangeFile.bind(this);
     this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onClickSelectDone = this.onClickSelectDone.bind(this);
+    this.onClickBack = this.onClickBack.bind(this);
   }
 
   onClickUpload() {
@@ -33,6 +34,14 @@ class SendFilePanel extends Component {
   onClickSelectDone() {
     this.setState({
       curStep: 2,
+    });
+  }
+
+  onClickBack() {
+    this.setState(state => {
+      return {
+        curStep: state.curStep - 1,
+      };
     });
   }
 
@@ -179,8 +188,15 @@ class SendFilePanel extends Component {
 
     return (
       <div className={styles.base}>
-        <div className={styles.title}>
-          发送文件
+        <div className={styles.titleRow}>
+          {curStep === 2 && (
+            <div className={styles.back} onClick={this.onClickBack}>
+              返回
+            </div>
+          )}
+          <div className={styles.title}>
+            发送文件
+          </div>
         </div>
         <Steps>
           <Step
