@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import uuidv4 from 'uuid/v4';
 import {
   Link,
@@ -147,9 +148,11 @@ class SendFilePanel extends Component {
           <span className={styles.downloadLink}>
             https://deershare.com/s/786699
           </span>
-          <span className={styles.btnCopy}>
-            复制
-          </span>
+          <CopyToClipboard text="https://deershare.com/s/786699">
+            <span className={styles.btnCopy}>
+              复制
+            </span>
+          </CopyToClipboard>
         </div>
         <div>
           2. 通过6位数取件码（对方在小鹿快传网站输入即可下载文件）
@@ -158,9 +161,11 @@ class SendFilePanel extends Component {
           <span className={styles.downloadCode}>
             786699
           </span>
-          <span className={styles.btnCopy}>
-            复制
-          </span>
+          <CopyToClipboard text="786699">
+            <span className={styles.btnCopy}>
+              复制
+            </span>
+          </CopyToClipboard>
         </div>
         <div>
           3. 扫描下方二维码：
