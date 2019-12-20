@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import uuidv4 from 'uuid/v4';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
 import styles from './Toast.cm.styl';
 
@@ -33,7 +33,7 @@ class Toast extends Component {
           toasts: nextToasts,
         };
       });
-    }, 1000);
+    }, 2000);
 
     this.setState(state => {
       return {
@@ -48,15 +48,23 @@ class Toast extends Component {
     } = this.state;
 
     return (
-      <ReactCSSTransitionGroup transitionName="toast-animation" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-        {toasts.map(t => {
-          return (
-            <div key={t.id} className={styles.toast}>
-              {t.title}
-            </div>
-          );
-        })}
-      </ReactCSSTransitionGroup>
+      <div className={styles.container}>
+        <TransitionGroup component={null}>
+          {toasts.map(t => {
+            return (
+              <CSSTransition
+                key={t.id}
+                classNames="toast-animation"
+                timeout={220}
+              >
+                <div key={t.id} className={styles.toast}>
+                  {t.title}
+                </div>
+              </CSSTransition>
+            );
+          })}
+        </TransitionGroup>
+      </div>
     );
   }
 }
