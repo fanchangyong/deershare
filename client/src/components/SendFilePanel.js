@@ -8,6 +8,7 @@ import {
 import Icon from './common/Icon';
 import Button from './common/Button';
 import Steps from './common/Steps';
+import Toast from './common/Toast';
 
 import styles from './SendFilePanel.cm.styl';
 
@@ -148,7 +149,7 @@ class SendFilePanel extends Component {
           <span className={styles.downloadLink}>
             https://deershare.com/s/786699
           </span>
-          <CopyToClipboard text="https://deershare.com/s/786699">
+          <CopyToClipboard text="https://deershare.com/s/786699" onCopy={() => Toast.success('复制成功')}>
             <span className={styles.btnCopy}>
               复制
             </span>

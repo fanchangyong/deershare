@@ -17,6 +17,7 @@
     "normalize.css": "^8.0.1",
     "qrcode.react": "^1.0.0",
     "react": "^16.12.0",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.12.0",
     "react-redux": "^7.1.3",
