@@ -16,12 +16,13 @@
 
 :global(.toast-animation-enter):global(.toast-animation-enter-active)
   transform translate3D(0, 0, 0)
-  transition height 120ms ease 100ms, transform 100ms cubic-bezier(0.2, 0, 0, 1)
+  transition transform 100ms cubic-bezier(0.2, 0, 0, 1)
 
 
 :global(.toast-animation-exit)
   transform scale(0.66)
   opacity 0
+  transition transform 100ms cubic-bezier(0.2, 0, 0, 1), opacity 220ms ease 0s
 
 :global(.toast-animation-exit):global(.toast-animation-exit-active)
   transform scale(0.66)
