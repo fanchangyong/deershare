@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import classnames from 'classnames';
 import uuidv4 from 'uuid/v4';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
@@ -48,21 +49,32 @@ class Toast extends Component {
       toasts = [],
     } = this.state;
 
+    const iconNames = {
+      [TOAST_TYPES.SUCCESS]: 'check',
+      [TOAST_TYPES.ERROR]: 'close',
+    };
+
+    const classNamesOfToastType = {
+      [TOAST_TYPES.SUCCESS]: styles.success,
+      [TOAST_TYPES.ERROR]: styles.error,
+    };
+
     return (
       <div className={styles.container}>
         <TransitionGroup component={null}>
           {toasts.map(t => {
+            const toastType = t.type;
             return (
               <CSSTransition
                 key={t.id}
                 classNames="toast-animation"
                 timeout={220}
               >
-                <div className={styles.toast}>
-                  <div className={styles.iconWrapper}>
-                    <Icon name="check" />
+                <div className={classnames(styles.toast, classNamesOfToastType[toastType])}>
+                  <div className={classnames(styles.iconWrapper, classNamesOfToastType[toastType])}>
+                    <Icon name={iconNames[toastType]} />
                   </div>
-                  <div key={t.id} className={styles.content}>
+                  <div key={t.id} className={classnames(styles.content, classNamesOfToastType[toastType])}>
                     {t.title}
                   </div>
                 </div>
