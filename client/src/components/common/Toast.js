@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import uuidv4 from 'uuid/v4';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
+import Icon from './Icon';
 import styles from './Toast.cm.styl';
 
 const TOAST_TYPES = {
@@ -57,8 +58,13 @@ class Toast extends Component {
                 classNames="toast-animation"
                 timeout={220}
               >
-                <div key={t.id} className={styles.toast}>
-                  {t.title}
+                <div className={styles.toast}>
+                  <div className={styles.iconWrapper}>
+                    <Icon name="check" />
+                  </div>
+                  <div key={t.id} className={styles.content}>
+                    {t.title}
+                  </div>
                 </div>
               </CSSTransition>
             );

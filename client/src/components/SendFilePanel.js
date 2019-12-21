@@ -162,7 +162,7 @@ class SendFilePanel extends Component {
           <span className={styles.downloadCode}>
             786699
           </span>
-          <CopyToClipboard text="786699">
+          <CopyToClipboard text="786699" onCopy={() => Toast.success('复制成功')}>
             <span className={styles.btnCopy}>
               复制
             </span>

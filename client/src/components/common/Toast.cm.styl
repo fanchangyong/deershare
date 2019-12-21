@@ -6,10 +6,27 @@
   z-index 1000
 
 .toast
-  background green
-  padding 10px 20px
+  min-height 38px
+  width 260px
   margin-top 10px
+  display flex
+  background #E3FCEF
+  color #006644
+  border-radius 4px
+
+.icon-wrapper
+  text-align center
+  padding-top 8px
+  width 26px
+  flex-shrink 0
+  background #37B47E
   color white
+  border-top-left-radius 4px
+  border-bottom-left-radius 4px
+
+.content
+  flex 1
+  padding 8px 12px
 
 :global(.toast-animation-enter)
   transform translate3D(0, -120%, 0)

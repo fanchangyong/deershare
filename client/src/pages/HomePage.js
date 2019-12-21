@@ -89,7 +89,7 @@ class HomePage extends React.Component {
               />
               <SloganCard
                 title="专业"
-                icon={<Icon name="check" className={styles.iconCheck}/>}
+                icon={<Icon name="check-fill" className={styles.iconCheck}/>}
                 desc="不限制文件类型，任何文件都可随心传输。所有文件都是原文件传输，传视频图片不损失画质。"
               />
             </div>
