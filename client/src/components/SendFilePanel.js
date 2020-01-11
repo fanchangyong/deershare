@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import prettyBytes from 'pretty-bytes';
 import uuidv4 from 'uuid/v4';
 import {
   Link,
 } from 'react-router-dom';
+import QRCode from 'qrcode.react';
+
 import Icon from './common/Icon';
 import Button from './common/Button';
 import Steps from './common/Steps';
 import Toast from './common/Toast';
-import QRCode from 'qrcode.react';
 
 import styles from './SendFilePanel.cm.styl';
 
@@ -77,7 +79,9 @@ class SendFilePanel extends Component {
       fileList,
     } = this.state;
 
-    let totalSize = '1024MB';
+    const totalBytes = fileList.reduce((sum, cur) => {
+      return sum + cur.size;
+    }, 0);
 
     if (fileList.length === 0) {
       return (
@@ -128,7 +132,7 @@ class SendFilePanel extends Component {
             <div className={styles.addMore} onClick={this.onClickUpload}>
               <span>添加文件</span>
             </div>
-            <div className={styles.fileSummary}>{fileList.length}个文件，共{totalSize}</div>
+            <div className={styles.fileSummary}>{fileList.length} 个文件，共 {prettyBytes(totalBytes)}</div>
           </div>
           <Button type="primary" className={styles.btnSelectFileDone} onClick={this.onClickSelectDone}>
             选好了
@@ -200,7 +204,9 @@ class SendFilePanel extends Component {
       fileList,
     } = this.state;
 
-    let totalSize = '0MB';
+    const totalBytes = fileList.reduce((sum, cur) => {
+      return sum + cur.size;
+    }, 0);
 
     return (
       <>
@@ -223,7 +229,7 @@ class SendFilePanel extends Component {
           })}
         </div>
         <div className={styles.sendingSummary}>
-          正在发送{fileList.length}个文件，共{totalSize}
+          正在发送{fileList.length}个文件，共{prettyBytes(totalBytes)}
         </div>
         <Button type="primary" className={styles.btnSending} disabled>
           正在发送...（3.5MB/s）
