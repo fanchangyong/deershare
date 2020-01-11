@@ -10,6 +10,8 @@
   width 260px
   margin-top 10px
   display flex
+  box-shadow rgba(0, 0, 0, 0.176) 0px 3px 8px
+  border-radius 4px
 
 .icon-wrapper
   text-align center
@@ -23,6 +25,8 @@
     background #37B47E
   &.error
     background #da4a4a
+  &.info
+    background #2684FF
 
 .content
   flex 1
@@ -35,6 +39,9 @@
   &.error
     color #ad0101
     background #efb7b7
+  &.info
+    color #2684FF
+    background white
 
 :global(.toast-animation-enter)
   transform translate3D(0, -120%, 0)

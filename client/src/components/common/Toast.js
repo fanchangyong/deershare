@@ -10,6 +10,7 @@ import styles from './Toast.cm.styl';
 const TOAST_TYPES = {
   SUCCESS: 1,
   ERROR: 2,
+  INFO: 3,
 };
 
 class Toast extends Component {
@@ -52,11 +53,13 @@ class Toast extends Component {
     const iconNames = {
       [TOAST_TYPES.SUCCESS]: 'check',
       [TOAST_TYPES.ERROR]: 'close',
+      [TOAST_TYPES.INFO]: 'info',
     };
 
     const classNamesOfToastType = {
       [TOAST_TYPES.SUCCESS]: styles.success,
       [TOAST_TYPES.ERROR]: styles.error,
+      [TOAST_TYPES.INFO]: styles.info,
     };
 
     return (
@@ -98,6 +101,10 @@ Toast.success = (title) => {
 
 Toast.error = (title) => {
   toastInstance.current.add(TOAST_TYPES.ERROR, title);
+};
+
+Toast.info = (title) => {
+  toastInstance.current.add(TOAST_TYPES.INFO, title);
 };
 
 Toast.propTypes = {

@@ -65,7 +65,7 @@ class SendFilePanel extends Component {
     });
 
     if (filteredFiles.length !== files.length) {
-      Toast.success('发现疑似相同的文件，已过滤');
+      Toast.info('发现疑似相同的文件，已自动过滤');
     }
 
     filteredFiles.forEach(f => {
