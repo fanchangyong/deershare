@@ -53,13 +53,28 @@ class SendFilePanel extends Component {
 
   onChangeFile(event) {
     const files = Array.from(event.target.files);
-    files.forEach(f => {
+
+    const filteredFiles = files.filter(f => {
+      const existed = this.state.fileList.find(f1 => {
+        if (f1.name === f.name && f1.size === f.size && f1.lastModified === f.lastModified && f1.type === f.type) {
+          return true;
+        }
+        return false;
+      });
+      return !existed;
+    });
+
+    if (filteredFiles.length !== files.length) {
+      Toast.success('发现疑似相同的文件，已过滤');
+    }
+
+    filteredFiles.forEach(f => {
       f.uid = uuidv4();
     });
 
     this.setState(state => {
       return {
-        fileList: state.fileList.concat(files),
+        fileList: state.fileList.concat(filteredFiles),
       };
     });
   }
