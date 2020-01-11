@@ -13,7 +13,7 @@ import RecvFilePanel from '../components/RecvFilePanel';
 import ContactPanel from '../components/ContactPanel';
 import Icon from '../components/common/Icon';
 import SloganCard from '../components/SloganCard';
-import { prepareUpload } from '../actions/file';
+import { prepareUpload, prepareDownload } from '../actions/file';
 
 import styles from './HomePage.cm.styl';
 
@@ -40,7 +40,7 @@ class HomePage extends React.Component {
               />
             </Route>
             <Route path="/recv">
-              <RecvFilePanel />
+              <RecvFilePanel prepareDownload={this.props.prepareDownload} />
             </Route>
             <Route path="/contact">
               <ContactPanel />
@@ -82,6 +82,7 @@ HomePage.defaultProps = {};
 
 HomePage.propTypes = {
   prepareUpload: PropTypes.func,
+  prepareDownload: PropTypes.func,
   downloadCode: PropTypes.string,
   history: PropTypes.object,
 };
@@ -94,4 +95,5 @@ function mapStateToProps(state) {
 
 export default withRouter(connect(mapStateToProps, {
   prepareUpload,
+  prepareDownload,
 })(HomePage));
