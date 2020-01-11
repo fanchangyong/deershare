@@ -7,7 +7,7 @@ function SloganCard({ title, desc, icon }) {
     <div className={styles.card}>
       <div className={styles.title}>
         {icon}
-        {title}
+        <span className={styles.titleText}>{title}</span>
       </div>
       <div className={styles.desc}>
         {desc}
