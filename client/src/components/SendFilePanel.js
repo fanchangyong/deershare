@@ -9,6 +9,7 @@ import Icon from './common/Icon';
 import Button from './common/Button';
 import Steps from './common/Steps';
 import Toast from './common/Toast';
+import QRCode from 'qrcode.react';
 
 import styles from './SendFilePanel.cm.styl';
 
@@ -37,6 +38,7 @@ class SendFilePanel extends Component {
     this.setState({
       curStep: 2,
     });
+    this.props.prepareUpload(this.state.fileList);
   }
 
   onClickBack() {
@@ -137,6 +139,12 @@ class SendFilePanel extends Component {
   }
 
   renderStep2() {
+    const {
+      downloadCode,
+    } = this.props;
+
+    const downloadLink = `http://${document.location.host}/r/${downloadCode}`;
+
     return (
       <>
         <div className={styles.selectSendMethod}>
@@ -147,9 +155,9 @@ class SendFilePanel extends Component {
         </div>
         <div className={styles.downloadLinkContainer}>
           <span className={styles.downloadLink}>
-            https://deershare.com/s/786699
+            {downloadLink}
           </span>
-          <CopyToClipboard text="https://deershare.com/s/786699" onCopy={() => Toast.success('复制成功')}>
+          <CopyToClipboard text={downloadLink} onCopy={() => Toast.success('复制成功')}>
             <span className={styles.btnCopy}>
               复制
             </span>
@@ -160,9 +168,9 @@ class SendFilePanel extends Component {
         </div>
         <div className={styles.downloadCodeContainer}>
           <span className={styles.downloadCode}>
-            786699
+            {downloadCode}
           </span>
-          <CopyToClipboard text="786699" onCopy={() => Toast.success('复制成功')}>
+          <CopyToClipboard text={downloadCode} onCopy={() => Toast.success('复制成功')}>
             <span className={styles.btnCopy}>
               复制
             </span>
@@ -172,7 +180,7 @@ class SendFilePanel extends Component {
           3. 扫描下方二维码：
         </div>
         <div className={styles.qrcodeContainer}>
-          <img src="/images/qrcode_wechat.jpg" alt="qrcode" className={styles.recvQrcode}/>
+          <QRCode value={downloadLink} />
         </div>
 
         <div className={styles.connectTips}>
@@ -258,5 +266,10 @@ class SendFilePanel extends Component {
     );
   }
 }
+
+SendFilePanel.propTypes = {
+  prepareUpload: PropTypes.func,
+  downloadCode: PropTypes.string,
+};
 
 export default SendFilePanel;

@@ -1,11 +1,10 @@
 import ws from '../ws';
 
-export function prepareUpload(message, files) {
+export function prepareUpload(files) {
   return () => {
     ws.sendJSON({
       type: 'c2s_prepare_upload',
       payload: {
-        message,
         files,
       },
     });

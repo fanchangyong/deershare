@@ -24,5 +24,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.0.1"
+  },
+  "dependencies": {
+    "qrcode.react": "^1.0.0"
   }
 }

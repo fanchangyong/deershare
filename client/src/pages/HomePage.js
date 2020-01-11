@@ -59,7 +59,10 @@ class HomePage extends React.Component {
         <div className={styles.content}>
           <Switch>
             <Route path="/send">
-              <SendFilePanel />
+              <SendFilePanel
+                prepareUpload={this.props.prepareUpload}
+                downloadCode={this.props.downloadCode}
+              />
             </Route>
             <Route path="/recv">
               <RecvFilePanel />
