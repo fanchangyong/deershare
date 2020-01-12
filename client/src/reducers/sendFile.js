@@ -2,13 +2,13 @@ import produce from 'immer';
 import * as types from '../common/actionTypes';
 
 const initialState = {
-  downloadCode: '',
+  recvCode: '',
 };
 
 const fileReducer = produce((draft = initialState, action) => {
   switch (action.type) {
     case types.UPDATE_UPLOAD_INFO: {
-      draft.downloadCode = action.payload.downloadCode;
+      draft.recvCode = action.payload.recvCode;
       break;
     }
   }

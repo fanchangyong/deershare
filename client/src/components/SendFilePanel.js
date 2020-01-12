@@ -159,10 +159,10 @@ class SendFilePanel extends Component {
 
   renderStep2() {
     const {
-      downloadCode,
+      recvCode,
     } = this.props;
 
-    const downloadLink = `http://${document.location.host}/r/${downloadCode}`;
+    const recvLink = `http://${document.location.host}/r/${recvCode}`;
 
     return (
       <>
@@ -172,11 +172,11 @@ class SendFilePanel extends Component {
         <div className={styles.sendMethod1}>
           1. 通过链接发送（对方打开链接即可下载文件）
         </div>
-        <div className={styles.downloadLinkContainer}>
-          <span className={styles.downloadLink}>
-            {downloadLink}
+        <div className={styles.recvLinkContainer}>
+          <span className={styles.recvLink}>
+            {recvLink}
           </span>
-          <CopyToClipboard text={downloadLink} onCopy={() => Toast.success('复制成功')}>
+          <CopyToClipboard text={recvLink} onCopy={() => Toast.success('复制成功')}>
             <span className={styles.btnCopy}>
               复制
             </span>
@@ -185,11 +185,11 @@ class SendFilePanel extends Component {
         <div>
           2. 通过6位数取件码（对方在小鹿快传网站输入即可下载文件）
         </div>
-        <div className={styles.downloadCodeContainer}>
-          <span className={styles.downloadCode}>
-            {downloadCode}
+        <div className={styles.recvCodeContainer}>
+          <span className={styles.recvCode}>
+            {recvCode}
           </span>
-          <CopyToClipboard text={downloadCode} onCopy={() => Toast.success('复制成功')}>
+          <CopyToClipboard text={recvCode} onCopy={() => Toast.success('复制成功')}>
             <span className={styles.btnCopy}>
               复制
             </span>
@@ -199,7 +199,7 @@ class SendFilePanel extends Component {
           3. 扫描下方二维码：
         </div>
         <div className={styles.qrcodeContainer}>
-          <QRCode value={downloadLink} />
+          <QRCode value={recvLink} />
         </div>
 
         <div className={styles.connectTips}>
@@ -290,7 +290,7 @@ class SendFilePanel extends Component {
 
 SendFilePanel.propTypes = {
   prepareUpload: PropTypes.func,
-  downloadCode: PropTypes.string,
+  recvCode: PropTypes.string,
 };
 
 export default SendFilePanel;

@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import file from './file';
+import sendFile from './sendFile';
+import recvFile from './recvFile';
 
 const rootReducer = combineReducers({
-  file,
+  sendFile,
+  recvFile,
 });
 
 export default rootReducer;

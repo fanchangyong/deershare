@@ -10,43 +10,60 @@ class RecvFilePanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      downloadCode: '',
+      curStep: 1,
+      recvCode: '',
     };
-    this.onChangeDownloadCode = this.onChangeDownloadCode.bind(this);
-    this.onPrepareDownload = this.onPrepareDownload.bind(this);
+    this.onChangeRecvCode = this.onChangeRecvCode.bind(this);
+    this.onPrepareRecv = this.onPrepareRecv.bind(this);
   }
 
-  onChangeDownloadCode(value) {
-    this.setState({ downloadCode: value });
+  onChangeRecvCode(value) {
+    this.setState({ recvCode: value });
   }
 
-  onPrepareDownload() {
-    this.props.prepareDownload(this.state.downloadCode);
+  onPrepareRecv() {
+    this.props.prepareRecv(this.state.recvCode);
   }
 
-  render() {
+  renderStep1() {
     const {
-      downloadCode,
+      recvCode,
     } = this.state;
 
     return (
-      <div className={styles.base}>
+      <>
         <div className={styles.title}>
           接收文件
         </div>
-        <Input placeholder="请输入6位收件码" inputClassName={styles.input} value={downloadCode} onChange={this.onChangeDownloadCode} />
-        <Button type="primary" className={styles.recvBtn} onClick={this.onPrepareDownload}>接收文件</Button>
+        <Input placeholder="请输入6位收件码" inputClassName={styles.input} value={recvCode} onChange={this.onChangeRecvCode} />
+        <Button type="primary" className={styles.recvBtn} onClick={this.onPrepareRecv}>接收文件</Button>
         <div className={styles.tip}>
           <Icon name="info" />
           如何获取收件码？
         </div>
+      </>
+    );
+  }
+
+  renderStep2() {
+
+  }
+
+  render() {
+    const {
+      curStep,
+    } = this.state;
+
+    return (
+      <div className={styles.base}>
+        {curStep === 1 && this.renderStep1()}
       </div>
     );
   }
 }
 
 RecvFilePanel.propTypes = {
-  prepareDownload: PropTypes.func,
+  prepareRecv: PropTypes.func,
 };
 
 export default RecvFilePanel;

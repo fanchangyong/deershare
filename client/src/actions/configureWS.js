@@ -7,5 +7,10 @@ export default function configureWS(dispatch) {
     dispatch({ type: types.UPDATE_UPLOAD_INFO, payload });
   }
 
+  function s2cPrepareRecv(payload) {
+    dispatch({ type: types.UPDATE_RECV_INFO, payload });
+  }
+
   ws.registerMessageHandler('s2c_prepare_upload', s2cPrepareUpload);
+  ws.registerMessageHandler('s2c_prepare_recv', s2cPrepareRecv);
 }

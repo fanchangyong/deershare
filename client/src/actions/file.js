@@ -11,12 +11,12 @@ export function prepareUpload(files) {
   };
 }
 
-export function prepareDownload(downloadCode) {
+export function prepareRecv(recvCode) {
   return () => {
     ws.sendJSON({
-      type: 'c2s_prepare_download',
+      type: 'c2s_prepare_recv',
       payload: {
-        downloadCode,
+        recvCode,
       },
     });
   };

@@ -29,8 +29,8 @@ class Client {
       message,
     } = payload;
 
-    const downloadCode = getRandomString(8);
-    uploads.set(downloadCode, {
+    const recvCode = getRandomString(8);
+    uploads.set(recvCode, {
       clientId: this.id,
       message,
       files,
@@ -38,20 +38,20 @@ class Client {
     this.sendJSON({
       type: 's2c_prepare_upload',
       payload: {
-        downloadCode,
+        recvCode,
       },
     });
   }
 
-  prepareDownload(payload) {
+  prepareRecv(payload) {
     const {
-      downloadCode,
+      recvCode,
     } = payload;
 
-    const uploadInfo = uploads.get(downloadCode);
+    const uploadInfo = uploads.get(recvCode);
     if (uploadInfo) {
       this.sendJSON({
-        type: 's2c_prepare_download',
+        type: 's2c_prepare_recv',
         payload: {
           message: uploadInfo.message,
           files: uploadInfo.files,
@@ -62,7 +62,7 @@ class Client {
       this.sendJSON({
         type: 's2c_error',
         payload: {
-          message: 'downloadCode无效',
+          message: 'recvCode无效',
         },
       });
     }
@@ -80,8 +80,8 @@ class Client {
         break;
       }
 
-      case 'c2s_prepare_download': {
-        this.prepareDownload(payload);
+      case 'c2s_prepare_recv': {
+        this.prepareRecv(payload);
         break;
       }
     }
