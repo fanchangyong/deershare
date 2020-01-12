@@ -12,6 +12,7 @@ import FileBox from './FileBox';
 import {
   prepareRecv,
 } from '../actions/file';
+import Peer from '../Peer';
 
 import styles from './RecvFilePanel.cm.styl';
 
@@ -20,9 +21,12 @@ class RecvFilePanel extends Component {
     super(props);
     this.state = {
       recvCode: '',
+      peerConnected: false,
+      started: false, // 是否点击了开始下载
     };
     this.onChangeRecvCode = this.onChangeRecvCode.bind(this);
     this.onPrepareRecv = this.onPrepareRecv.bind(this);
+    this.onStartRecv = this.onStartRecv.bind(this);
   }
 
   componentDidMount() {
@@ -38,6 +42,36 @@ class RecvFilePanel extends Component {
 
   onPrepareRecv() {
     this.props.prepareRecv(this.state.recvCode);
+  }
+
+  onStartRecv() {
+    this.setState({
+      started: true,
+    });
+
+    const peer = new Peer();
+    peer.on('connecting', () => {
+    });
+
+    peer.on('connected', () => {
+      this.setState({
+        peerConnected: true,
+      });
+    });
+
+    peer.on('disconnected', () => {
+      this.setState({
+        peerConnected: false,
+      });
+    });
+
+    peer.on('connectFailed', () => {
+      this.setState({
+        peerConnected: false,
+      });
+    });
+
+    peer.connectPeer(this.props.targetId);
   }
 
   renderStep1() {
@@ -62,6 +96,11 @@ class RecvFilePanel extends Component {
       files,
     } = this.props;
 
+    const {
+      peerConnected,
+      started,
+    } = this.state;
+
     const totalBytes = files.reduce((sum, cur) => {
       return sum + cur.size;
     }, 0);
@@ -73,9 +112,27 @@ class RecvFilePanel extends Component {
         </div>
         <FileBox files={this.props.files} />
         <div className={styles.msg2}>
-          {files.length} 个文件，共 {prettyBytes(totalBytes)}
+          <div>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
+          {!!started && <div className={peerConnected ? styles.peerConnected : styles.peerNotConnected}>{peerConnected ? '已连接' : '未连接'}</div>}
         </div>
-        <Button type="primary" className={styles.recvBtn}>开始下载</Button>
+        {!started && (
+          <Button
+            type="primary"
+            className={styles.recvBtn}
+            onClick={this.onStartRecv}
+          >
+            开始下载
+          </Button>
+        )}
+        {!!started && (
+          <Button
+            type="primary"
+            className={styles.recvBtn}
+            disabled
+          >
+            正在接收...(3.5MB/s)
+          </Button>
+        )}
       </>
     );
   }
@@ -100,6 +157,7 @@ class RecvFilePanel extends Component {
 RecvFilePanel.propTypes = {
   prepareRecv: PropTypes.func,
   files: PropTypes.array,
+  targetId: PropTypes.string,
   match: PropTypes.object,
 };
 

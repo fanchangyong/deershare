@@ -4,7 +4,7 @@ import {
 
 const uploads = new Map();
 uploads.set('123', {
-  clientId: 1,
+  clientId: '1',
   files: [
     {
       uid: '111',

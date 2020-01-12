@@ -14,6 +14,7 @@ import Button from './common/Button';
 import Steps from './common/Steps';
 import Toast from './common/Toast';
 import FileBox from './FileBox';
+import Peer from '../peer';
 import { prepareSend } from '../actions/file';
 
 import styles from './SendFilePanel.cm.styl';
@@ -26,6 +27,7 @@ class SendFilePanel extends Component {
     this.state = {
       curStep: 1,
       files: [],
+      peerConnected: false,
     };
     this.inputRef = React.createRef();
     this.onClickUpload = this.onClickUpload.bind(this);
@@ -43,7 +45,47 @@ class SendFilePanel extends Component {
     this.setState({
       curStep: 2,
     });
-    this.props.prepareSend(this.state.files);
+    const files = this.state.files.map(f => {
+      return {
+        uid: f.uid,
+        name: f.name,
+        size: f.size,
+        type: f.type,
+      };
+    });
+    this.props.prepareSend(files);
+
+    const peer = new Peer();
+
+    peer.on('connecting', () => {
+      this.setState({
+        peerConnected: false,
+      });
+    });
+
+    peer.on('connected', () => {
+      this.setState({
+        curStep: 3,
+        peerConnected: true,
+      });
+    });
+
+    peer.on('connectFailed', () => {
+      this.setState({
+        peerConnected: false,
+      });
+      Toast.error('连接失败');
+    });
+
+    peer.on('disconnected', async() => {
+      this.setState({
+        peerConnected: false,
+      });
+      Toast.error('连接断开');
+    });
+
+    peer.on('channelOpen', () => {
+    });
   }
 
   onClickBack() {
@@ -154,7 +196,7 @@ class SendFilePanel extends Component {
       recvCode,
     } = this.props;
 
-    const recvLink = `http://${document.location.host}/r/${recvCode}`;
+    const recvLink = `http://${document.location.host}/recv/${recvCode}`;
 
     return (
       <>
@@ -209,6 +251,7 @@ class SendFilePanel extends Component {
   renderStep3() {
     const {
       files,
+      peerConnected,
     } = this.state;
 
     const totalBytes = files.reduce((sum, cur) => {
@@ -221,7 +264,8 @@ class SendFilePanel extends Component {
           <FileBox files={files} />
         </div>
         <div className={styles.sendingSummary}>
-          正在发送{files.length}个文件，共{prettyBytes(totalBytes)}
+          <div>{files.length}个文件，共{prettyBytes(totalBytes)}</div>
+          <div className={peerConnected ? styles.peerConnected : styles.peerNotConnected}>{peerConnected ? '已连接' : '未连接'}</div>
         </div>
         <Button type="primary" className={styles.btnSending} disabled>
           正在发送...（3.5MB/s）
