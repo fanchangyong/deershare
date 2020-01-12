@@ -62,7 +62,7 @@ class Client {
       this.sendJSON({
         type: 's2c_error',
         payload: {
-          message: 'recvCode无效',
+          message: '收件码无效',
         },
       });
     }
