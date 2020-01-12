@@ -40,7 +40,7 @@ class SendFilePanel extends Component {
     this.setState({
       curStep: 2,
     });
-    this.props.prepareUpload(this.state.fileList);
+    this.props.prepareSend(this.state.fileList);
   }
 
   onClickBack() {
@@ -289,7 +289,7 @@ class SendFilePanel extends Component {
 }
 
 SendFilePanel.propTypes = {
-  prepareUpload: PropTypes.func,
+  prepareSend: PropTypes.func,
   recvCode: PropTypes.string,
 };
 

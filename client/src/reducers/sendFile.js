@@ -7,7 +7,7 @@ const initialState = {
 
 const fileReducer = produce((draft = initialState, action) => {
   switch (action.type) {
-    case types.UPDATE_UPLOAD_INFO: {
+    case types.UPDATE_SEND_FILE_INFO: {
       draft.recvCode = action.payload.recvCode;
       break;
     }

@@ -23,7 +23,7 @@ class Client {
     });
   }
 
-  prepareUpload(payload) {
+  prepareSend(payload) {
     const {
       files,
       message,
@@ -36,7 +36,7 @@ class Client {
       files,
     });
     this.sendJSON({
-      type: 's2c_prepare_upload',
+      type: 's2c_prepare_send',
       payload: {
         recvCode,
       },
@@ -75,8 +75,8 @@ class Client {
         break;
       }
 
-      case 'c2s_prepare_upload': {
-        this.prepareUpload(payload);
+      case 'c2s_prepare_send': {
+        this.prepareSend(payload);
         break;
       }
 
