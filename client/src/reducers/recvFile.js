@@ -3,14 +3,15 @@ import * as types from '../common/actionTypes';
 
 const initialState = {
   targetId: '',
-  fileList: [],
+  files: [],
 };
 
 const fileReducer = produce((draft = initialState, action) => {
   switch (action.type) {
     case types.UPDATE_RECV_FILE_INFO: {
+      console.log('## update recv info: ', action.payload)
       draft.targetId = action.payload.clientId;
-      draft.fileList = action.payload.fileList;
+      draft.files = action.payload.files;
       break;
     }
   }

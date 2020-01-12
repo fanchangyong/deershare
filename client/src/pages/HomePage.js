@@ -1,19 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import {
   Switch,
   Redirect,
   Route,
 } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import NavBar from '../components/NavBar';
 import SendFilePanel from '../components/SendFilePanel';
 import RecvFilePanel from '../components/RecvFilePanel';
 import ContactPanel from '../components/ContactPanel';
 import Icon from '../components/common/Icon';
 import SloganCard from '../components/SloganCard';
-import { prepareUpload, prepareRecv } from '../actions/file';
 
 import styles from './HomePage.cm.styl';
 
@@ -34,13 +30,10 @@ class HomePage extends React.Component {
         <div className={styles.content}>
           <Switch>
             <Route path="/send">
-              <SendFilePanel
-                prepareUpload={this.props.prepareUpload}
-                recvCode={this.props.recvCode}
-              />
+              <SendFilePanel />
             </Route>
-            <Route path="/recv">
-              <RecvFilePanel prepareRecv={this.props.prepareRecv} />
+            <Route path="/recv/:recvCode?">
+              <RecvFilePanel />
             </Route>
             <Route path="/contact">
               <ContactPanel />
@@ -81,19 +74,6 @@ class HomePage extends React.Component {
 HomePage.defaultProps = {};
 
 HomePage.propTypes = {
-  prepareUpload: PropTypes.func,
-  prepareRecv: PropTypes.func,
-  recvCode: PropTypes.string,
-  history: PropTypes.object,
 };
 
-function mapStateToProps(state) {
-  return {
-    recvCode: state.sendFile.recvCode,
-  };
-}
-
-export default withRouter(connect(mapStateToProps, {
-  prepareUpload,
-  prepareRecv,
-})(HomePage));
+export default HomePage;

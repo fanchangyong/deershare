@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import prettyBytes from 'pretty-bytes';
@@ -12,6 +13,8 @@ import Icon from './common/Icon';
 import Button from './common/Button';
 import Steps from './common/Steps';
 import Toast from './common/Toast';
+import FileBox from './FileBox';
+import { prepareSend } from '../actions/file';
 
 import styles from './SendFilePanel.cm.styl';
 
@@ -22,7 +25,7 @@ class SendFilePanel extends Component {
     super(props);
     this.state = {
       curStep: 1,
-      fileList: [],
+      files: [],
     };
     this.inputRef = React.createRef();
     this.onClickUpload = this.onClickUpload.bind(this);
@@ -40,7 +43,7 @@ class SendFilePanel extends Component {
     this.setState({
       curStep: 2,
     });
-    this.props.prepareSend(this.state.fileList);
+    this.props.prepareSend(this.state.files);
   }
 
   onClickBack() {
@@ -55,7 +58,7 @@ class SendFilePanel extends Component {
     const files = Array.from(event.target.files);
 
     const filteredFiles = files.filter(f => {
-      const existed = this.state.fileList.find(f1 => {
+      const existed = this.state.files.find(f1 => {
         if (f1.name === f.name && f1.size === f.size && f1.lastModified === f.lastModified && f1.type === f.type) {
           return true;
         }
@@ -74,7 +77,7 @@ class SendFilePanel extends Component {
 
     this.setState(state => {
       return {
-        fileList: state.fileList.concat(filteredFiles),
+        files: state.files.concat(filteredFiles),
       };
     });
   }
@@ -83,7 +86,7 @@ class SendFilePanel extends Component {
     return () => {
       this.setState(state => {
         return {
-          fileList: state.fileList.filter(f => f.uid !== uid),
+          files: state.files.filter(f => f.uid !== uid),
         };
       });
     };
@@ -91,14 +94,14 @@ class SendFilePanel extends Component {
 
   renderStep1() {
     const {
-      fileList,
+      files,
     } = this.state;
 
-    const totalBytes = fileList.reduce((sum, cur) => {
+    const totalBytes = files.reduce((sum, cur) => {
       return sum + cur.size;
     }, 0);
 
-    if (fileList.length === 0) {
+    if (files.length === 0) {
       return (
         <>
           <div className={styles.uploadArea}>
@@ -126,28 +129,17 @@ class SendFilePanel extends Component {
       return (
         <>
           <div className={styles.uploadArea}>
-            {fileList.map(f => {
-              return (
-                <div key={f.uid} className={styles.fileRow}>
-                  <Icon name="file" className={styles.fileIcon} />
-                  <div className={styles.fileInfo}>
-                    <div className={styles.fileName}>
-                      {f.name}
-                    </div>
-                    <div className={styles.fileSize}>
-                      {f.size}
-                    </div>
-                  </div>
-                  <Icon name="close" onClick={this.onRemoveFile(f.uid)} className={styles.closeIcon} />
-                </div>
-              );
-            })}
+            <FileBox
+              files={files}
+              removable
+              onRemoveFile={this.onRemoveFile}
+            />
           </div>
           <div className={styles.uploadMore}>
             <div className={styles.addMore} onClick={this.onClickUpload}>
               <span>添加文件</span>
             </div>
-            <div className={styles.fileSummary}>{fileList.length} 个文件，共 {prettyBytes(totalBytes)}</div>
+            <div className={styles.fileSummary}>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
           </div>
           <Button type="primary" className={styles.btnSelectFileDone} onClick={this.onClickSelectDone}>
             选好了
@@ -216,35 +208,20 @@ class SendFilePanel extends Component {
 
   renderStep3() {
     const {
-      fileList,
+      files,
     } = this.state;
 
-    const totalBytes = fileList.reduce((sum, cur) => {
+    const totalBytes = files.reduce((sum, cur) => {
       return sum + cur.size;
     }, 0);
 
     return (
       <>
         <div className={styles.sendingBox}>
-          {fileList.map(f => {
-            return (
-              <div key={f.uid} className={styles.sendingFileRow}>
-                <Icon name="file" className={styles.fileIcon} />
-                <div className={styles.fileInfo}>
-                  <div className={styles.fileName}>
-                    {f.name}
-                  </div>
-                  <div className={styles.fileSize}>
-                    {f.size}
-                  </div>
-                </div>
-                <div className={styles.sendPct}>80%</div>
-              </div>
-            );
-          })}
+          <FileBox files={files} />
         </div>
         <div className={styles.sendingSummary}>
-          正在发送{fileList.length}个文件，共{prettyBytes(totalBytes)}
+          正在发送{files.length}个文件，共{prettyBytes(totalBytes)}
         </div>
         <Button type="primary" className={styles.btnSending} disabled>
           正在发送...（3.5MB/s）
@@ -293,4 +270,12 @@ SendFilePanel.propTypes = {
   recvCode: PropTypes.string,
 };
 
-export default SendFilePanel;
+function mapStateToProps(state) {
+  return {
+    recvCode: state.sendFile.recvCode,
+  };
+}
+
+export default connect(mapStateToProps, {
+  prepareSend,
+})(SendFilePanel);

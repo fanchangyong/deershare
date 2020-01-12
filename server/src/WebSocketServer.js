@@ -3,6 +3,16 @@ import {
 } from './common/util';
 
 const uploads = new Map();
+uploads.set('123', {
+  clientId: 1,
+  files: [
+    {
+      uid: '111',
+      name: 'file-111.txt',
+      size: 1024,
+    },
+  ],
+});
 
 class Client {
   constructor(id, socket) {
