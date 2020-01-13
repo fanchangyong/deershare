@@ -142,6 +142,10 @@ export default class Peer extends EventEmitter {
     this.createRTCConnection(true);
   }
 
+  destroy() {
+    // TODO
+  }
+
   onIceCandidate(e) {
     if (!e.candidate) {
       return;

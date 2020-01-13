@@ -4,6 +4,7 @@ import {
   Redirect,
   Route,
 } from 'react-router-dom';
+import ws from '../ws';
 import NavBar from '../components/NavBar';
 import SendFilePanel from '../components/SendFilePanel';
 import RecvFilePanel from '../components/RecvFilePanel';
@@ -18,19 +19,41 @@ class HomePage extends React.Component {
     super();
     this.state = {
       send: {
-        curStep: 1,
-        files: [],
-        peerConnected: false,
+        curStep: 1, // 当前在第几步
+        files: [], // 已选择的文件
+        peerConnected: false, // WebRTC连接状态
       },
       recv: {
-        recvCode: '',
-        peerConnected: false,
+        recvCode: '', // 用户输入的收件码
+        peerConnected: false, // WebRTC连接状态
         started: false, // 是否点击了开始下载
+        files: [], // 接收到的文件
+        targetId: '', // 对方的peerId
       },
     };
 
     this.setSendState = this.setSendState.bind(this);
     this.setRecvState = this.setRecvState.bind(this);
+    this.onS2cPrepareSend = this.onS2cPrepareSend.bind(this);
+    this.onS2cPrepareRecv = this.onS2cPrepareRecv.bind(this);
+  }
+
+  onS2cPrepareSend(payload) {
+    this.setSendState({
+      recvCode: payload.recvCode,
+    });
+  }
+
+  onS2cPrepareRecv(payload) {
+    this.setRecvState({
+      targetId: payload.clientId,
+      files: payload.files,
+    });
+  }
+
+  componentDidMount() {
+    ws.registerMessageHandler('s2c_prepare_send', this.onS2cPrepareSend);
+    ws.registerMessageHandler('s2c_prepare_recv', this.onS2cPrepareRecv);
   }
 
   setSendState(newState) {

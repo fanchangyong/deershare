@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  withRouter,
-} from 'react-router';
-import { connect } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
+import { withRouter } from 'react-router-dom';
 import Icon from './common/Icon';
 import Button from './common/Button';
 import Input from './common/Input';
@@ -23,12 +20,13 @@ class RecvFilePanel extends Component {
     this.onChangeRecvCode = this.onChangeRecvCode.bind(this);
     this.onPrepareRecv = this.onPrepareRecv.bind(this);
     this.onStartRecv = this.onStartRecv.bind(this);
+    this.onCancel = this.onCancel.bind(this);
   }
 
   componentDidMount() {
     const recvCode = this.props.match.params.recvCode;
     if (recvCode) {
-      this.props.prepareRecv(recvCode);
+      prepareRecv(recvCode);
     }
   }
 
@@ -37,7 +35,17 @@ class RecvFilePanel extends Component {
   }
 
   onPrepareRecv() {
-    this.props.prepareRecv(this.props.recvCode);
+    prepareRecv(this.props.recvCode);
+  }
+
+  onCancel() {
+    this.props.setState({
+      recvCode: '',
+      peerConnected: false,
+      started: false,
+      files: [],
+      targetId: '',
+    });
   }
 
   onStartRecv() {
@@ -143,8 +151,15 @@ class RecvFilePanel extends Component {
 
     return (
       <div className={styles.base}>
-        <div className={styles.title}>
-          接收文件
+        <div className={styles.titleRow}>
+          {files.length > 0 && (
+            <div className={styles.cancel} onClick={this.onCancel}>
+              取消
+            </div>
+          )}
+          <div className={styles.title}>
+            接收文件
+          </div>
         </div>
         {files.length === 0 && this.renderStep1()}
         {files.length > 0 && this.renderStep2()}
@@ -157,20 +172,10 @@ RecvFilePanel.propTypes = {
   recvCode: PropTypes.string,
   peerConnected: PropTypes.bool,
   started: PropTypes.bool,
-  prepareRecv: PropTypes.func,
   files: PropTypes.array,
   targetId: PropTypes.string,
   match: PropTypes.object,
   setState: PropTypes.func,
 };
 
-function mapStateToProps(state) {
-  return {
-    files: state.recvFile.files,
-    targetId: state.recvFile.targetId,
-  };
-}
-
-export default withRouter(connect(mapStateToProps, {
-  prepareRecv,
-})(RecvFilePanel));
+export default withRouter(RecvFilePanel);

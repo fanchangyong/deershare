@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import prettyBytes from 'pretty-bytes';
@@ -24,12 +23,14 @@ const Step = Steps.Step;
 class SendFilePanel extends Component {
   constructor(props) {
     super(props);
+    this.peer = new Peer();
     this.inputRef = React.createRef();
     this.onClickUpload = this.onClickUpload.bind(this);
     this.onChangeFile = this.onChangeFile.bind(this);
     this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onClickSelectDone = this.onClickSelectDone.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
+    this.onCancel = this.onCancel.bind(this);
   }
 
   onClickUpload() {
@@ -49,9 +50,9 @@ class SendFilePanel extends Component {
         type: f.type,
       };
     });
-    this.props.prepareSend(files);
+    prepareSend(files);
 
-    const peer = new Peer();
+    const peer = this.peer;
 
     peer.on('connecting', () => {
       this.props.setState({
@@ -88,6 +89,20 @@ class SendFilePanel extends Component {
     this.props.setState({ curStep: this.props.curStep - 1 });
   }
 
+  onCancel() {
+    const {
+      curStep,
+    } = this.props;
+
+    if (curStep === 1) {
+      this.peer.destroy();
+      this.props.setState({
+        files: [],
+        peerConnected: false,
+      });
+    }
+  }
+
   onChangeFile(event) {
     const files = Array.from(event.target.files);
 
@@ -113,6 +128,7 @@ class SendFilePanel extends Component {
     this.props.setState({
       files: nextFiles,
     });
+    event.target.value = null;
   }
 
   onRemoveFile(uid) {
@@ -240,7 +256,7 @@ class SendFilePanel extends Component {
     const {
       files,
       peerConnected,
-    } = this.state;
+    } = this.props;
 
     const totalBytes = files.reduce((sum, cur) => {
       return sum + cur.size;
@@ -265,11 +281,17 @@ class SendFilePanel extends Component {
   render() {
     const {
       curStep,
+      files,
     } = this.props;
 
     return (
       <div className={styles.base}>
         <div className={styles.titleRow}>
+          {curStep === 1 && files.length > 0 && (
+            <div className={styles.back} onClick={this.onCancel}>
+              取消
+            </div>
+          )}
           {curStep === 2 && (
             <div className={styles.back} onClick={this.onClickBack}>
               返回
@@ -301,17 +323,8 @@ SendFilePanel.propTypes = {
   curStep: PropTypes.number,
   files: PropTypes.array,
   peerConnected: PropTypes.bool,
-  prepareSend: PropTypes.func,
   recvCode: PropTypes.string,
   setState: PropTypes.func,
 };
 
-function mapStateToProps(state) {
-  return {
-    recvCode: state.sendFile.recvCode,
-  };
-}
-
-export default connect(mapStateToProps, {
-  prepareSend,
-})(SendFilePanel);
+export default SendFilePanel;
