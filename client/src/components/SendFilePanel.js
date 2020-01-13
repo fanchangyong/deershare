@@ -90,17 +90,12 @@ class SendFilePanel extends Component {
   }
 
   onCancel() {
-    const {
-      curStep,
-    } = this.props;
-
-    if (curStep === 1) {
-      this.peer.destroy();
-      this.props.setState({
-        files: [],
-        peerConnected: false,
-      });
-    }
+    this.peer.destroy();
+    this.props.setState({
+      curStep: 1,
+      files: [],
+      peerConnected: false,
+    });
   }
 
   onChangeFile(event) {
@@ -287,7 +282,7 @@ class SendFilePanel extends Component {
     return (
       <div className={styles.base}>
         <div className={styles.titleRow}>
-          {curStep === 1 && files.length > 0 && (
+          {((curStep === 1 && files.length > 0) || (curStep === 3)) && (
             <div className={styles.back} onClick={this.onCancel}>
               取消
             </div>
