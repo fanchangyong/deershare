@@ -9,6 +9,7 @@ import Icon from './common/Icon';
 import Button from './common/Button';
 import Input from './common/Input';
 import FileBox from './FileBox';
+import Toast from './common/Toast';
 import {
   prepareRecv,
 } from '../actions/file';
@@ -54,18 +55,21 @@ class RecvFilePanel extends Component {
     });
 
     peer.on('connected', () => {
+      Toast.success('连接成功');
       this.setState({
         peerConnected: true,
       });
     });
 
     peer.on('disconnected', () => {
+      Toast.error('连接已断开');
       this.setState({
         peerConnected: false,
       });
     });
 
     peer.on('connectFailed', () => {
+      Toast.error('连接失败，请重试');
       this.setState({
         peerConnected: false,
       });
