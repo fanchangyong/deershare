@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
   withRouter,
+  matchPath,
 } from 'react-router';
 
 import {
@@ -13,6 +14,8 @@ import styles from './NavBar.cm.styl';
 
 function NavBar(props) {
   const pathname = props.location.pathname;
+
+  const matchRecv = matchPath(pathname, '/recv/:recvCode?');
 
   return (
     <div className={styles.base}>
@@ -32,7 +35,7 @@ function NavBar(props) {
         </Link>
         <Link to="/recv">
           <span
-            className={classnames(styles.menu, pathname === '/recv' && styles.active)}
+            className={classnames(styles.menu, matchRecv && styles.active)}
           >
             接收文件
           </span>
