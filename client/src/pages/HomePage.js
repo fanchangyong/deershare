@@ -17,7 +17,46 @@ class HomePage extends React.Component {
   constructor() {
     super();
     this.state = {
+      send: {
+        curStep: 1,
+        files: [],
+        peerConnected: false,
+      },
+      recv: {
+        recvCode: '',
+        peerConnected: false,
+        started: false, // 是否点击了开始下载
+      },
     };
+
+    this.setSendState = this.setSendState.bind(this);
+    this.setRecvState = this.setRecvState.bind(this);
+  }
+
+  setSendState(newState) {
+    this.setState(prevState => {
+      const nextState = {
+        ...prevState,
+        send: {
+          ...prevState.send,
+          ...newState,
+        },
+      };
+      return nextState;
+    });
+  }
+
+  setRecvState(newState) {
+    this.setState(prevState => {
+      const nextState = {
+        ...prevState,
+        recv: {
+          ...prevState.recv,
+          ...newState,
+        },
+      };
+      return nextState;
+    });
   }
 
   render() {
@@ -30,10 +69,10 @@ class HomePage extends React.Component {
         <div className={styles.content}>
           <Switch>
             <Route path="/send">
-              <SendFilePanel />
+              <SendFilePanel {...this.state.send} setState={this.setSendState} />
             </Route>
             <Route path="/recv/:recvCode?">
-              <RecvFilePanel />
+              <RecvFilePanel {...this.state.recv} setState={this.setRecvState} />
             </Route>
             <Route path="/contact">
               <ContactPanel />

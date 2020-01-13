@@ -20,11 +20,6 @@ import styles from './RecvFilePanel.cm.styl';
 class RecvFilePanel extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      recvCode: '',
-      peerConnected: false,
-      started: false, // 是否点击了开始下载
-    };
     this.onChangeRecvCode = this.onChangeRecvCode.bind(this);
     this.onPrepareRecv = this.onPrepareRecv.bind(this);
     this.onStartRecv = this.onStartRecv.bind(this);
@@ -38,15 +33,15 @@ class RecvFilePanel extends Component {
   }
 
   onChangeRecvCode(value) {
-    this.setState({ recvCode: value });
+    this.props.setState({ recvCode: value });
   }
 
   onPrepareRecv() {
-    this.props.prepareRecv(this.state.recvCode);
+    this.props.prepareRecv(this.props.recvCode);
   }
 
   onStartRecv() {
-    this.setState({
+    this.props.setState({
       started: true,
     });
 
@@ -56,21 +51,21 @@ class RecvFilePanel extends Component {
 
     peer.on('connected', () => {
       Toast.success('连接成功');
-      this.setState({
+      this.props.setState({
         peerConnected: true,
       });
     });
 
     peer.on('disconnected', () => {
       Toast.error('连接已断开');
-      this.setState({
+      this.props.setState({
         peerConnected: false,
       });
     });
 
     peer.on('connectFailed', () => {
       Toast.error('连接失败，请重试');
-      this.setState({
+      this.props.setState({
         peerConnected: false,
       });
     });
@@ -81,7 +76,7 @@ class RecvFilePanel extends Component {
   renderStep1() {
     const {
       recvCode,
-    } = this.state;
+    } = this.props;
 
     return (
       <>
@@ -103,7 +98,7 @@ class RecvFilePanel extends Component {
     const {
       peerConnected,
       started,
-    } = this.state;
+    } = this.props;
 
     const totalBytes = files.reduce((sum, cur) => {
       return sum + cur.size;
@@ -159,10 +154,14 @@ class RecvFilePanel extends Component {
 }
 
 RecvFilePanel.propTypes = {
+  recvCode: PropTypes.string,
+  peerConnected: PropTypes.bool,
+  started: PropTypes.bool,
   prepareRecv: PropTypes.func,
   files: PropTypes.array,
   targetId: PropTypes.string,
   match: PropTypes.object,
+  setState: PropTypes.func,
 };
 
 function mapStateToProps(state) {

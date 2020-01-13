@@ -24,11 +24,6 @@ const Step = Steps.Step;
 class SendFilePanel extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      curStep: 1,
-      files: [],
-      peerConnected: false,
-    };
     this.inputRef = React.createRef();
     this.onClickUpload = this.onClickUpload.bind(this);
     this.onChangeFile = this.onChangeFile.bind(this);
@@ -42,10 +37,11 @@ class SendFilePanel extends Component {
   }
 
   onClickSelectDone() {
-    this.setState({
+    this.props.setState({
       curStep: 2,
     });
-    const files = this.state.files.map(f => {
+
+    const files = this.props.files.map(f => {
       return {
         uid: f.uid,
         name: f.name,
@@ -58,27 +54,27 @@ class SendFilePanel extends Component {
     const peer = new Peer();
 
     peer.on('connecting', () => {
-      this.setState({
+      this.props.setState({
         peerConnected: false,
       });
     });
 
     peer.on('connected', () => {
-      this.setState({
+      this.props.setState({
         curStep: 3,
         peerConnected: true,
       });
     });
 
     peer.on('connectFailed', () => {
-      this.setState({
+      this.props.setState({
         peerConnected: false,
       });
       Toast.error('连接失败');
     });
 
     peer.on('disconnected', async() => {
-      this.setState({
+      this.props.setState({
         peerConnected: false,
       });
       Toast.error('连接断开，请重试');
@@ -89,18 +85,14 @@ class SendFilePanel extends Component {
   }
 
   onClickBack() {
-    this.setState(state => {
-      return {
-        curStep: state.curStep - 1,
-      };
-    });
+    this.props.setState({ curStep: this.props.curStep - 1 });
   }
 
   onChangeFile(event) {
     const files = Array.from(event.target.files);
 
     const filteredFiles = files.filter(f => {
-      const existed = this.state.files.find(f1 => {
+      const existed = this.props.files.find(f1 => {
         if (f1.name === f.name && f1.size === f.size && f1.lastModified === f.lastModified && f1.type === f.type) {
           return true;
         }
@@ -117,27 +109,23 @@ class SendFilePanel extends Component {
       f.uid = uuidv4();
     });
 
-    this.setState(state => {
-      return {
-        files: state.files.concat(filteredFiles),
-      };
+    const nextFiles = this.props.files.concat(filteredFiles);
+    this.props.setState({
+      files: nextFiles,
     });
   }
 
   onRemoveFile(uid) {
     return () => {
-      this.setState(state => {
-        return {
-          files: state.files.filter(f => f.uid !== uid),
-        };
-      });
+      const nextFiles = this.props.files.filter(f => f.uid !== uid);
+      this.props.setState({ files: nextFiles });
     };
   }
 
   renderStep1() {
     const {
       files,
-    } = this.state;
+    } = this.props;
 
     const totalBytes = files.reduce((sum, cur) => {
       return sum + cur.size;
@@ -277,7 +265,7 @@ class SendFilePanel extends Component {
   render() {
     const {
       curStep,
-    } = this.state;
+    } = this.props;
 
     return (
       <div className={styles.base}>
@@ -310,8 +298,12 @@ class SendFilePanel extends Component {
 }
 
 SendFilePanel.propTypes = {
+  curStep: PropTypes.number,
+  files: PropTypes.array,
+  peerConnected: PropTypes.bool,
   prepareSend: PropTypes.func,
   recvCode: PropTypes.string,
+  setState: PropTypes.func,
 };
 
 function mapStateToProps(state) {
