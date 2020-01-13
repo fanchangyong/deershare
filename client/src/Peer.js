@@ -143,7 +143,14 @@ export default class Peer extends EventEmitter {
   }
 
   destroy() {
-    // TODO
+    if (this.pc) {
+      this.pc.close();
+      this.pc = null;
+    }
+    if (this.dc) {
+      this.dc.close();
+      this.dc = null;
+    }
   }
 
   onIceCandidate(e) {

@@ -17,6 +17,7 @@ import styles from './RecvFilePanel.cm.styl';
 class RecvFilePanel extends Component {
   constructor(props) {
     super(props);
+    this.peer = new Peer();
     this.onChangeRecvCode = this.onChangeRecvCode.bind(this);
     this.onPrepareRecv = this.onPrepareRecv.bind(this);
     this.onStartRecv = this.onStartRecv.bind(this);
@@ -39,6 +40,7 @@ class RecvFilePanel extends Component {
   }
 
   onCancel() {
+    this.peer.destroy();
     this.props.setState({
       recvCode: '',
       peerConnected: false,
@@ -53,7 +55,8 @@ class RecvFilePanel extends Component {
       started: true,
     });
 
-    const peer = new Peer();
+    const peer = this.peer;
+
     peer.on('connecting', () => {
     });
 
