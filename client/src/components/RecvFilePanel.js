@@ -11,17 +11,40 @@ import {
   prepareRecv,
 } from '../actions/file';
 import Peer from '../Peer';
+import {
+  calcPercent,
+} from '../common/util';
 
 import styles from './RecvFilePanel.cm.styl';
 
 class RecvFilePanel extends Component {
   constructor(props) {
     super(props);
-    this.peer = new Peer();
     this.onChangeRecvCode = this.onChangeRecvCode.bind(this);
     this.onPrepareRecv = this.onPrepareRecv.bind(this);
     this.onStartRecv = this.onStartRecv.bind(this);
     this.onCancel = this.onCancel.bind(this);
+
+    this.onRecvData = this.onRecvData.bind(this);
+    this.handleMsg = this.handleMsg.bind(this);
+
+    this.peer = new Peer();
+    this.recvBuffer = [];
+    this.recvSizes = {};
+
+    this.timer = setInterval(() => {
+      const files = this.props.files.map(f => {
+        const recvSize = this.recvSizes[f.uid] || 0;
+        const pct = calcPercent(recvSize, f.size);
+        return {
+          ...f,
+          pct,
+        };
+      });
+      this.props.setState({
+        files,
+      });
+    }, 1000);
   }
 
   componentDidMount() {
@@ -29,6 +52,10 @@ class RecvFilePanel extends Component {
     if (recvCode) {
       prepareRecv(recvCode);
     }
+  }
+
+  componentWillUnMount() {
+    clearInterval(this.timer);
   }
 
   onChangeRecvCode(value) {
@@ -81,7 +108,50 @@ class RecvFilePanel extends Component {
       });
     });
 
+    peer.on('data', this.onRecvData);
+
     peer.connectPeer(this.props.targetId);
+  }
+
+  onRecvData(data) {
+    const {
+      curFileId,
+    } = this.props;
+
+    if (typeof data === 'string') {
+      const msg = JSON.parse(data);
+      this.handleMsg(msg);
+    } else {
+      this.recvBuffer.push(data);
+      const curRecvBytes = this.recvSizes[curFileId] || 0;
+      const newRecvBytes = curRecvBytes + data.byteLength;
+      this.recvSizes[curFileId] = newRecvBytes;
+    }
+  }
+
+  handleMsg(msg) {
+    if (msg.type === 'fileStart') {
+      this.props.setState({
+        curFileId: msg.fileId,
+      });
+    } else if (msg.type === 'fileEnd') {
+      const fileId = msg.fileId;
+      const blob = new Blob(this.recvBuffer);
+      const url = window.URL.createObjectURL(blob);
+      const files = this.props.files.map(f => {
+        if (f.uid === fileId) {
+          return {
+            ...f,
+            downloadUrl: url,
+          };
+        } else {
+          return f;
+        }
+      });
+      this.props.setState({
+        files,
+      });
+    }
   }
 
   renderStep1() {
@@ -103,12 +173,10 @@ class RecvFilePanel extends Component {
 
   renderStep2() {
     const {
-      files,
-    } = this.props;
-
-    const {
       peerConnected,
       started,
+      curFileId,
+      files,
     } = this.props;
 
     const totalBytes = files.reduce((sum, cur) => {
@@ -120,7 +188,7 @@ class RecvFilePanel extends Component {
         <div className={styles.msg1}>
           对方发送给您以下文件：
         </div>
-        <FileBox files={this.props.files} />
+        <FileBox files={this.props.files} curFileId={curFileId} />
         <div className={styles.msg2}>
           <div>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
           {!!started && <div className={peerConnected ? styles.peerConnected : styles.peerNotConnected}>{peerConnected ? '已连接' : '未连接'}</div>}
@@ -177,6 +245,7 @@ RecvFilePanel.propTypes = {
   started: PropTypes.bool,
   files: PropTypes.array,
   targetId: PropTypes.string,
+  curFileId: PropTypes.string,
   match: PropTypes.object,
   setState: PropTypes.func,
 };

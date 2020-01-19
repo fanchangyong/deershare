@@ -14,6 +14,8 @@ import Steps from './common/Steps';
 import Toast from './common/Toast';
 import FileBox from './FileBox';
 import Peer from '../peer';
+import FileChunker from '../FileChunker';
+import { calcPercent } from '../common/util';
 import { prepareSend } from '../actions/file';
 
 import styles from './SendFilePanel.cm.styl';
@@ -31,6 +33,24 @@ class SendFilePanel extends Component {
     this.onClickSelectDone = this.onClickSelectDone.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
     this.onCancel = this.onCancel.bind(this);
+
+    this.sendSizes = {};
+
+    this.timer = setInterval(() => {
+      const files = this.props.files.map(f => {
+        const sendSize = this.sendSizes[f.uid] || 0;
+        const pct = calcPercent(sendSize, f.size);
+        return {
+          ...f,
+          pct,
+        };
+      });
+      this.props.setState({ files });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   onClickUpload() {
@@ -62,7 +82,6 @@ class SendFilePanel extends Component {
 
     peer.on('connected', () => {
       this.props.setState({
-        curStep: 3,
         peerConnected: true,
       });
     });
@@ -81,7 +100,48 @@ class SendFilePanel extends Component {
       Toast.error('连接断开，请重试');
     });
 
-    peer.on('channelOpen', () => {
+    peer.on('channelOpen', async() => {
+      this.props.setState({
+        curStep: 3,
+      });
+
+      const files = this.props.files;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileId = file.uid;
+        await peer.sendJSON({
+          type: 'fileStart',
+          fileId,
+        });
+
+        this.props.setState({
+          curFileId: fileId,
+        });
+
+        const chunker = new FileChunker(file.realFile);
+        let done = false;
+        while (!done) {
+          const result = await chunker.getNextChunk();
+          done = result.done;
+          const {
+            chunk,
+            offset,
+          } = result;
+          try {
+            await peer.send(chunk);
+          } catch (err) {
+            Toast.error('传输错误：' + err);
+            break;
+          }
+          this.sendSizes[fileId] = offset;
+        }
+        if (done) {
+          await peer.sendJSON({
+            type: 'fileEnd',
+            fileId,
+          });
+        }
+      }
     });
   }
 
@@ -109,15 +169,19 @@ class SendFilePanel extends Component {
         return false;
       });
       return !existed;
+    }).map(f => {
+      return {
+        realFile: f,
+        uid: uuidv4(),
+        name: f.name,
+        size: f.size,
+        type: f.type,
+      };
     });
 
     if (filteredFiles.length !== files.length) {
       Toast.info('发现疑似相同的文件，已自动过滤');
     }
-
-    filteredFiles.forEach(f => {
-      f.uid = uuidv4();
-    });
 
     const nextFiles = this.props.files.concat(filteredFiles);
     this.props.setState({
@@ -249,6 +313,7 @@ class SendFilePanel extends Component {
 
   renderStep3() {
     const {
+      curFileId,
       files,
       peerConnected,
     } = this.props;
@@ -260,7 +325,7 @@ class SendFilePanel extends Component {
     return (
       <>
         <div className={styles.sendingBox}>
-          <FileBox files={files} />
+          <FileBox files={files} curFileId={curFileId} />
         </div>
         <div className={styles.sendingSummary}>
           <div>{files.length}个文件，共{prettyBytes(totalBytes)}</div>
@@ -317,6 +382,7 @@ class SendFilePanel extends Component {
 SendFilePanel.propTypes = {
   curStep: PropTypes.number,
   files: PropTypes.array,
+  curFileId: PropTypes.string,
   peerConnected: PropTypes.bool,
   recvCode: PropTypes.string,
   setState: PropTypes.func,

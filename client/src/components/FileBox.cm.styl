@@ -6,15 +6,18 @@
   overflow-y auto
 
 .file-row
-  position relative
-  text-align left
-  padding-left 8px
+  display flex
+  justify-content space-between
+  align-items center
+  padding 0px 8px
   height 50px
   line-height @height
-  vertical-align middle
   background white
   border-radius 2px
   margin 10px auto
+
+.left
+  height 100%
 
 .file-icon
   font-size 28px
@@ -25,19 +28,26 @@
 
 .file-name
   font-size 16px
-  line-height 1
+  line-height 1.4
   max-width 12em
   overflow hidden
   text-overflow ellipsis
   white-space nowrap
 
 .file-size
+  text-align left
   font-size 12px
-  line-height 1
+  line-height 1.2
   color #adadad
 
 .close-icon
-  position absolute
-  right 12px
   cursor pointer
   color #8e8e8e
+
+.waiting
+  color #8e8e8e
+
+.download
+  &
+  &:hover
+    color #649ae4
