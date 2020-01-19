@@ -31,6 +31,7 @@ class RecvFilePanel extends Component {
     this.peer = new Peer();
     this.recvBuffer = [];
     this.recvSizes = {};
+    this.bps = 0;
 
     this.timer = setInterval(() => {
       const files = this.props.files.map(f => {
@@ -43,7 +44,9 @@ class RecvFilePanel extends Component {
       });
       this.props.setState({
         files,
+        bps: this.bps,
       });
+      this.bps = 0;
     }, 1000);
   }
 
@@ -126,6 +129,7 @@ class RecvFilePanel extends Component {
       const curRecvBytes = this.recvSizes[curFileId] || 0;
       const newRecvBytes = curRecvBytes + data.byteLength;
       this.recvSizes[curFileId] = newRecvBytes;
+      this.bps += data.byteLength;
     }
   }
 
@@ -208,7 +212,7 @@ class RecvFilePanel extends Component {
             className={styles.recvBtn}
             disabled
           >
-            正在接收...(3.5MB/s)
+            正在接收...({prettyBytes(this.bps)}/s)
           </Button>
         )}
       </>

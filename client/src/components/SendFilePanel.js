@@ -35,6 +35,7 @@ class SendFilePanel extends Component {
     this.onCancel = this.onCancel.bind(this);
 
     this.sendSizes = {};
+    this.bps = 0;
 
     this.timer = setInterval(() => {
       const files = this.props.files.map(f => {
@@ -45,7 +46,9 @@ class SendFilePanel extends Component {
           pct,
         };
       });
-      this.props.setState({ files });
+
+      this.props.setState({ files, bps: this.bps });
+      this.bps = 0;
     }, 1000);
   }
 
@@ -120,6 +123,7 @@ class SendFilePanel extends Component {
 
         const chunker = new FileChunker(file.realFile);
         let done = false;
+        let lastOffset = 0;
         while (!done) {
           const result = await chunker.getNextChunk();
           done = result.done;
@@ -134,6 +138,8 @@ class SendFilePanel extends Component {
             break;
           }
           this.sendSizes[fileId] = offset;
+          this.bps += (offset - lastOffset);
+          lastOffset = offset;
         }
         if (done) {
           await peer.sendJSON({
@@ -332,7 +338,7 @@ class SendFilePanel extends Component {
           <div className={peerConnected ? styles.peerConnected : styles.peerNotConnected}>{peerConnected ? '已连接' : '未连接'}</div>
         </div>
         <Button type="primary" className={styles.btnSending} disabled>
-          正在发送...（3.5MB/s）
+          正在发送...（{prettyBytes(this.bps || 0)}/s）
         </Button>
       </>
     );
