@@ -70,7 +70,9 @@ export default class Peer extends EventEmitter {
 
   onConnectionStateChange() {
     if (this.pc.connectionState === 'disconnected') {
-      this.dc.close();
+      if (this.dc) {
+        this.dc.close();
+      }
       if (this.waitingCallback) {
         this.waitingCallback(new Error('peer disconnected, cannot send'));
         this.waitingCallback = null;
