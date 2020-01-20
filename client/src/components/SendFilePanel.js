@@ -79,26 +79,26 @@ class SendFilePanel extends Component {
 
     peer.on('connecting', () => {
       this.props.setState({
-        peerConnected: false,
+        peerState: 'connecting',
       });
     });
 
     peer.on('connected', () => {
       this.props.setState({
-        peerConnected: true,
+        peerState: 'connected',
       });
     });
 
     peer.on('connectFailed', () => {
       this.props.setState({
-        peerConnected: false,
+        peerState: 'connectFailed',
       });
       Toast.error('连接失败');
     });
 
     peer.on('disconnected', async() => {
       this.props.setState({
-        peerConnected: false,
+        peerState: 'disconnected',
       });
       Toast.error('连接断开，请重试');
     });
@@ -106,6 +106,7 @@ class SendFilePanel extends Component {
     peer.on('channelOpen', async() => {
       this.props.setState({
         curStep: 3,
+        peerState: 'transfer',
       });
 
       const files = this.props.files;
@@ -160,7 +161,6 @@ class SendFilePanel extends Component {
     this.props.setState({
       curStep: 1,
       files: [],
-      peerConnected: false,
     });
   }
 
@@ -321,12 +321,23 @@ class SendFilePanel extends Component {
     const {
       curFileId,
       files,
-      peerConnected,
+      peerState,
     } = this.props;
 
     const totalBytes = files.reduce((sum, cur) => {
       return sum + cur.size;
     }, 0);
+
+    let btnContent;
+    if (peerState === 'connecting') {
+      btnContent = '正在连接...';
+    } else if (peerState === 'connected') {
+      btnContent = '连接成功';
+    } else if (peerState === 'transfer') {
+      btnContent = `正在发送...(${prettyBytes(this.bps || 0)}/s)`;
+    } else if (peerState === 'disconnected' || peerState === 'connectFailed') {
+      btnContent = '连接断开，等待重连...';
+    }
 
     return (
       <>
@@ -335,10 +346,9 @@ class SendFilePanel extends Component {
         </div>
         <div className={styles.sendingSummary}>
           <div>{files.length}个文件，共{prettyBytes(totalBytes)}</div>
-          <div className={peerConnected ? styles.peerConnected : styles.peerNotConnected}>{peerConnected ? '已连接' : '未连接'}</div>
         </div>
         <Button type="primary" className={styles.btnSending} disabled>
-          正在发送...（{prettyBytes(this.bps || 0)}/s）
+          {btnContent}
         </Button>
       </>
     );
@@ -389,7 +399,7 @@ SendFilePanel.propTypes = {
   curStep: PropTypes.number,
   files: PropTypes.array,
   curFileId: PropTypes.string,
-  peerConnected: PropTypes.bool,
+  peerState: PropTypes.string,
   recvCode: PropTypes.string,
   setState: PropTypes.func,
 };

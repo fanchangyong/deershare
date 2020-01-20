@@ -2,8 +2,11 @@ import {
   getRandomString,
 } from './common/util';
 
-const uploads = new Map();
-uploads.set('123', {
+const clientIdToRecvCodes = new Map();
+const recvCodeToFiles = new Map();
+
+// TODO: test code, delete it before production
+recvCodeToFiles.set('123', {
   clientId: '1',
   files: [
     {
@@ -17,8 +20,8 @@ uploads.set('123', {
 class Client {
   constructor(id, socket) {
     this.id = id;
+    this.peerId = null;
     this.socket = socket;
-
     this.socket.onerror = (err) => {
       console.error('websocket client onerror: ', err);
     };
@@ -40,11 +43,12 @@ class Client {
     } = payload;
 
     const recvCode = getRandomString(6);
-    uploads.set(recvCode, {
+    recvCodeToFiles.set(recvCode, {
       clientId: this.id,
       message,
       files,
     });
+    clientIdToRecvCodes.set(this.id, recvCode);
     this.sendJSON({
       type: 's2c_prepare_send',
       payload: {
@@ -58,7 +62,7 @@ class Client {
       recvCode,
     } = payload;
 
-    const uploadInfo = uploads.get(recvCode);
+    const uploadInfo = recvCodeToFiles.get(recvCode);
     if (uploadInfo) {
       this.sendJSON({
         type: 's2c_prepare_recv',
@@ -152,6 +156,12 @@ export default class WebSocketServer {
           const targetClient = this.clients.get(targetId);
           if (!targetClient) {
             console.log('handling signal, target not found: ', targetId);
+            client.sendJSON({
+              type: 's2c_error',
+              payload: {
+                message: '连接失败，对方可能已离线',
+              },
+            });
             return;
           }
           targetClient.sendJSON({
@@ -175,5 +185,8 @@ export default class WebSocketServer {
 
   onClientClose(id) {
     this.clients.delete(id);
+    const recvCode = clientIdToRecvCodes[id];
+    clientIdToRecvCodes.delete(id);
+    recvCodeToFiles.delete(recvCode);
   }
 }

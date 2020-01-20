@@ -44,7 +44,6 @@ class RecvFilePanel extends Component {
       });
       this.props.setState({
         files,
-        bps: this.bps,
       });
       this.bps = 0;
     }, 1000);
@@ -73,7 +72,7 @@ class RecvFilePanel extends Component {
     this.peer.destroy();
     this.props.setState({
       recvCode: '',
-      peerConnected: false,
+      peerState: '',
       started: false,
       files: [],
       targetId: '',
@@ -81,6 +80,7 @@ class RecvFilePanel extends Component {
   }
 
   onStartRecv() {
+    console.log('start recv');
     this.props.setState({
       started: true,
     });
@@ -88,26 +88,35 @@ class RecvFilePanel extends Component {
     const peer = this.peer;
 
     peer.on('connecting', () => {
+      this.props.setState({
+        peerState: 'connecting',
+      });
     });
 
     peer.on('connected', () => {
       Toast.success('连接成功');
       this.props.setState({
-        peerConnected: true,
+        peerState: 'connected',
       });
     });
 
     peer.on('disconnected', () => {
       Toast.error('连接已断开');
       this.props.setState({
-        peerConnected: false,
+        peerState: 'disconnected',
       });
     });
 
     peer.on('connectFailed', () => {
       Toast.error('连接失败，请重试');
       this.props.setState({
-        peerConnected: false,
+        peerState: 'connectFailed',
+      });
+    });
+
+    peer.on('channelOpen', () => {
+      this.props.setState({
+        peerState: 'transfer',
       });
     });
 
@@ -177,7 +186,7 @@ class RecvFilePanel extends Component {
 
   renderStep2() {
     const {
-      peerConnected,
+      peerState,
       started,
       curFileId,
       files,
@@ -187,6 +196,19 @@ class RecvFilePanel extends Component {
       return sum + cur.size;
     }, 0);
 
+    let btnContent = '开始下载';
+    if (!started) {
+      btnContent = '开始下载';
+    } else if (peerState === 'disconnected' || peerState === 'connectFailed') {
+      btnContent = '重新下载';
+    } else if (peerState === 'connecting') {
+      btnContent = '正在连接...';
+    } else if (peerState === 'connected') {
+      btnContent = '连接成功';
+    } else if (peerState === 'transfer') {
+      btnContent = `正在下载...(${prettyBytes(this.bps)}/s)`;
+    }
+
     return (
       <>
         <div className={styles.msg1}>
@@ -195,26 +217,15 @@ class RecvFilePanel extends Component {
         <FileBox files={this.props.files} curFileId={curFileId} />
         <div className={styles.msg2}>
           <div>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
-          {!!started && <div className={peerConnected ? styles.peerConnected : styles.peerNotConnected}>{peerConnected ? '已连接' : '未连接'}</div>}
         </div>
-        {!started && (
-          <Button
-            type="primary"
-            className={styles.recvBtn}
-            onClick={this.onStartRecv}
-          >
-            开始下载
-          </Button>
-        )}
-        {!!started && (
-          <Button
-            type="primary"
-            className={styles.recvBtn}
-            disabled
-          >
-            正在接收...({prettyBytes(this.bps)}/s)
-          </Button>
-        )}
+        <Button
+          type="primary"
+          className={styles.recvBtn}
+          disabled={started && (peerState === 'connected' || peerState === 'connecting' || peerState === 'transfer')}
+          onClick={this.onStartRecv}
+        >
+          {btnContent}
+        </Button>
       </>
     );
   }
@@ -245,7 +256,7 @@ class RecvFilePanel extends Component {
 
 RecvFilePanel.propTypes = {
   recvCode: PropTypes.string,
-  peerConnected: PropTypes.bool,
+  peerState: PropTypes.string,
   started: PropTypes.bool,
   files: PropTypes.array,
   targetId: PropTypes.string,

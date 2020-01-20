@@ -7,11 +7,10 @@ const BUF_WAITING_THRESHOLD = 15 * 1024 * 1024;
 export default class Peer extends EventEmitter {
   constructor() {
     super();
-    this.id = null;
+    this.id = null; // not used
     this.targetId = null;
     this.pc = null; // RTCPeerConnection
     this.dc = null; // RTCDataChannel
-
     this.waitingCallback = null;
 
     this.onIceCandidate = this.onIceCandidate.bind(this);
@@ -145,6 +144,8 @@ export default class Peer extends EventEmitter {
   }
 
   destroy() {
+    this.targetId = null;
+    this.waitingCallback = null;
     if (this.pc) {
       this.pc.close();
       this.pc = null;
