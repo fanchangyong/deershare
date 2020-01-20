@@ -39,7 +39,7 @@ class Client {
       message,
     } = payload;
 
-    const recvCode = getRandomString(8);
+    const recvCode = getRandomString(6);
     uploads.set(recvCode, {
       clientId: this.id,
       message,
