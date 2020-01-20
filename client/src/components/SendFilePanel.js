@@ -33,6 +33,7 @@ class SendFilePanel extends Component {
     this.onClickSelectDone = this.onClickSelectDone.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onSendComplete = this.onSendComplete.bind(this); // 发送完成，继续发送
 
     this.sendSizes = {};
     this.bps = 0;
@@ -161,6 +162,14 @@ class SendFilePanel extends Component {
     this.props.setState({
       curStep: 1,
       files: [],
+    });
+  }
+
+  onSendComplete() {
+    this.props.setState({
+      curStep: 1,
+      files: [],
+      peerState: '',
     });
   }
 
@@ -328,8 +337,17 @@ class SendFilePanel extends Component {
       return sum + cur.size;
     }, 0);
 
+    let allCompleted = true;
+    files.forEach(f => {
+      if (f.pct < 100) {
+        allCompleted = false;
+      }
+    });
+
     let btnContent;
-    if (peerState === 'connecting') {
+    if (allCompleted) {
+      btnContent = '继续发送';
+    } else if (peerState === 'connecting') {
       btnContent = '正在连接...';
     } else if (peerState === 'connected') {
       btnContent = '连接成功';
@@ -337,6 +355,11 @@ class SendFilePanel extends Component {
       btnContent = `正在发送...(${prettyBytes(this.bps || 0)}/s)`;
     } else if (peerState === 'disconnected' || peerState === 'connectFailed') {
       btnContent = '连接断开，等待重连...';
+    }
+
+    let btnDisabled = true;
+    if (allCompleted) {
+      btnDisabled = false;
     }
 
     return (
@@ -347,7 +370,7 @@ class SendFilePanel extends Component {
         <div className={styles.sendingSummary}>
           <div>{files.length}个文件，共{prettyBytes(totalBytes)}</div>
         </div>
-        <Button type="primary" className={styles.btnSending} disabled>
+        <Button type="primary" className={styles.btnSending} disabled={btnDisabled} onClick={this.onSendComplete}>
           {btnContent}
         </Button>
       </>

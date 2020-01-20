@@ -21,11 +21,11 @@ class HomePage extends React.Component {
       send: {
         curStep: 1, // 当前在第几步
         files: [], // 已选择的文件
-        peerConnected: false, // WebRTC连接状态
+        peerState: '', // WebRTC连接状态
       },
       recv: {
         recvCode: '', // 用户输入的收件码
-        peerConnected: false, // WebRTC连接状态
+        peerState: '', // WebRTC连接状态
         started: false, // 是否点击了开始下载
         files: [], // 接收到的文件
         targetId: '', // 对方的peerId

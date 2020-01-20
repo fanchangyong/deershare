@@ -24,6 +24,7 @@ class RecvFilePanel extends Component {
     this.onPrepareRecv = this.onPrepareRecv.bind(this);
     this.onStartRecv = this.onStartRecv.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onRecvComplete = this.onRecvComplete.bind(this);
 
     this.onRecvData = this.onRecvData.bind(this);
     this.handleMsg = this.handleMsg.bind(this);
@@ -142,6 +143,16 @@ class RecvFilePanel extends Component {
     }
   }
 
+  onRecvComplete() {
+    this.props.setState({
+      recvCode: '',
+      peerState: '',
+      started: false,
+      files: [],
+      targetId: '',
+    });
+  }
+
   handleMsg(msg) {
     if (msg.type === 'fileStart') {
       this.props.setState({
@@ -196,8 +207,17 @@ class RecvFilePanel extends Component {
       return sum + cur.size;
     }, 0);
 
+    let allCompleted = true;
+    files.forEach(f => {
+      if (!f.downloadUrl) {
+        allCompleted = false;
+      }
+    });
+
     let btnContent = '开始下载';
-    if (!started) {
+    if (allCompleted) {
+      btnContent = '继续接收';
+    } else if (!started) {
       btnContent = '开始下载';
     } else if (peerState === 'disconnected' || peerState === 'connectFailed') {
       btnContent = '重新下载';
@@ -221,8 +241,8 @@ class RecvFilePanel extends Component {
         <Button
           type="primary"
           className={styles.recvBtn}
-          disabled={started && (peerState === 'connected' || peerState === 'connecting' || peerState === 'transfer')}
-          onClick={this.onStartRecv}
+          disabled={started && !allCompleted && (peerState === 'connected' || peerState === 'connecting' || peerState === 'transfer')}
+          onClick={allCompleted ? this.onRecvComplete : this.onStartRecv}
         >
           {btnContent}
         </Button>
