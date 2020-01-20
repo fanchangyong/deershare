@@ -185,7 +185,7 @@ export default class WebSocketServer {
 
   onClientClose(id) {
     this.clients.delete(id);
-    const recvCode = clientIdToRecvCodes[id];
+    const recvCode = clientIdToRecvCodes.get(id);
     clientIdToRecvCodes.delete(id);
     recvCodeToFiles.delete(recvCode);
   }
