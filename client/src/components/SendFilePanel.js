@@ -32,8 +32,7 @@ class SendFilePanel extends Component {
     this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onClickSelectDone = this.onClickSelectDone.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onSendComplete = this.onSendComplete.bind(this); // 发送完成，继续发送
+    this.onReset = this.onReset.bind(this); // 回到初始状态，用在点击取消或发送完成继续发送等地方
 
     this.sendSizes = {};
     this.bps = 0;
@@ -157,15 +156,8 @@ class SendFilePanel extends Component {
     this.props.setState({ curStep: this.props.curStep - 1 });
   }
 
-  onCancel() {
+  onReset() {
     this.peer.destroy();
-    this.props.setState({
-      curStep: 1,
-      files: [],
-    });
-  }
-
-  onSendComplete() {
     this.props.setState({
       curStep: 1,
       files: [],
@@ -370,7 +362,7 @@ class SendFilePanel extends Component {
         <div className={styles.sendingSummary}>
           <div>{files.length}个文件，共{prettyBytes(totalBytes)}</div>
         </div>
-        <Button type="primary" className={styles.btnSending} disabled={btnDisabled} onClick={this.onSendComplete}>
+        <Button type="primary" className={styles.btnSending} disabled={btnDisabled} onClick={this.onReset}>
           {btnContent}
         </Button>
       </>
@@ -387,7 +379,7 @@ class SendFilePanel extends Component {
       <div className={styles.base}>
         <div className={styles.titleRow}>
           {((curStep === 1 && files.length > 0) || (curStep === 3)) && (
-            <div className={styles.back} onClick={this.onCancel}>
+            <div className={styles.back} onClick={this.onReset}>
               取消
             </div>
           )}

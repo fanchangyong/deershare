@@ -23,8 +23,7 @@ class RecvFilePanel extends Component {
     this.onChangeRecvCode = this.onChangeRecvCode.bind(this);
     this.onPrepareRecv = this.onPrepareRecv.bind(this);
     this.onStartRecv = this.onStartRecv.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onRecvComplete = this.onRecvComplete.bind(this);
+    this.onReset = this.onReset.bind(this); // 回到初始状态，比如点击取消或者接收完成继续接收等
 
     this.onRecvData = this.onRecvData.bind(this);
     this.handleMsg = this.handleMsg.bind(this);
@@ -69,7 +68,7 @@ class RecvFilePanel extends Component {
     prepareRecv(this.props.recvCode);
   }
 
-  onCancel() {
+  onReset() {
     this.peer.destroy();
     this.props.setState({
       recvCode: '',
@@ -141,16 +140,6 @@ class RecvFilePanel extends Component {
       this.recvSizes[curFileId] = newRecvBytes;
       this.bps += data.byteLength;
     }
-  }
-
-  onRecvComplete() {
-    this.props.setState({
-      recvCode: '',
-      peerState: '',
-      started: false,
-      files: [],
-      targetId: '',
-    });
   }
 
   handleMsg(msg) {
@@ -242,7 +231,7 @@ class RecvFilePanel extends Component {
           type="primary"
           className={styles.recvBtn}
           disabled={started && !allCompleted && (peerState === 'connected' || peerState === 'connecting' || peerState === 'transfer')}
-          onClick={allCompleted ? this.onRecvComplete : this.onStartRecv}
+          onClick={allCompleted ? this.onReset : this.onStartRecv}
         >
           {btnContent}
         </Button>
@@ -259,7 +248,7 @@ class RecvFilePanel extends Component {
       <div className={styles.base}>
         <div className={styles.titleRow}>
           {files.length > 0 && (
-            <div className={styles.cancel} onClick={this.onCancel}>
+            <div className={styles.cancel} onClick={this.onReset}>
               取消
             </div>
           )}
