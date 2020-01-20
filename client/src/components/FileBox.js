@@ -25,6 +25,8 @@ class FileBox extends Component {
           let downloadInfo = null;
           if (downloadUrl) {
             downloadInfo = <a href={downloadUrl} download={name} className={styles.download}>下载</a>;
+          } else if (pct >= 100) {
+            downloadInfo = <span className={styles.completed}>完成</span>;
           } else if (uid === curFileId) {
             downloadInfo = <span>{pct}%</span>;
           } else {
