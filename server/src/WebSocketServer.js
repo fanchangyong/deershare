@@ -72,6 +72,8 @@ class Client {
           clientId: uploadInfo.clientId,
         },
       });
+      // 收件码一次性有效
+      recvCodeToFiles.delete(recvCode);
     } else {
       this.sendJSON({
         type: 's2c_error',
