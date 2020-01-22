@@ -13,7 +13,7 @@ import Button from './common/Button';
 import Steps from './common/Steps';
 import Toast from './common/Toast';
 import FileBox from './FileBox';
-import Peer from '../peer';
+import Peer from '../Peer';
 import FileChunker from '../FileChunker';
 import { calcPercent } from '../common/util';
 import { prepareSend } from '../actions/file';
