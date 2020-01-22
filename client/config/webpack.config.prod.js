@@ -1,11 +1,11 @@
-import {
+const {
   styleLoader,
   cssLoaderWithModules,
   cssLoaderWithoutModules,
   postcssLoader,
   stylusLoader,
   babelLoader,
-} from './loaders';
+} = require('./loaders');
 const paths = require('./paths');
 
 module.exports = {
