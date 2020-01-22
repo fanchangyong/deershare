@@ -14,7 +14,7 @@ module.exports = {
   devtool: 'inline-source-map',
   output: {
     path: paths.appBuild,
-    filename: '[name].bundle.js',
+    filename: 'index.bundle.js',
   },
   module: {
     rules: [
