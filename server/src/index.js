@@ -9,11 +9,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const prerender = require('prerender');
 
 var indexRouter = require('./routes/index');
 const fileRouter = require('./routes/file');
 const initDb = require('./initDb').default;
+const config = require('../config');
 const WebSocketServer = require('./WebSocketServer').default;
+const cache = require('./common/cache');
 
 initDb();
 
@@ -36,6 +39,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(path.resolve(__dirname, '../'), 'public')));
+app.use(require('prerender-node')
+  .set('prerenderServiceUrl', `http://localhost:${config.prerender.port}`)
+  .set('beforeRender', (req, done) => {
+    done(null, cache.get(req.url));
+  })
+  .set('afterRender', (err, req, prerenderRes) => {
+    if (!err) {
+      const scriptStr = `<script src="${config.publicPath}/js/index.bundle.js"></script>`;
+      const body = prerenderRes.body.replace(scriptStr, '');
+      cache.set(req.url, body);
+    }
+  }));
 
 // WebSocket
 const wsInstance = expressWs(app, server);
@@ -49,7 +64,7 @@ const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
 app.set('view engine', 'pug');
 
-app.locals.publicPath = '/static';
+app.locals.publicPath = config.publicPath;
 
 // Routers
 app.use('/', indexRouter);
@@ -79,7 +94,7 @@ app.use(function(err, req, res, next) {
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3001');
+var port = normalizePort(config.port);
 app.set('port', port);
 
 /**
@@ -146,4 +161,10 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   console.log('Listening on ' + bind);
+  console.log('Starting prerender');
+  if (config.prerender.enabled) {
+    prerender({
+      port: config.prerender.port,
+    }).start();
+  }
 }
