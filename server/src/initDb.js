@@ -1,7 +1,7 @@
 const { Model } = require('objection');
 const Knex = require('knex');
 
-function initDb () {
+function initDb() {
   const knexConfig = require('../knexfile');
 
   const knex = Knex(knexConfig);

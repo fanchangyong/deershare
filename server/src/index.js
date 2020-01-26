@@ -11,8 +11,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const prerender = require('prerender');
 
-var indexRouter = require('./routes/index');
+const indexRouter = require('./routes/index');
 const fileRouter = require('./routes/file');
+const feedbackRouter = require('./routes/feedback');
 const initDb = require('./initDb').default;
 const config = require('../config');
 const WebSocketServer = require('./WebSocketServer').default;
@@ -69,6 +70,7 @@ app.locals.publicPath = config.publicPath;
 // Routers
 app.use('/', indexRouter);
 app.use('/api/file', fileRouter);
+app.use('/api/feedback', feedbackRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
