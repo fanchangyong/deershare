@@ -78,7 +78,7 @@ class ContactPanel extends Component {
         </Button>
         <div className={styles.tips}>
           请直接在上方留言，我们会尽快给您回复，<br />
-          您也可以发邮件到<a target="_blank" rel="noopener noreferrer" href="mailto:support@deershare.com">support@deershare.com</a>
+          您也可以发邮件到 <a target="_blank" rel="noopener noreferrer" href="mailto:support@deershare.com">support@deershare.com</a>
         </div>
       </div>
     );
