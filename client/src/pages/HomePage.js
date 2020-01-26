@@ -118,7 +118,7 @@ class HomePage extends React.Component {
               <SloganCard
                 title="高效"
                 icon={<Icon name="speed" className={styles.iconSpeed}/>}
-                desc="由于使用P2P技术，文件传输速度不会收到服务器性能的影响，完全取决于你和对方的网速。"
+                desc="由于使用P2P技术，文件传输速度不会受到服务器性能的影响，完全取决于你和对方的网速。"
               />
               <SloganCard
                 title="专业"
