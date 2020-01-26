@@ -21,7 +21,7 @@ exports.cssLoaderWithModules = {
     sourceMap: true,
     modules: {
       mode: 'local',
-      localIdentName: '[path][name]---[local]---[hash:base64:5]',
+      localIdentName: process.env.NODE_ENV === 'production' ? '[hash:base64:6]' : '[path][name]---[local]---[hash:base64:5]',
     },
   },
 };
