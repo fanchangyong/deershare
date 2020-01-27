@@ -150,6 +150,7 @@ class RecvFilePanel extends Component {
     } else if (msg.type === 'fileEnd') {
       const fileId = msg.fileId;
       const blob = new Blob(this.recvBuffer);
+      this.recvBuffer = [];
       const url = window.URL.createObjectURL(blob);
       const files = this.props.files.map(f => {
         if (f.uid === fileId) {
