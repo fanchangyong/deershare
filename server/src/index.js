@@ -75,6 +75,7 @@ app.ws('/ws', function(ws, req) {
 const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
 app.set('view engine', 'pug');
+app.set('trust proxy', true);
 
 app.locals.publicPath = config.publicPath;
 
