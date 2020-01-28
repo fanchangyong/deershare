@@ -1,5 +1,4 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 
 const {
   cssLoaderWithModules,
@@ -38,18 +37,6 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin(),
   ],
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          mangle: {
-            properties: true,
-          },
-        },
-      }),
-    ],
-  },
   devServer: {
     contentBase: './build',
   },
