@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import prettyBytes from 'pretty-bytes';
+import classnames from 'classnames';
 import uuidv4 from 'uuid/v4';
 import {
   Link,
 } from 'react-router-dom';
 import QRCode from 'qrcode.react';
+import Dropzone from 'react-dropzone';
 
 import Icon from './common/Icon';
 import Button from './common/Button';
@@ -27,7 +29,6 @@ class SendFilePanel extends Component {
     super(props);
     this.peer = new Peer();
     this.inputRef = React.createRef();
-    this.onClickUpload = this.onClickUpload.bind(this);
     this.onChangeFile = this.onChangeFile.bind(this);
     this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onClickSelectDone = this.onClickSelectDone.bind(this);
@@ -54,10 +55,6 @@ class SendFilePanel extends Component {
 
   componentWillUnmount() {
     clearInterval(this.timer);
-  }
-
-  onClickUpload() {
-    this.inputRef.current.click();
   }
 
   onClickSelectDone() {
@@ -165,11 +162,10 @@ class SendFilePanel extends Component {
     });
   }
 
-  onChangeFile(event) {
-    const files = Array.from(event.target.files);
-
+  onChangeFile(files) {
     const filteredFiles = files.filter(f => {
-      const existed = this.props.files.find(f1 => {
+      const existed = this.props.files.find(_f1 => {
+        const f1 = _f1.realFile;
         if (f1.name === f.name && f1.size === f.size && f1.lastModified === f.lastModified && f1.type === f.type) {
           return true;
         }
@@ -213,52 +209,60 @@ class SendFilePanel extends Component {
       return sum + cur.size;
     }, 0);
 
-    if (files.length === 0) {
-      return (
-        <>
-          <div className={styles.uploadArea}>
-            <div className={styles.iconPlusWrapper}>
-              <Icon name="plus" className={styles.iconPlus} />
+    return (
+      <>
+        <Dropzone onDrop={this.onChangeFile} noClick>
+          {({ getRootProps, getInputProps, isDragAccept, open }) => (
+            <div className={classnames(styles.uploadArea, isDragAccept && styles.dragActive)} {...getRootProps()}>
+              {files.length === 0 && (
+                <>
+                  <div className={styles.iconPlusWrapper}>
+                    <Icon name="plus" className={styles.iconPlus} />
+                  </div>
+                  <div className={styles.uploadTip}>
+                    将文件拖动到方框内或点击下方按钮
+                  </div>
+                  <Button
+                    type="primary"
+                    className={styles.uploadBtn}
+                    onClick={() => open()}
+                  >
+                    上传文件
+                  </Button>
+                </>
+              )}
+              {files.length > 0 && (
+                <FileBox
+                  files={files}
+                  removable
+                  onRemoveFile={this.onRemoveFile}
+                />
+              )}
+              <input {...getInputProps()}/>
             </div>
-            <div className={styles.uploadTip}>
-              将文件拖动到方框内或点击下方按钮
-            </div>
-            <Button
-              type="primary"
-              className={styles.uploadBtn}
-              onClick={this.onClickUpload}
-            >
-              上传文件
-            </Button>
-          </div>
+          )}
+        </Dropzone>
+        {files.length === 0 && (
           <div className={styles.recvGuide}>
             已有收件码？点击
             <Link to="/recv" className={styles.link}> 接收文件</Link>
           </div>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <div className={styles.uploadArea}>
-            <FileBox
-              files={files}
-              removable
-              onRemoveFile={this.onRemoveFile}
-            />
-          </div>
-          <div className={styles.uploadMore}>
-            <div className={styles.addMore} onClick={this.onClickUpload}>
-              <span>添加文件</span>
+        )}
+        {files.length > 0 && (
+          <>
+            <div className={styles.uploadMore}>
+              <div className={styles.addMore}>
+                <span>添加文件</span>
+              </div>
+              <div className={styles.fileSummary}>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
             </div>
-            <div className={styles.fileSummary}>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
-          </div>
-          <Button type="primary" className={styles.btnSelectFileDone} onClick={this.onClickSelectDone}>
-            选好了
-          </Button>
-        </>
-      );
-    }
+            <Button type="primary" className={styles.btnSelectFileDone} onClick={this.onClickSelectDone}>
+              选好了
+            </Button>
+          </>
+        )}
+      </>
+    );
   }
 
   renderStep2() {
@@ -404,7 +408,6 @@ class SendFilePanel extends Component {
         {curStep === 1 && this.renderStep1()}
         {curStep === 2 && this.renderStep2()}
         {curStep === 3 && this.renderStep3()}
-        <input type="file" hidden ref={this.inputRef} onChange={this.onChangeFile} multiple />
       </div>
     );
   }
