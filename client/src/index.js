@@ -20,8 +20,10 @@ configureWS(store.dispatch);
 Sentry.init({ dsn: 'https://be8db30a0db043f686f64c4fc91682c8@sentry.io/2034634', environment: process.env.NODE_ENV });
 
 // Initialize Google Analytics
-ReactGA.initialize('UA-131382726-2');
-ReactGA.pageview(window.location.pathname + window.location.search);
+if (process.env.NODE_ENV === 'production') {
+  ReactGA.initialize('UA-131382726-2');
+  ReactGA.pageview(window.location.pathname + window.location.search);
+}
 
 ReactDOM.render(
   <Provider

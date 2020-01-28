@@ -25,9 +25,11 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.props.history.listen(location => {
-      ReactGA.pageview(location.pathname);
-    });
+    if (process.env.NODE_ENV === 'production') {
+      this.props.history.listen(location => {
+        ReactGA.pageview(location.pathname);
+      });
+    }
   }
 
   static getDerivedStateFromError() {
