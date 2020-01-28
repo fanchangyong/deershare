@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import ReactGA from 'react-ga';
 import {
-  BrowserRouter as Router,
+  withRouter,
+} from 'react-router';
+import {
   Switch,
   Route,
 } from 'react-router-dom';
@@ -19,6 +22,12 @@ class App extends React.Component {
     this.state = {
       hasError: false,
     };
+  }
+
+  componentDidMount() {
+    this.props.history.listen(location => {
+      ReactGA.pageview(location.pathname);
+    });
   }
 
   static getDerivedStateFromError() {
@@ -48,13 +57,11 @@ class App extends React.Component {
     }
 
     return (
-      <Router>
-        <Switch>
-          <Route path="/">
-            <HomePage />
-          </Route>
-        </Switch>
-      </Router>
+      <Switch>
+        <Route path="/">
+          <HomePage />
+        </Route>
+      </Switch>
     );
   }
 }
@@ -62,6 +69,7 @@ class App extends React.Component {
 App.propTypes = {
   sendHello: PropTypes.func,
   user: PropTypes.object,
+  history: PropTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -70,5 +78,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {
-})(App);
+export default withRouter(connect(mapStateToProps, {
+})(App));
