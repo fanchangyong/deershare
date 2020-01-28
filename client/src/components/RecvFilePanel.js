@@ -9,6 +9,7 @@ import FileBox from './FileBox';
 import Toast from './common/Toast';
 import {
   prepareRecv,
+  deleteRecvCode,
 } from '../actions/file';
 import Peer from '../Peer';
 import {
@@ -80,7 +81,6 @@ class RecvFilePanel extends Component {
   }
 
   onStartRecv() {
-    console.log('start recv');
     this.props.setState({
       started: true,
     });
@@ -118,6 +118,8 @@ class RecvFilePanel extends Component {
       this.props.setState({
         peerState: 'transfer',
       });
+      // 收件码只能使用一次，一旦开始接收就使其失效
+      deleteRecvCode(this.props.recvCode || this.props.match.params.recvCode);
     });
 
     peer.on('data', this.onRecvData);

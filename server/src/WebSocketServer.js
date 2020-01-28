@@ -57,6 +57,14 @@ class Client {
     });
   }
 
+  deleteRecvCode(payload) {
+    const {
+      recvCode,
+    } = payload;
+
+    recvCodeToFiles.delete(recvCode);
+  }
+
   prepareRecv(payload) {
     const {
       recvCode,
@@ -72,8 +80,6 @@ class Client {
           clientId: uploadInfo.clientId,
         },
       });
-      // 收件码一次性有效
-      recvCodeToFiles.delete(recvCode);
     } else {
       this.sendJSON({
         type: 's2c_error',
@@ -93,6 +99,11 @@ class Client {
 
       case 'c2s_prepare_send': {
         this.prepareSend(payload);
+        break;
+      }
+
+      case 'c2s_delete_recv_code': {
+        this.deleteRecvCode(payload);
         break;
       }
 

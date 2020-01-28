@@ -9,6 +9,15 @@ export function prepareSend(files) {
   });
 }
 
+export function deleteRecvCode(recvCode) {
+  ws.sendJSON({
+    type: 'c2s_delete_recv_code',
+    payload: {
+      recvCode,
+    },
+  });
+}
+
 export function prepareRecv(recvCode) {
   ws.sendJSON({
     type: 'c2s_prepare_recv',

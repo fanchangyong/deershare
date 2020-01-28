@@ -18,7 +18,7 @@ import FileBox from './FileBox';
 import Peer from '../Peer';
 import FileChunker from '../FileChunker';
 import { calcPercent } from '../common/util';
-import { prepareSend } from '../actions/file';
+import { prepareSend, deleteRecvCode } from '../actions/file';
 
 import styles from './SendFilePanel.cm.styl';
 
@@ -150,6 +150,7 @@ class SendFilePanel extends Component {
   }
 
   onClickBack() {
+    deleteRecvCode(this.props.recvCode);
     this.props.setState({ curStep: this.props.curStep - 1 });
   }
 
