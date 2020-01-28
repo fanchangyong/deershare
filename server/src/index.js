@@ -8,7 +8,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const morgan = require('morgan');
 const prerender = require('prerender');
 
 const indexRouter = require('./routes/index');
@@ -35,7 +35,8 @@ app.use(session({
     maxAge: 30 * 24 * 60 * 60 * 1000,
   },
 }));
-app.use(logger('dev'));
+
+app.use(morgan(config.morganFormat));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
