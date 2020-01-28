@@ -13,9 +13,7 @@ const store = configureStore();
 configureWS(store.dispatch);
 
 // Configure Sentry
-if (process.env.NODE_ENV === 'production') {
-  Sentry.init({ dsn: 'https://be8db30a0db043f686f64c4fc91682c8@sentry.io/2034634' });
-}
+Sentry.init({ dsn: 'https://be8db30a0db043f686f64c4fc91682c8@sentry.io/2034634', environment: process.env.NODE_ENV });
 
 ReactDOM.render(
   <Provider

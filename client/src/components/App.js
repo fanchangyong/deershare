@@ -14,18 +14,39 @@ import './App.css';
 import './App.cm.styl';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasError: false,
+    };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
   componentDidCatch(error, errorInfo) {
-    if (process.env.NODE_ENV === 'production') {
-      Sentry.withScope(scope => {
-        Object.keys(errorInfo).forEach(key => {
-          scope.setExtra(key, errorInfo[key]);
-        });
-        Sentry.captureException(error);
+    Sentry.withScope(scope => {
+      Object.keys(errorInfo).forEach(key => {
+        scope.setExtra(key, errorInfo[key]);
       });
-    }
+      Sentry.captureException(error);
+    });
   }
 
   render() {
+    const {
+      hasError,
+    } = this.state;
+
+    if (hasError) {
+      return (
+        <>
+          <h1 style={{ textAlign: 'center' }}>抱歉页面出现错误，我们的工程师已经收到通知，会尽快处理。您可以：<a href="">点此刷新页面重试</a></h1>
+        </>
+      );
+    }
+
     return (
       <Router>
         <Switch>
