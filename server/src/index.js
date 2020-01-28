@@ -18,12 +18,22 @@ const initDb = require('./initDb').default;
 const config = require('../config');
 const WebSocketServer = require('./WebSocketServer').default;
 const cache = require('./common/cache');
+const Sentry = require('@sentry/node');
+
+// Init Sentry
+Sentry.init({
+  dsn: 'https://577a26bfa30645cb86703905b7c6786e@sentry.io/2034897',
+  environment: process.env.NODE_ENV,
+});
 
 initDb();
 
 const app = express();
 
 const server = http.createServer(app);
+
+// Sentry middleware, must be first
+app.use(Sentry.Handlers.requestHandler());
 
 // Middlewares
 app.use(session({
@@ -72,6 +82,9 @@ app.locals.publicPath = config.publicPath;
 app.use('/', indexRouter);
 app.use('/api/file', fileRouter);
 app.use('/api/feedback', feedbackRouter);
+
+// Sentry error handler, must be first error handler
+app.use(Sentry.Handlers.errorHandler());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
