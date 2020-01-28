@@ -51,6 +51,7 @@ class RecvFilePanel extends Component {
   }
 
   componentDidMount() {
+    document.title = '小鹿快传｜接收文件';
     const recvCode = this.props.match.params.recvCode;
     if (recvCode) {
       prepareRecv(recvCode);

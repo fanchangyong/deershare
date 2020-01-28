@@ -53,6 +53,10 @@ class SendFilePanel extends Component {
     }, 1000);
   }
 
+  componentDidMount() {
+    document.title = '小鹿快传｜发送文件';
+  }
+
   componentWillUnmount() {
     clearInterval(this.timer);
   }

@@ -19,6 +19,10 @@ class ContactPanel extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    document.title = '小鹿快传｜联系我们';
+  }
+
   handleContactChange(value) {
     this.setState({
       contact: value,
