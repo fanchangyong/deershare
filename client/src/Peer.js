@@ -106,13 +106,13 @@ export default class Peer extends EventEmitter {
     };
     const pc = new RTCPeerConnection(config);
     this.pc = pc;
-    pc.onicecandidate = this.onIceCandidate;
     pc.onconnectionstatechange = e => this.onConnectionStateChange(e);
-    pc.onnegotiationneeded = e => this.onNegotiationNeeded(e);
+    pc.onicecandidate = this.onIceCandidate;
 
     if (isCaller) {
       const dc = pc.createDataChannel('file-transfer', { reliable: true });
       this.setupDataChannel(dc);
+      this.makeOffer();
     } else {
       this.pc.ondatachannel = e => {
         const dc = e.channel || e.target;
@@ -131,7 +131,7 @@ export default class Peer extends EventEmitter {
     dc.onbufferedamountlow = this.onBufferedAmountLow;
   }
 
-  onNegotiationNeeded(event) {
+  makeOffer(event) {
     this.pc.createOffer()
     .then(description => {
       return this.onDescription(description);
