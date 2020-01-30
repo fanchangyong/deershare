@@ -154,6 +154,7 @@ export default class Peer extends EventEmitter {
       this.dc.close();
       this.dc = null;
     }
+    this.removeAllListeners();
   }
 
   onIceCandidate(e) {
