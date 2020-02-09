@@ -1,5 +1,5 @@
 const config = {
-  publicPath: 'http://localhost:3000/static',
+  publicPath: '/static',
 };
 
 module.exports = config;
