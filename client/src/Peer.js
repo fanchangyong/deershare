@@ -96,11 +96,11 @@ export default class Peer extends EventEmitter {
         {
           urls: 'stun:0.peerjs.com:3478',
         },
-        // {
-        //   urls: 'turn:0.peerjs.com:3478',
-        //   username: 'peerjs',
-        //   credential: 'peerjsp',
-        // },
+        {
+          urls: 'turn:0.peerjs.com:3478',
+          username: 'peerjs',
+          credential: 'peerjsp',
+        },
       ],
     };
     const pc = new RTCPeerConnection(config);
