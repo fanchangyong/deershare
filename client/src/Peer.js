@@ -44,8 +44,7 @@ export default class Peer extends EventEmitter {
       this.pc.setRemoteDescription(new RTCSessionDescription(payload.sdp))
       .then(_ => {
         if (payload.sdp.type === 'offer') {
-          return this.pc.createAnswer()
-          .then(d => this.onDescription(d));
+          return this.makeAnswer();
         }
       });
     } else if (payload.ice) {
@@ -95,7 +94,7 @@ export default class Peer extends EventEmitter {
     const config = {
       iceServers: [
         {
-          urls: 'stun:stun.l.google.com:19302',
+          urls: 'stun.services.mozilla.com',
         },
         {
           urls: 'turn:0.peerjs.com:3478',
@@ -110,7 +109,7 @@ export default class Peer extends EventEmitter {
     pc.onicecandidate = this.onIceCandidate;
 
     if (isCaller) {
-      const dc = pc.createDataChannel('file-transfer', { reliable: true });
+      const dc = pc.createDataChannel('file-transfer', { ordered: true });
       this.setupDataChannel(dc);
       this.makeOffer();
     } else {
@@ -131,11 +130,16 @@ export default class Peer extends EventEmitter {
     dc.onbufferedamountlow = this.onBufferedAmountLow;
   }
 
-  makeOffer(event) {
+  makeOffer() {
     this.pc.createOffer()
     .then(description => {
       return this.onDescription(description);
     });
+  }
+
+  makeAnswer() {
+    return this.pc.createAnswer()
+    .then(d => this.onDescription(d));
   }
 
   connectPeer(targetId) {

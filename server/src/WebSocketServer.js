@@ -5,17 +5,18 @@ import {
 const clientIdToRecvCodes = new Map();
 const recvCodeToFiles = new Map();
 
-// TODO: test code, delete it before production
-recvCodeToFiles.set('123', {
-  clientId: '1',
-  files: [
-    {
-      uid: '111',
-      name: 'file-111.txt',
-      size: 1024,
-    },
-  ],
-});
+if (process.env.NODE_ENV === 'development') {
+  recvCodeToFiles.set('123', {
+    clientId: '1',
+    files: [
+      {
+        uid: '111',
+        name: 'file-111.txt',
+        size: 1024,
+      },
+    ],
+  });
+}
 
 class Client {
   constructor(id, socket) {
@@ -128,14 +129,12 @@ export default class WebSocketServer {
     this._wss = wss;
     this._req = req;
     this.clients = new Map();
-    this.currentId = 0;
 
     this.onClientClose = this.onClientClose.bind(this);
   }
 
   genId() {
-    this.currentId += 1;
-    return this.currentId + '';
+    return getRandomString(8);
   }
 
   onConnection(socket, req) {
