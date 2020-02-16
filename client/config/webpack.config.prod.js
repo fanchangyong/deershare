@@ -12,7 +12,7 @@ const paths = require('./paths');
 module.exports = {
   mode: 'production',
   entry: paths.appIndexJs,
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   output: {
     path: paths.appBuild,
     filename: 'index.bundle.js',
