@@ -20,7 +20,7 @@ class ContactPanel extends Component {
   }
 
   componentDidMount() {
-    document.title = '小鹿快传｜联系我们';
+    document.title = '小鹿快传｜简单安全高效的P2P文件传输服务 - 联系我们';
   }
 
   handleContactChange(value) {

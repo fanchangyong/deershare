@@ -51,7 +51,7 @@ class RecvFilePanel extends Component {
   }
 
   componentDidMount() {
-    document.title = '小鹿快传｜接收文件';
+    document.title = '小鹿快传｜简单安全高效的P2P文件传输服务 - 接收文件';
     const recvCode = this.props.match.params.recvCode;
     if (recvCode) {
       prepareRecv(recvCode);

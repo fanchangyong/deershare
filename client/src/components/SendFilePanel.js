@@ -54,7 +54,7 @@ class SendFilePanel extends Component {
   }
 
   componentDidMount() {
-    document.title = '小鹿快传｜发送文件';
+    document.title = '小鹿快传｜简单安全高效的P2P文件传输服务 - 发送文件';
   }
 
   componentWillUnmount() {
