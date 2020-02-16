@@ -217,8 +217,8 @@ class SendFilePanel extends Component {
     return (
       <>
         <Dropzone onDrop={this.onChangeFile} noClick>
-          {({ getRootProps, getInputProps, isDragAccept, open }) => (
-            <div className={classnames(styles.uploadArea, isDragAccept && styles.dragActive)} {...getRootProps()}>
+          {({ getRootProps, getInputProps, isDragActive, open }) => (
+            <div className={classnames(styles.uploadArea, isDragActive && styles.dragActive)} {...getRootProps()}>
               {files.length === 0 && (
                 <>
                   <div className={styles.iconPlusWrapper}>
