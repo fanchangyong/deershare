@@ -94,7 +94,7 @@ export default class Peer extends EventEmitter {
     const config = {
       iceServers: [
         {
-          urls: 'stun:0.peerjs.com:3478',
+          urls: 'stun:deershare.com',
         },
         {
           urls: 'turn:0.peerjs.com:3478',
