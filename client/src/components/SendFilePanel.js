@@ -243,7 +243,7 @@ class SendFilePanel extends Component {
                   onRemoveFile={this.onRemoveFile}
                 />
               )}
-              <input {...getInputProps()}/>
+              <input {...getInputProps()} webkitdirectory="" mozdirectory="" directory="" />
             </div>
           )}
         </Dropzone>
