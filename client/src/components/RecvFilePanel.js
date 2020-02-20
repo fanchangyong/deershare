@@ -26,8 +26,8 @@ class RecvFilePanel extends Component {
     this.onStartRecv = this.onStartRecv.bind(this);
     this.onReset = this.onReset.bind(this); // 回到初始状态，比如点击取消或者接收完成继续接收等
 
-    this.onRecvData = this.onRecvData.bind(this);
-    this.handleMsg = this.handleMsg.bind(this);
+    this.onRecvPeerData = this.onRecvPeerData.bind(this);
+    this.handlePeerMsg = this.handlePeerMsg.bind(this);
 
     this.peer = new Peer();
     this.recvBuffer = [];
@@ -123,29 +123,36 @@ class RecvFilePanel extends Component {
       deleteRecvCode(this.props.recvCode || this.props.match.params.recvCode);
     });
 
-    peer.on('data', this.onRecvData);
+    peer.on('data', this.onRecvPeerData);
 
     peer.connectPeer(this.props.targetId);
   }
 
-  onRecvData(data) {
+  onRecvPeerData(data) {
     const {
       curFileId,
     } = this.props;
 
     if (typeof data === 'string') {
       const msg = JSON.parse(data);
-      this.handleMsg(msg);
+      this.handlePeerMsg(msg);
     } else {
       this.recvBuffer.push(data);
       const curRecvBytes = this.recvSizes[curFileId] || 0;
       const newRecvBytes = curRecvBytes + data.byteLength;
       this.recvSizes[curFileId] = newRecvBytes;
       this.bps += data.byteLength;
+      this.peer.sendJSON({
+        type: 'chunkReceived',
+        payload: {
+          fileId: curFileId,
+          recvBytes: newRecvBytes,
+        },
+      });
     }
   }
 
-  handleMsg(msg) {
+  handlePeerMsg(msg) {
     if (msg.type === 'fileStart') {
       this.props.setState({
         curFileId: msg.fileId,

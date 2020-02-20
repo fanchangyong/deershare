@@ -1,8 +1,8 @@
 import EventEmitter from 'eventemitter3';
 import ws from './ws';
 
-const BUFFERED_AMOUNT_LOW_THRESHOLD = 14 * 1024 * 1024; // 8MB
-const BUF_WAITING_THRESHOLD = 15 * 1024 * 1024;
+const BUFFERED_AMOUNT_LOW_THRESHOLD = 256 * 1024;
+const BUF_WAITING_THRESHOLD = 1024 * 1024;
 
 export default class Peer extends EventEmitter {
   constructor() {

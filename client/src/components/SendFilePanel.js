@@ -34,8 +34,11 @@ class SendFilePanel extends Component {
     this.onClickSelectDone = this.onClickSelectDone.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
     this.onReset = this.onReset.bind(this); // 回到初始状态，用在点击取消或发送完成继续发送等地方
+    this.onRecvPeerData = this.onRecvPeerData.bind(this);
+    this.handlePeerMsg = this.handlePeerMsg.bind(this);
 
     this.sendSizes = {};
+    this.lastPeerRecvBytes = 0; // (上次)接收方接收到的字节数，用于计算bps
     this.bps = 0;
 
     this.timer = setInterval(() => {
@@ -125,13 +128,12 @@ class SendFilePanel extends Component {
 
         const chunker = new FileChunker(file.realFile);
         let done = false;
-        let lastOffset = 0;
+        this.lastPeerRecvBytes = 0;
         while (!done) {
           const result = await chunker.getNextChunk();
           done = result.done;
           const {
             chunk,
-            offset,
           } = result;
           try {
             await peer.send(chunk);
@@ -139,9 +141,6 @@ class SendFilePanel extends Component {
             Toast.error('传输错误：' + err);
             break;
           }
-          this.sendSizes[fileId] = offset;
-          this.bps += (offset - lastOffset);
-          lastOffset = offset;
         }
         if (done) {
           await peer.sendJSON({
@@ -151,6 +150,32 @@ class SendFilePanel extends Component {
         }
       }
     });
+
+    peer.on('data', this.onRecvPeerData);
+  }
+
+  onRecvPeerData(data) {
+    if (typeof data === 'string') {
+      const msg = JSON.parse(data);
+      this.handlePeerMsg(msg);
+    }
+  }
+
+  handlePeerMsg(msg) {
+    const {
+      type,
+      payload,
+    } = msg;
+
+    if (type === 'chunkReceived') {
+      const {
+        fileId,
+        recvBytes,
+      } = payload;
+      this.sendSizes[fileId] = recvBytes;
+      this.bps += (recvBytes - this.lastPeerRecvBytes);
+      this.lastPeerRecvBytes = recvBytes;
+    }
   }
 
   onClickBack() {

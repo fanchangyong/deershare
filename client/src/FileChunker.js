@@ -1,4 +1,4 @@
-const CHUNK_SIZE = 16 * 1024;
+const CHUNK_SIZE = 64 * 1024;
 
 class FileChunker {
   constructor(file) {
@@ -16,10 +16,11 @@ class FileChunker {
       }
 
       this.reader.onload = (e) => {
-        this.offset += CHUNK_SIZE;
+        const chunk = e.target.result;
+        this.offset += chunk.byteLength;
         resolve({
           done: this.offset >= this.file.size,
-          chunk: e.target.result,
+          chunk,
           offset: this.offset,
         });
       };
