@@ -203,6 +203,7 @@ export default class Peer extends EventEmitter {
             if (err) {
               reject(err);
             } else {
+              this.dc.send(data);
               resolve();
             }
           };
