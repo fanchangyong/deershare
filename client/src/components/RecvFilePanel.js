@@ -159,7 +159,8 @@ class RecvFilePanel extends Component {
       });
     } else if (msg.type === 'fileEnd') {
       const fileId = msg.fileId;
-      const blob = new Blob(this.recvBuffer);
+      const file = this.props.files.find(f => f.uid === fileId) || {};
+      const blob = new Blob(this.recvBuffer, { type: file.type });
       this.recvBuffer = [];
       const url = window.URL.createObjectURL(blob);
       const files = this.props.files.map(f => {

@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import prettyBytes from 'pretty-bytes';
+import FileSaver from 'file-saver';
 import Icon from './common/Icon';
 import styles from './FileBox.cm.styl';
 
 class FileBox extends Component {
+  constructor(props) {
+    super(props);
+    this.onDownload = this.onDownload.bind(this);
+  }
+
+  onDownload(url, name) {
+    return () => {
+      FileSaver.saveAs(url, name);
+    };
+  }
+
   render() {
     const {
       files,
@@ -24,7 +36,7 @@ class FileBox extends Component {
           } = f;
           let downloadInfo = null;
           if (downloadUrl) {
-            downloadInfo = <a href={downloadUrl} download={name} className={styles.download}>下载</a>;
+            downloadInfo = <span onClick={this.onDownload(downloadUrl, name)} className={styles.download}>下载</span>;
           } else if (pct >= 100) {
             downloadInfo = <span className={styles.completed}>完成</span>;
           } else if (uid === curFileId) {
