@@ -387,6 +387,20 @@ template {
   bottom: -20px;
   left: 0px;
 }
+._2Kn0b0 {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 10px;
+  color: #b1b1b1;
+}
+._2Kn0b0 a,
+._2Kn0b0 a:hover {
+  color: #b1b1b1;
+  cursor: pointer;
+}
 ._1efWOZ,
 ._1WZn8u,
 .hSD9ab,
@@ -859,58 +873,6 @@ template {
 }
 ._2eFt-R {
   color: #ea7a7a;
-}
-._3FHORl {
-  width: 420px;
-  padding: 20px 40px;
-  background: #fff;
-  text-align: center;
-  box-shadow: 0px 2px 4px 0px rgba(197,197,197,0.5);
-}
-._1YW-mE {
-  text-align: center;
-  margin-bottom: 15px;
-  font-weight: 700;
-  color: #757575;
-}
-.ToSpzV {
-  width: 100%;
-  height: 38px;
-  margin-bottom: 15px;
-}
-._1Q8uUd {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #a9a9a9;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  outline: none;
-  margin-bottom: 15px;
-}
-._1Q8uUd:focus,
-._1Q8uUd:active {
-  border-color: #56bdc0;
-}
-._1Q8uUd::-webkit-input-placeholder {
-  color: #b5b5b5;
-}
-._1Q8uUd:-ms-input-placeholder {
-  color: #b5b5b5;
-}
-._1Q8uUd::-ms-input-placeholder {
-  color: #b5b5b5;
-}
-._1Q8uUd::placeholder {
-  color: #b5b5b5;
-}
-.dgspjT {
-  width: 100%;
-  margin-bottom: 15px;
-}
-._3UKauA {
-  color: #8d8d8d;
-  text-align: left;
 }
 ._13zwq3 {
   padding: 30px;
