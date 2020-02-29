@@ -102,7 +102,6 @@ class RecvFilePanel extends Component {
     });
 
     peer.on('disconnected', () => {
-      Toast.error('连接已断开');
       this.props.setState({
         peerState: 'disconnected',
       });

@@ -104,7 +104,6 @@ class SendFilePanel extends Component {
       this.props.setState({
         peerState: 'disconnected',
       });
-      Toast.error('连接断开，请重试');
     });
 
     peer.on('channelOpen', async() => {
