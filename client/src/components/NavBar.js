@@ -40,11 +40,6 @@ function NavBar(props) {
             接收文件
           </span>
         </Link>
-        <Link to="/contact">
-          <span className={classnames(styles.menu, pathname === '/contact' && styles.active)}>
-           联系我们
-          </span>
-        </Link>
       </div>
     </div>
   );

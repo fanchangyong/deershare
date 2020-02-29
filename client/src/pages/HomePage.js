@@ -6,9 +6,9 @@ import {
 } from 'react-router-dom';
 import ws from '../ws';
 import NavBar from '../components/NavBar';
+import Footer from '../components/Footer';
 import SendFilePanel from '../components/SendFilePanel';
 import RecvFilePanel from '../components/RecvFilePanel';
-import ContactPanel from '../components/ContactPanel';
 import Icon from '../components/common/Icon';
 import SloganCard from '../components/SloganCard';
 
@@ -97,9 +97,6 @@ class HomePage extends React.Component {
             <Route path="/recv/:recvCode?">
               <RecvFilePanel {...this.state.recv} setState={this.setRecvState} />
             </Route>
-            <Route path="/contact">
-              <ContactPanel />
-            </Route>
           </Switch>
           <div className={styles.cardsArea}>
             <div className={styles.cardRow}>
@@ -128,6 +125,7 @@ class HomePage extends React.Component {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
