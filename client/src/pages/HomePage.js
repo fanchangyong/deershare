@@ -103,7 +103,7 @@ class HomePage extends React.Component {
               <SloganCard
                 title="简单"
                 icon={<Icon name="simple" className={styles.iconSimple}/>}
-                desc="无需登录只需要选择好想要发送的文件，然后将生成的下载链接发送给对方即可开始传送"
+                desc="无需登录只需要选择好想要发送的文件，然后将生成的下载链接发送给对方即可开始传送。"
               />
               <SloganCard
                 title="安全"
