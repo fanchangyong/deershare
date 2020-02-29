@@ -12,6 +12,7 @@ export default class Peer extends EventEmitter {
     this.pc = null; // RTCPeerConnection
     this.dc = null; // RTCDataChannel
     this.waitingCallback = null;
+    this.isCaller = null;
 
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.onDescription = this.onDescription.bind(this);
@@ -34,7 +35,7 @@ export default class Peer extends EventEmitter {
   }
 
   onS2cSignal(payload) {
-    if (!this.targetId) {
+    if (!this.isCaller) {
       this.targetId = payload.srcId;
     }
     if (!this.pc) {
@@ -107,6 +108,8 @@ export default class Peer extends EventEmitter {
     this.pc = pc;
     pc.onconnectionstatechange = e => this.onConnectionStateChange(e);
     pc.onicecandidate = this.onIceCandidate;
+
+    this.isCaller = isCaller;
 
     if (isCaller) {
       const dc = pc.createDataChannel('file-transfer', { ordered: true });
