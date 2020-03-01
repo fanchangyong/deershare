@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom';
 import * as Sentry from '@sentry/browser';
 
+import Footer from '../components/Footer';
 import HomePage from '../pages/HomePage';
 
 import './App.css';
@@ -62,6 +63,7 @@ class App extends React.Component {
       <Switch>
         <Route path="/">
           <HomePage />
+          <Footer />
         </Route>
       </Switch>
     );

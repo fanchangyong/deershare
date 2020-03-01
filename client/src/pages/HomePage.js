@@ -6,7 +6,6 @@ import {
 } from 'react-router-dom';
 import ws from '../ws';
 import NavBar from '../components/NavBar';
-import Footer from '../components/Footer';
 import SendFilePanel from '../components/SendFilePanel';
 import RecvFilePanel from '../components/RecvFilePanel';
 import Icon from '../components/common/Icon';
@@ -133,7 +132,6 @@ class HomePage extends React.Component {
             </div>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
