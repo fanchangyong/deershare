@@ -349,7 +349,22 @@ template {
   display: none;
 }
 
+._2Kn0b0 {
+  width: 100%;
+  text-align: center;
+  height: 50px;
+  margin-top: -50px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+  color: #b1b1b1;
+}
+._2Kn0b0 a,
+._2Kn0b0 a:hover {
+  color: #b1b1b1;
+  cursor: pointer;
+}
 ._1nK53- {
+  white-space: nowrap;
   padding: 0px 20px;
   height: 60px;
   display: flex;
@@ -387,19 +402,16 @@ template {
   left: 0px;
   margin-top: 36px;
 }
-._2Kn0b0 {
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-  text-align: center;
-  padding-bottom: 10px;
-  color: #b1b1b1;
-}
-._2Kn0b0 a,
-._2Kn0b0 a:hover {
-  color: #b1b1b1;
-  cursor: pointer;
+@media (max-width: 768px) {
+  .ay1eIM {
+    display: none;
+  }
+  ._3bzYjy {
+    margin-left: 40px;
+  }
+  ._1nX2tW {
+    margin-right: 30px;
+  }
 }
 ._1efWOZ,
 ._1WZn8u,
@@ -637,6 +649,7 @@ template {
 }
 ._3xR6yF {
   width: 380px;
+  margin: 0 auto;
   padding: 20px 25px 10px;
   background: #fff;
   box-shadow: 0px 2px 4px 0px rgba(197,197,197,0.5);
@@ -783,6 +796,12 @@ template {
   margin-top: 20px;
   width: 100%;
 }
+@media (max-width: 1200px) {
+  ._3xR6yF {
+    width: 80%;
+    max-width: 650px;
+  }
+}
 ._2NI-Bu {
   position: relative;
 }
@@ -823,6 +842,7 @@ template {
 }
 ._8bl-qe {
   width: 380px;
+  margin: 0 auto;
   padding: 20px 22px;
   background: #fff;
   text-align: center;
@@ -874,9 +894,14 @@ template {
 ._2eFt-R {
   color: #ea7a7a;
 }
+@media (max-width: 1200px) {
+  ._8bl-qe {
+    width: 80%;
+    max-width: 650px;
+  }
+}
 ._13zwq3 {
   padding: 30px;
-  width: 300px;
   height: 185px;
   text-align: center;
   background: #fff;
@@ -899,6 +924,7 @@ template {
   background: -webkit-gradient(linear, left top, left bottom, from(#bddee1), to(#f0fcfd));
   background: linear-gradient(#bddee1, #f0fcfd);
   min-height: 100%;
+  padding-bottom: 50px;
 }
 ._2KMkak {
   width: 1110px;
@@ -915,6 +941,10 @@ template {
   justify-content: space-between;
   width: 650px;
   margin-bottom: 50px;
+}
+._19O2vU {
+  width: 300px;
+  height: 185px;
 }
 ._2ekLXR {
   margin-right: 5px;
@@ -935,6 +965,30 @@ template {
   margin-right: 5px;
   font-size: 18px;
   color: #6adf4a;
+}
+@media (max-width: 1200px) {
+  ._2KMkak {
+    display: block;
+    width: auto;
+  }
+  .IScM0S {
+    margin: auto;
+  }
+  ._22OOXg {
+    margin: auto;
+    margin-top: 50px;
+  }
+}
+@media (max-width: 768px) {
+  ._22OOXg {
+    display: block;
+    width: auto;
+    margin-top: 0px;
+  }
+  ._19O2vU {
+    margin: auto;
+    margin-top: 50px;
+  }
 }
 html {
   color: #4a4a4a;
