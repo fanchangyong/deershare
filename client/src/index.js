@@ -12,6 +12,8 @@ import App from './components/App';
 import configureStore from './store/configureStore';
 import configureWS from './actions/configureWS';
 
+import './common/global.css';
+
 const store = configureStore();
 
 configureWS(store.dispatch);

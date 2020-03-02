@@ -47,7 +47,7 @@ class Button extends Component {
         onClick={onClick}
         disabled={disabled || loading}
       >
-        {loading && <Icon name="loading" spin />}
+        {loading && <Icon name="loading" animation='spin' className={styles.loadingIcon} />}
         {children}
       </button>
     );

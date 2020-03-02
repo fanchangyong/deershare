@@ -8,14 +8,21 @@ class Icon extends Component {
     const {
       className,
       name,
-      spin,
+      animation,
       tooltip,
       onClick,
     } = this.props;
 
     const icon = (
       <i
-        className={classNames('iconfont', `icon-${name}`, styles.icon, spin && styles.spin, className)}
+        className={
+          classNames('iconfont',
+            `icon-${name}`,
+            styles.icon,
+            animation ? `animation-${animation}` : '',
+            className,
+          )
+        }
         onClick={onClick}
       />
     );
@@ -37,8 +44,8 @@ class Icon extends Component {
 Icon.propTypes = {
   className: PropTypes.string,
   name: PropTypes.string,
+  animation: PropTypes.string,
   tooltip: PropTypes.string,
-  spin: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
