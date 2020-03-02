@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import classNamesBind from 'classnames/bind';
+import Icon from './Icon';
 import styles from './Button.cm.styl';
 
 const cx = classNamesBind.bind(styles);
@@ -13,6 +14,7 @@ class Button extends Component {
       type,
       style,
       disabled,
+      loading,
       children,
       href,
       onClick,
@@ -21,6 +23,7 @@ class Button extends Component {
     const className = classNames(cx(
       `btn-${type}`,
       { 'btn-disabled': disabled },
+      { 'btn-loading': loading },
     ),
     this.props.className);
 
@@ -42,8 +45,9 @@ class Button extends Component {
         style={style}
         className={className}
         onClick={onClick}
-        disabled={disabled}
+        disabled={disabled || loading}
       >
+        {loading && <Icon name="loading" spin />}
         {children}
       </button>
     );
@@ -53,6 +57,7 @@ class Button extends Component {
 Button.propTypes = {
   type: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
+  loading: PropTypes.bool,
   style: PropTypes.shape({}),
   className: PropTypes.string,
   onClick: PropTypes.func,

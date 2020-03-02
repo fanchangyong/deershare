@@ -188,6 +188,7 @@ class SendFilePanel extends Component {
       curStep: 1,
       files: [],
       peerState: '',
+      waitingPrepareSend: false,
     });
   }
 
@@ -240,9 +241,9 @@ class SendFilePanel extends Component {
     }, 0);
 
     return (
-      <>
-        <Dropzone onDrop={this.onChangeFile} noClick>
-          {({ getRootProps, getInputProps, isDragActive, open }) => (
+      <Dropzone onDrop={this.onChangeFile} noClick>
+        {({ getRootProps, getInputProps, isDragActive, open }) => (
+          <>
             <div className={classnames(styles.uploadArea, isDragActive && styles.dragActive)} {...getRootProps()}>
               {files.length === 0 && (
                 <>
@@ -270,28 +271,28 @@ class SendFilePanel extends Component {
               )}
               <input {...getInputProps()} />
             </div>
-          )}
-        </Dropzone>
-        {files.length === 0 && (
-          <div className={styles.recvGuide}>
-            已有收件码？点击
-            <Link to="/recv" className={styles.link}> 接收文件</Link>
-          </div>
-        )}
-        {files.length > 0 && (
-          <>
-            <div className={styles.uploadMore}>
-              <div className={styles.addMore}>
-                <span>添加文件</span>
+            {files.length === 0 && (
+              <div className={styles.recvGuide}>
+                已有收件码？点击
+                <Link to="/recv" className={styles.link}> 接收文件</Link>
               </div>
-              <div className={styles.fileSummary}>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
-            </div>
-            <Button type="primary" disabled={waitingPrepareSend} className={styles.btnSelectFileDone} onClick={this.onClickSelectDone}>
-              {waitingPrepareSend ? '请等待...' : '选好了'}
-            </Button>
+            )}
+            {files.length > 0 && (
+              <>
+                <div className={styles.uploadMore}>
+                  <div className={styles.addMore}>
+                    <span onClick={() => open()}>添加文件</span>
+                  </div>
+                  <div className={styles.fileSummary}>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
+                </div>
+                <Button type="primary" loading={waitingPrepareSend} className={styles.btnSelectFileDone} onClick={this.onClickSelectDone}>
+                  选好了
+                </Button>
+              </>
+            )}
           </>
         )}
-      </>
+      </Dropzone>
     );
   }
 
@@ -345,7 +346,7 @@ class SendFilePanel extends Component {
           以上取件码在10分钟内有效，请尽快发送给对方 <br />
           对方输入取件码并确认之后会自动开始发送
         </div>
-        <Button type="primary" className={styles.btnWaitConnect} disabled>
+        <Button type="primary" className={styles.btnWaitConnect} loading>
           等待连接...
         </Button>
       </>
@@ -383,9 +384,9 @@ class SendFilePanel extends Component {
       btnContent = '连接断开，等待重连...';
     }
 
-    let btnDisabled = true;
+    let loading = true;
     if (allCompleted) {
-      btnDisabled = false;
+      loading = false;
     }
 
     return (
@@ -396,7 +397,7 @@ class SendFilePanel extends Component {
         <div className={styles.sendingSummary}>
           <div>{files.length}个文件，共{prettyBytes(totalBytes)}</div>
         </div>
-        <Button type="primary" className={styles.btnSending} disabled={btnDisabled} onClick={this.onReset}>
+        <Button type="primary" className={styles.btnSending} loading={loading} onClick={this.onReset}>
           {btnContent}
         </Button>
       </>

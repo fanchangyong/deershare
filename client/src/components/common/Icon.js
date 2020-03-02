@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import styles from './Icon.cm.styl';
 
 class Icon extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       className,
       name,
+      spin,
       tooltip,
       onClick,
     } = this.props;
 
     const icon = (
       <i
-        className={classNames('iconfont', `icon-${name}`, className)}
+        className={classNames('iconfont', `icon-${name}`, styles.icon, spin && styles.spin, className)}
         onClick={onClick}
       />
     );
@@ -40,6 +38,7 @@ Icon.propTypes = {
   className: PropTypes.string,
   name: PropTypes.string,
   tooltip: PropTypes.string,
+  spin: PropTypes.bool,
   onClick: PropTypes.func,
 };
 

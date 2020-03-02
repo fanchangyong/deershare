@@ -241,7 +241,7 @@ class RecvFilePanel extends Component {
         <Button
           type="primary"
           className={styles.recvBtn}
-          disabled={started && !allCompleted && (peerState === 'connected' || peerState === 'connecting' || peerState === 'transfer')}
+          loading={started && !allCompleted && (peerState === 'connected' || peerState === 'connecting' || peerState === 'transfer')}
           onClick={allCompleted ? this.onReset : this.onStartRecv}
         >
           {btnContent}
