@@ -66,7 +66,7 @@ class SendFilePanel extends Component {
 
   onClickSelectDone() {
     this.props.setState({
-      curStep: 2,
+      waitingPrepareSend: true,
     });
 
     const files = this.props.files.map(f => {
@@ -232,6 +232,7 @@ class SendFilePanel extends Component {
   renderStep1() {
     const {
       files,
+      waitingPrepareSend,
     } = this.props;
 
     const totalBytes = files.reduce((sum, cur) => {
@@ -285,8 +286,8 @@ class SendFilePanel extends Component {
               </div>
               <div className={styles.fileSummary}>{files.length} 个文件，共 {prettyBytes(totalBytes)}</div>
             </div>
-            <Button type="primary" className={styles.btnSelectFileDone} onClick={this.onClickSelectDone}>
-              选好了
+            <Button type="primary" disabled={waitingPrepareSend} className={styles.btnSelectFileDone} onClick={this.onClickSelectDone}>
+              {waitingPrepareSend ? '请等待...' : '选好了'}
             </Button>
           </>
         )}
@@ -445,6 +446,7 @@ class SendFilePanel extends Component {
 SendFilePanel.propTypes = {
   curStep: PropTypes.number,
   files: PropTypes.array,
+  waitingPrepareSend: PropTypes.bool,
   curFileId: PropTypes.string,
   peerState: PropTypes.string,
   recvCode: PropTypes.string,

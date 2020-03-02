@@ -21,6 +21,7 @@ class HomePage extends React.Component {
         curStep: 1, // 当前在第几步
         files: [], // 已选择的文件
         peerState: '', // WebRTC连接状态
+        waitingPrepareSend: false, // 是否正在等待选择完成的消息
       },
       recv: {
         recvCode: '', // 用户输入的收件码
@@ -41,6 +42,12 @@ class HomePage extends React.Component {
     this.setSendState({
       recvCode: payload.recvCode,
     });
+    if (this.state.send.curStep === 1) {
+      this.setSendState({
+        curStep: 2,
+        waitingPrepareSend: false,
+      });
+    }
   }
 
   onS2cPrepareRecv(payload) {
