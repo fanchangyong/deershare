@@ -416,31 +416,6 @@ template {
 ._12DOC1 {
   display: inline-block;
 }
-._2YRY3T {
-  -webkit-animation: _2YRY3T 1s infinite linear;
-          animation: _2YRY3T 1s infinite linear;
-  margin-right: 8px;
-}
-@-webkit-keyframes _2YRY3T {
-  from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(359deg);
-            transform: rotate(359deg);
-  }
-}
-@keyframes _2YRY3T {
-  from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(359deg);
-            transform: rotate(359deg);
-  }
-}
 ._1efWOZ,
 ._1WZn8u,
 .hSD9ab,
@@ -486,6 +461,9 @@ template {
 ._2QRfGO:hover {
   background-color: #79dddd;
   cursor: not-allowed;
+}
+.GokVyx {
+  margin-right: 8px;
 }
 ._1zbcCu {
   height: 50px;
@@ -1048,4 +1026,31 @@ a, a:hover, a:active {
   text-decoration: none;
 }
 
+
+.animation-spin {
+  -webkit-animation: spin 1s infinite linear;
+          animation: spin 1s infinite linear;
+}
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+            transform: rotate(359deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+            transform: rotate(359deg);
+  }
+}
 
