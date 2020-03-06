@@ -5,7 +5,7 @@ function Footer() {
   return (
     <div className={styles.base}>
       <span>
-        Copyright© 2020 小鹿快传 | 友情链接：
+        © 2020 小鹿快传 | <a target="_blank" rel="noopener noreferrer" href="http://beian.miit.gov.cn/">鲁ICP备18047579号-2</a> | 友情链接：
       </span>
       <a target="_blank" rel="noopener noreferrer" href="https://wonderfulcv.com">橙子简历</a>
       <a target="_blank" rel="noopener noreferrer" href="mailto:support@deershare.com"> | 联系我们 </a>
