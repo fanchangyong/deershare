@@ -40,7 +40,7 @@ function NavBar(props) {
             接收文件
           </span>
         </Link>
-        <a href="https://wonderfulcv.com" target="_blank">
+        <a href="https://wonderfulcv.com" target="_blank" className={styles.ad}>
           制作简历
         </a>
       </div>
