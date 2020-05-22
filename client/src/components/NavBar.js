@@ -40,6 +40,9 @@ function NavBar(props) {
             接收文件
           </span>
         </Link>
+        <a href="https://wonderfulcv.com" target="_blank">
+          制作简历
+        </a>
       </div>
     </div>
   );
