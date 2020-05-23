@@ -41,7 +41,7 @@ function NavBar(props) {
           </span>
         </Link>
         <a href="https://wonderfulcv.com" target="_blank" className={styles.ad}>
-          制作简历
+          橙子简历
         </a>
       </div>
     </div>
