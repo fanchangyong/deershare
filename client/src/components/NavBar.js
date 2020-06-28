@@ -41,7 +41,13 @@ function NavBar(props) {
           </span>
         </Link>
         <a href="https://wonderfulcv.com" target="_blank" className={styles.ad}>
-          橙子简历
+          橙子简历（友情链接）
+          <div className={styles.adQrcode}>
+            <div className={styles.cvDesc}>
+              微信扫码立即制作简历
+            </div>
+            <img src="/images/qrcode_wechat.jpg" />
+          </div>
         </a>
       </div>
     </div>
