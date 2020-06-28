@@ -5,6 +5,8 @@
   display flex
   align-items center
   background white
+  width 100vw
+  overflow-x auto
 
 .logo
   height 40px
@@ -22,25 +24,26 @@
     display inline-block
     position relative
     color #FF6565
-  &:hover
-    .ad-qrcode
-      display block
-      position absolute
-      top 50px
-      left -30px
-      width 200px
-      padding 12px
-      z-index 9
-      background white
-      box-shadow 0px 2px 4px 0px rgba(0, 0, 0, .2)
-      .cv-desc
-        color black
-        font-weight bolder
-        white-space normal
-        text-align center
-        margin-bottom 1em
-      img
-        width 100%
+  @media (hover: hover)
+    &:hover
+      .ad-qrcode
+        display block
+        position absolute
+        top 50px
+        left -30px
+        width 200px
+        padding 12px
+        z-index 9
+        background white
+        box-shadow 0px 2px 4px 0px rgba(0, 0, 0, .2)
+        .cv-desc
+          color black
+          font-weight bolder
+          white-space normal
+          text-align center
+          margin-bottom 1em
+        img
+          width 100%
 
 .ad-qrcode
   display none
