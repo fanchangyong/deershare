@@ -370,6 +370,8 @@ template {
   display: flex;
   align-items: center;
   background: #fff;
+  width: 100vw;
+  overflow-x: auto;
 }
 ._3jtTy3 {
   height: 40px;
@@ -387,26 +389,28 @@ template {
   position: relative;
   color: #ff6565;
 }
-._3veN4E:hover ._3Sbc75 {
-  display: block;
-  position: absolute;
-  top: 50px;
-  left: -30px;
-  width: 200px;
-  padding: 12px;
-  z-index: 9;
-  background: #fff;
-  box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
-}
-._3veN4E:hover ._3Sbc75 ._3b_WFu {
-  color: #000;
-  font-weight: bolder;
-  white-space: normal;
-  text-align: center;
-  margin-bottom: 1em;
-}
-._3veN4E:hover ._3Sbc75 img {
-  width: 100%;
+@media (hover: hover) {
+  ._3veN4E:hover ._3Sbc75 {
+    display: block;
+    position: absolute;
+    top: 50px;
+    left: -30px;
+    width: 200px;
+    padding: 12px;
+    z-index: 9;
+    background: #fff;
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+  }
+  ._3veN4E:hover ._3Sbc75 ._3b_WFu {
+    color: #000;
+    font-weight: bolder;
+    white-space: normal;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  ._3veN4E:hover ._3Sbc75 img {
+    width: 100%;
+  }
 }
 ._3Sbc75 {
   display: none;
