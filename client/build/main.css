@@ -370,8 +370,12 @@ template {
   display: flex;
   align-items: center;
   background: #fff;
-  width: 100vw;
-  overflow-x: auto;
+}
+@media (max-width: 550px) {
+  ._1nK53- {
+    width: 100vw;
+    overflow-x: auto;
+  }
 }
 ._3jtTy3 {
   height: 40px;
