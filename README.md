@@ -26,9 +26,14 @@ cd client && yarn && cd ..
 ```
 cd server;
 npm start
-# 开另一个命令行窗口
+# in another terminal window
 cd client;
 npm start
+```
+
+4. Open in browser
+```
+https://localhost:3000
 ```
 
 ### 一个(自己产品的)广告
