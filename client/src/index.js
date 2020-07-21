@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'webrtc-adapter';
 import { Provider } from 'react-redux';
-import * as Sentry from '@sentry/browser';
 import ReactGA from 'react-ga';
 import {
   BrowserRouter as Router,
@@ -17,9 +16,6 @@ import './common/global.css';
 const store = configureStore();
 
 configureWS(store.dispatch);
-
-// Configure Sentry
-Sentry.init({ dsn: 'https://be8db30a0db043f686f64c4fc91682c8@sentry.io/2034634', environment: process.env.NODE_ENV });
 
 // Initialize Google Analytics
 if (process.env.NODE_ENV === 'production') {
