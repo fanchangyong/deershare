@@ -21,3 +21,9 @@ npm start
 cd client;
 npm start
 ```
+
+### 一个(自己产品的)广告
+**橙子简历**是我自己设计开发的一款在线制作简历的网站。提供多款简历模板。如果你最近正在找工作，希望可以关注一下。  
+网址为：https://wonderfulcv.com  
+如果你想在手机上制作简历，也可以直接扫描二维码关注服务号：  
+![](https://wonderfulcv.com/images/qrcode_wechat.jpg)
