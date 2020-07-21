@@ -120,7 +120,7 @@ checkBrowsers(paths.appPath, isInteractive)
   });
 
 // Create the production build and print the deployment instructions.
-function build (previousFileSizes) {
+function build(previousFileSizes) {
   // We used to support resolving modules according to `NODE_PATH`.
   // This now has been deprecated in favor of jsconfig/tsconfig.json
   // This lets you use absolute paths in imports inside large monorepos:
@@ -184,7 +184,7 @@ function build (previousFileSizes) {
   });
 }
 
-function copyPublicFolder () {
+function copyPublicFolder() {
   fs.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,
     filter: file => file !== paths.appHtml,

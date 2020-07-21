@@ -1,0 +1,152 @@
+.base
+  width 380px
+  margin 0 auto
+  padding 20px 25px 10px
+  background white
+  box-shadow 0px 2px 4px 0px rgba(197, 197, 197, 0.5)
+
+.title-row
+  position relative
+
+.title
+  text-align center
+  font-weight 700
+  color #757575
+
+.back
+  position absolute
+  cursor pointer
+  color #8e8e8e
+
+.upload-area
+  border 2px dashed #D1D1D1
+  text-align center
+  margin 8px auto
+  outline none
+  &.drag-active
+    border 2px solid #63e9ec
+    border-radius 4px
+
+.recv-guide
+  margin-top 20px
+
+.icon-plus-wrapper
+  margin-top 60px
+
+.icon-plus
+  font-size 42px
+  color #8e8e8e
+
+.upload-tip
+  color #8e8e8e
+  margin-top 8px
+  font-size 13px
+
+.upload-btn
+  width 215px
+  margin-top 15px
+  margin-bottom 100px
+
+.link
+  color #40AF9C
+  &:hover
+    color lighten(#40AF9C, 30%)
+
+.upload-more
+  display flex
+  justify-content space-between
+  align-items center
+
+.add-more
+  cursor pointer
+  color #40af9c
+
+.file-summary
+  text-align right
+  color #adadad
+
+.btn-select-file-done
+  width 100%
+  margin-top 20px
+
+
+/* STEP 2 */
+
+.select-send-method
+  color #8e8e8e
+  margin-bottom 10px
+
+.recv-link-container
+  margin 10px 0px 20px
+
+.recv-code-container
+  margin 10px 0px 20px
+
+.recv-link
+  display inline-block
+  height 36px
+  line-height @height
+  vertical-align middle
+  border 1px solid #c8c8c8
+  background #eeeeee
+  padding 0px 10px
+  margin-right 10px
+
+.recv-code
+  display inline-block
+  height 36px
+  line-height @height
+  vertical-align middle
+  border 1px solid #c8c8c8
+  background #eeeeee
+  padding 0px 10px
+  margin-right 10px
+  width 238px
+  text-align center
+
+.btn-copy
+  color #649AE4
+  cursor pointer
+  user-select none
+
+.qrcode-container
+  margin-top 10px
+  text-align center
+
+.recv-qrcode
+  width 120px
+
+.connect-tips
+  margin-top 20px
+  color #a7a7a7
+  line-height 1.5
+
+.btn-wait-connect
+  margin-top 20px
+  width 100%
+
+/* step 3 */
+.sending-box
+  margin 8px auto
+
+.sending-summary
+  display flex
+  justify-content space-between
+  color #a7a7a7
+
+.peer-connected
+  color #61F36B
+
+.peer-not-connected
+  color #EA7A7A
+
+
+.btn-sending
+  margin-top 20px
+  width 100%
+
+@media (max-width: 1200px)
+  .base
+    width 80%
+    max-width 650px
+    // min-width 380px

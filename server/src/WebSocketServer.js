@@ -2,13 +2,27 @@ import {
   getRandomString,
 } from './common/util';
 
-const uploads = new Map();
+const clientIdToRecvCodes = new Map();
+const recvCodeToFiles = new Map();
+
+if (process.env.NODE_ENV === 'development') {
+  recvCodeToFiles.set('123', {
+    clientId: '1',
+    files: [
+      {
+        uid: '111',
+        name: 'file-111.txt',
+        size: 1024,
+      },
+    ],
+  });
+}
 
 class Client {
   constructor(id, socket) {
     this.id = id;
+    this.peerId = null;
     this.socket = socket;
-
     this.socket.onerror = (err) => {
       console.error('websocket client onerror: ', err);
     };
@@ -23,35 +37,44 @@ class Client {
     });
   }
 
-  prepareUpload(payload) {
+  prepareSend(payload) {
     const {
       files,
       message,
     } = payload;
 
-    const downloadCode = getRandomString(8);
-    uploads.set(downloadCode, {
+    const recvCode = getRandomString(6);
+    recvCodeToFiles.set(recvCode, {
       clientId: this.id,
       message,
       files,
     });
+    clientIdToRecvCodes.set(this.id, recvCode);
     this.sendJSON({
-      type: 's2c_prepare_upload',
+      type: 's2c_prepare_send',
       payload: {
-        downloadCode,
+        recvCode,
       },
     });
   }
 
-  prepareDownload(payload) {
+  deleteRecvCode(payload) {
     const {
-      downloadCode,
+      recvCode,
     } = payload;
 
-    const uploadInfo = uploads.get(downloadCode);
+    recvCodeToFiles.delete(recvCode);
+  }
+
+  prepareRecv(payload) {
+    const {
+      recvCode,
+    } = payload;
+
+    const uploadInfo = recvCodeToFiles.get(recvCode);
     if (uploadInfo) {
       this.sendJSON({
-        type: 's2c_prepare_download',
+        type: 's2c_prepare_recv',
         payload: {
           message: uploadInfo.message,
           files: uploadInfo.files,
@@ -62,7 +85,7 @@ class Client {
       this.sendJSON({
         type: 's2c_error',
         payload: {
-          message: 'downloadCode无效',
+          message: '收件码无效',
         },
       });
     }
@@ -75,13 +98,18 @@ class Client {
         break;
       }
 
-      case 'c2s_prepare_upload': {
-        this.prepareUpload(payload);
+      case 'c2s_prepare_send': {
+        this.prepareSend(payload);
         break;
       }
 
-      case 'c2s_prepare_download': {
-        this.prepareDownload(payload);
+      case 'c2s_delete_recv_code': {
+        this.deleteRecvCode(payload);
+        break;
+      }
+
+      case 'c2s_prepare_recv': {
+        this.prepareRecv(payload);
         break;
       }
     }
@@ -101,14 +129,12 @@ export default class WebSocketServer {
     this._wss = wss;
     this._req = req;
     this.clients = new Map();
-    this.currentId = 0;
 
     this.onClientClose = this.onClientClose.bind(this);
   }
 
   genId() {
-    this.currentId += 1;
-    return this.currentId + '';
+    return getRandomString(8);
   }
 
   onConnection(socket, req) {
@@ -142,6 +168,12 @@ export default class WebSocketServer {
           const targetClient = this.clients.get(targetId);
           if (!targetClient) {
             console.log('handling signal, target not found: ', targetId);
+            client.sendJSON({
+              type: 's2c_error',
+              payload: {
+                message: '连接失败，对方可能已离线',
+              },
+            });
             return;
           }
           targetClient.sendJSON({
@@ -165,5 +197,8 @@ export default class WebSocketServer {
 
   onClientClose(id) {
     this.clients.delete(id);
+    const recvCode = clientIdToRecvCodes.get(id);
+    clientIdToRecvCodes.delete(id);
+    recvCodeToFiles.delete(recvCode);
   }
 }

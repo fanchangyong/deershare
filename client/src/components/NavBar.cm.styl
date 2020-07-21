@@ -1,0 +1,78 @@
+.base
+  white-space nowrap
+  padding 0px 20px
+  height 60px
+  display flex
+  align-items center
+  background white
+
+@media (max-width: 550px)
+  .base
+    width 100vw
+    overflow-x auto
+
+.logo
+  height 40px
+  cursor pointer
+
+.slogan
+  margin-left 20px
+
+.menus
+  margin-left 100px
+
+.ad
+  &
+  &:hover
+    display inline-block
+    position relative
+    color #FF6565
+  @media (hover: hover)
+    &:hover
+      .ad-qrcode
+        display block
+        position absolute
+        top 50px
+        left -30px
+        width 200px
+        padding 12px
+        z-index 9
+        background white
+        box-shadow 0px 2px 4px 0px rgba(0, 0, 0, .2)
+        .cv-desc
+          color black
+          font-weight bolder
+          white-space normal
+          text-align center
+          margin-bottom 1em
+        img
+          width 100%
+
+.ad-qrcode
+  display none
+
+.menu
+  margin-right 50px
+  cursor pointer
+  position relative
+  &:hover
+    color darken(#63E9EC, 30%)
+  &.active
+    color #63E9EC
+    &::after
+      content ''
+      display inline-block
+      height 2px
+      width 56px
+      background #63E9EC
+      position absolute
+      left 0px
+      margin-top 36px
+
+@media (max-width: 768px)
+  .slogan
+    display none
+  .menus
+    margin-left 40px
+  .menu
+    margin-right 30px

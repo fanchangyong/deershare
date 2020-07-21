@@ -1,20 +1,18 @@
-import { hello } from '../controllers/hello';
+import { ICONFONT_URL } from '../constants';
 
 var express = require('express');
 var router = express.Router();
 
-const clientRoutes = ['/', '/r/*'];
+const clientRoutes = ['/', '/send', '/recv', '/recv/*', '/contact'];
 
 /* GET home page. */
 clientRoutes.forEach(r => {
   router.get(r, function(req, res, next) {
-    res.render('index', { title: '小鹿快传' });
+    res.render('index', {
+      title: '小鹿快传',
+      iconfontUrl: ICONFONT_URL,
+    });
   });
 });
-// router.get('/', function(req, res, next) {
-//   res.render('index', { title: '小鹿快传' });
-// });
-
-router.post('/api/hello', hello);
 
 module.exports = router;

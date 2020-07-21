@@ -1,0 +1,57 @@
+.container
+  max-height 300px
+  min-height 200px
+  padding 0px 8px
+  background #fafafa
+  overflow-y auto
+
+.file-row
+  display flex
+  justify-content space-between
+  align-items center
+  padding 0px 8px
+  height 50px
+  line-height @height
+  background white
+  border-radius 2px
+  margin 10px auto
+
+.left
+  height 100%
+
+.file-icon
+  font-size 28px
+  color #8e8e8e
+
+.file-info
+  display inline-block
+
+.file-name
+  font-size 16px
+  line-height 1.4
+  max-width 12em
+  overflow hidden
+  text-overflow ellipsis
+  white-space nowrap
+
+.file-size
+  text-align left
+  font-size 12px
+  line-height 1.2
+  color #adadad
+
+.close-icon
+  cursor pointer
+  color #8e8e8e
+
+.waiting
+  color #8e8e8e
+
+.download
+  cursor pointer
+  &
+  &:hover
+    color #649ae4
+
+.completed
+  color #93ECAE

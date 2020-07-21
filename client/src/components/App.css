@@ -1,0 +1,22 @@
+html {
+  color: #4a4a4a;
+}
+
+html,body {
+  height: 100%;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+div#root {
+  height: 100%;
+}
+
+a, a:hover, a:active {
+  color: #6f6f6f;
+  text-decoration: none;
+}

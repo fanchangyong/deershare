@@ -7,6 +7,7 @@
     "build": "gulp build"
   },
   "dependencies": {
+    "@sentry/node": "^5.11.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
@@ -19,6 +20,8 @@
     "morgan": "~1.9.1",
     "mysql": "^2.17.1",
     "objection": "^1.6.11",
+    "prerender": "^5.6.0",
+    "prerender-node": "^3.2.5",
     "pug": "2.0.0-beta11",
     "ws": "^7.2.0"
   },

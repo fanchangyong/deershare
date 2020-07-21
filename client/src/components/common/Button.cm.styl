@@ -1,0 +1,46 @@
+color-primary = #3FCFCE
+
+$common-button
+  display inline-block
+  height 38px
+  line-height @height
+  padding 0 20px
+  cursor pointer
+  white-space nowrap
+  user-select none
+  text-align center
+  vertical-align middle
+  outline none
+
+.btn-primary
+  @extends $common-button
+  border none
+  background-color color-primary
+  color white
+  &:hover
+    background-color lighten(color-primary, 10%)
+
+.btn-secondary
+  @extends $common-button
+  color color-primary
+  border 1px solid color-primary
+  background-color white
+  &:hover
+    background-color alpha(color-primary, 0.06)
+
+.btn-disabled
+  &
+  &:hover
+    @extends $common-button
+    background-color lighten(color-primary, 30%)
+    cursor not-allowed
+
+.btn-loading
+  &
+  &:hover
+    @extends $common-button
+    background-color lighten(color-primary, 30%)
+    cursor not-allowed
+
+.loading-icon
+  margin-right 8px

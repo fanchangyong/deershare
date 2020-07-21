@@ -1,16 +1,64 @@
+.container
+  background linear-gradient(#BDDEE1, #F0FCFD)
+  min-height 100%
+  padding-bottom 50px // 对应于Footer的高度
+
 .content
+  width 1110px
+  margin auto
+  margin-top 60px
   display flex
-  height 600px
-  text-align center
-  padding-top 80px
+  align-items flex-start
 
-.left
-  width 100%
-  border-right 1px solid grey
+.cards-area
+  margin-left 80px
 
-.right
-  width 100%
+.card-row
+  display flex
+  justify-content space-between
+  width 650px
+  margin-bottom 50px
 
-.input
-  max-width 300px
-  margin-right 10px
+.card-wrapper
+  width 300px
+  height 185px
+
+.icon-simple
+  margin-right 5px
+  font-size 18px
+  color #f9acef
+
+.icon-secure
+  margin-right 5px
+  font-size 18px
+  color #F05F5F
+
+.icon-speed
+  margin-right 5px
+  font-size 18px
+  color #5ABAF4
+
+.icon-check
+  margin-right 5px
+  font-size 18px
+  color #6ADF4A
+
+@media (max-width: 1200px)
+  .content
+    display block
+    width auto
+  .cards-area
+    margin auto
+  .card-row
+    margin auto
+    margin-top 50px
+
+@media (max-width: 768px)
+  .card-row
+    display block
+    width auto
+    margin-top 0px
+
+  .card-wrapper
+    margin auto
+    margin-top 50px

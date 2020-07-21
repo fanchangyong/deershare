@@ -1,15 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import {
+  Switch,
+  Redirect,
   Route,
 } from 'react-router-dom';
-import produce from 'immer';
-import { Input, Button, Upload } from 'antd';
-import PropTypes from 'prop-types';
-import { prepareUpload } from '../actions/file';
-import SendFileModal from '../components/SendFileModal';
-import RecvFileModal from '../components/RecvFileModal';
+import ws from '../ws';
+import NavBar from '../components/NavBar';
+import SendFilePanel from '../components/SendFilePanel';
+import RecvFilePanel from '../components/RecvFilePanel';
+import Icon from '../components/common/Icon';
+import SloganCard from '../components/SloganCard';
 
 import styles from './HomePage.cm.styl';
 
@@ -17,69 +17,128 @@ class HomePage extends React.Component {
   constructor() {
     super();
     this.state = {
-      downloadCode: '',
-      showSendFileModal: false,
-      showRecvFileModal: false,
-      fileList: [],
+      send: {
+        curStep: 1, // 当前在第几步
+        files: [], // 已选择的文件
+        peerState: '', // WebRTC连接状态
+        waitingPrepareSend: false, // 是否正在等待选择完成的消息
+      },
+      recv: {
+        recvCode: '', // 用户输入的收件码
+        peerState: '', // WebRTC连接状态
+        started: false, // 是否点击了开始下载
+        files: [], // 接收到的文件
+        targetId: '', // 对方的peerId
+      },
     };
 
-    this.onChangeFile = this.onChangeFile.bind(this);
-
-    this.onChangeDownloadCode = e => this.setState({ downloadCode: e.target.value });
-    this.onClickPrepareDownload = this.onClickPrepareDownload.bind(this);
-    this.onHideRecvFileModal = () => this.props.history.push('/');
-
-    this.onShowSendFileModal = () => this.setState({ showSendFileModal: true });
-    this.onHideSendFileModal = () => this.setState({ showSendFileModal: false, fileList: [] });
+    this.setSendState = this.setSendState.bind(this);
+    this.setRecvState = this.setRecvState.bind(this);
+    this.onS2cPrepareSend = this.onS2cPrepareSend.bind(this);
+    this.onS2cPrepareRecv = this.onS2cPrepareRecv.bind(this);
   }
 
-  onChangeFile(e) {
-    this.setState(produce(draft => {
-      draft.fileList.push(e.file);
-    }));
-    this.onShowSendFileModal();
+  onS2cPrepareSend(payload) {
+    this.setSendState({
+      recvCode: payload.recvCode,
+    });
+    if (this.state.send.curStep === 1) {
+      this.setSendState({
+        curStep: 2,
+        waitingPrepareSend: false,
+      });
+    }
   }
 
-  onClickPrepareDownload() {
-    this.props.history.push(`/r/${this.state.downloadCode}`);
+  onS2cPrepareRecv(payload) {
+    this.setRecvState({
+      targetId: payload.clientId,
+      files: payload.files,
+    });
+  }
+
+  componentDidMount() {
+    ws.registerMessageHandler('s2c_prepare_send', this.onS2cPrepareSend);
+    ws.registerMessageHandler('s2c_prepare_recv', this.onS2cPrepareRecv);
+  }
+
+  setSendState(newState) {
+    this.setState(prevState => {
+      const nextState = {
+        ...prevState,
+        send: {
+          ...prevState.send,
+          ...newState,
+        },
+      };
+      return nextState;
+    });
+  }
+
+  setRecvState(newState) {
+    this.setState(prevState => {
+      const nextState = {
+        ...prevState,
+        recv: {
+          ...prevState.recv,
+          ...newState,
+        },
+      };
+      return nextState;
+    });
   }
 
   render() {
     return (
-      <div className={styles.content}>
-        <div className={styles.left}>
-          <h1 className={styles.title}>
-            我要收文件
-          </h1>
-          <Input placeholder="请输入取件码" className={styles.input} onChange={this.onChangeDownloadCode} />
-          <Button type="primary" onClick={this.onClickPrepareDownload}>开始接收</Button>
-        </div>
-        <div className={styles.right}>
-          <h1 className={styles.title}>
-            我要发文件
-          </h1>
-          <Upload
-            multiple
-            onChange={this.onChangeFile}
-            showUploadList={null}
-            beforeUpload={() => false}
-          >
-            <Button type="primary">添加文件</Button>
-          </Upload>
-        </div>
-        <SendFileModal
-          isOpen={this.state.showSendFileModal}
-          downloadCode={this.props.downloadCode}
-          initFileList={this.state.fileList}
-          prepareUpload={this.props.prepareUpload}
-          onCancel={this.onHideSendFileModal}
-        />
-        <Route path="/r/:downloadCode">
-          <RecvFileModal
-            isOpen={true}
-            onCancel={this.onHideRecvFileModal}
-          />
+      <div className={styles.container}>
+        <NavBar />
+        <Route exact path="/">
+          <Redirect to="/send" />
         </Route>
+        <div className={styles.content}>
+          <Switch>
+            <Route path="/send">
+              <SendFilePanel {...this.state.send} setState={this.setSendState} />
+            </Route>
+            <Route path="/recv/:recvCode?">
+              <RecvFilePanel {...this.state.recv} setState={this.setRecvState} />
+            </Route>
+          </Switch>
+          <div className={styles.cardsArea}>
+            <div className={styles.cardRow}>
+              <div className={styles.cardWrapper}>
+                <SloganCard
+                  title="简单"
+                  icon={<Icon name="simple" className={styles.iconSimple}/>}
+                  desc="无需登录只需要选择好想要发送的文件，然后将生成的下载链接发送给对方即可开始传送。"
+                />
+              </div>
+              <div className={styles.cardWrapper}>
+                <SloganCard
+                  title="安全"
+                  icon={<Icon name="secure" className={styles.iconSecure}/>}
+                  desc="小鹿快传使用P2P技术，文件数据不走服务器，直接发送给对方，且数据自带加密，免去隐私被泄漏的风险。"
+                />
+              </div>
+            </div>
+            <div className={styles.cardRow}>
+              <div className={styles.cardWrapper}>
+                <SloganCard
+                  title="高效"
+                  icon={<Icon name="speed" className={styles.iconSpeed}/>}
+                  desc="由于使用P2P技术，文件传输速度不会受到服务器性能的影响，完全取决于你和对方的网速。"
+                />
+              </div>
+              <div className={styles.cardWrapper}>
+                <SloganCard
+                  title="专业"
+                  icon={<Icon name="check-fill" className={styles.iconCheck}/>}
+                  desc="不限制文件类型，任何文件都可随心传输。所有文件都是原文件传输，传视频图片不损失画质。"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -88,17 +147,6 @@ class HomePage extends React.Component {
 HomePage.defaultProps = {};
 
 HomePage.propTypes = {
-  prepareUpload: PropTypes.func,
-  downloadCode: PropTypes.string,
-  history: PropTypes.object,
 };
 
-function mapStateToProps(state) {
-  return {
-    downloadCode: state.file.downloadCode,
-  };
-}
-
-export default withRouter(connect(mapStateToProps, {
-  prepareUpload,
-})(HomePage));
+export default HomePage;

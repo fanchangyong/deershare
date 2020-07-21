@@ -1,0 +1,53 @@
+active-step-color = #BDE48D
+.steps
+  height 50px
+  display flex
+  align-items center
+  justify-content space-between
+
+.step
+  margin-right 10px
+  flex 1
+  overflow hidden
+  &:last-child
+    flex none
+    margin-right 0px
+    .title
+      padding-right 0px
+  &.active
+    .title
+      color #4e4e4e
+
+.index-wrapper
+  display inline-block
+  height 23px
+  width @height
+  vertical-align middle
+  border 1px solid #a0a0a0
+  border-radius 50%
+  margin-right 3px
+  &.active
+    border 1px solid active-step-color
+    background active-step-color
+    .index
+      color white
+
+.index
+  position relative
+  color #a0a0a0
+  top 3px
+  left 7px
+
+.title
+  color #a0a0a0
+  position relative
+  padding-right 5px
+  &::after
+    content ''
+    height 1px
+    background #a0a0a0
+    position absolute
+    top 9px
+    left 100%
+    width 5555px
+    display block

@@ -1,18 +1,18 @@
 import EventEmitter from 'eventemitter3';
 import ws from './ws';
 
-const BUFFERED_AMOUNT_LOW_THRESHOLD = 8 * 1024 * 1024; // 8MB
-const BUF_WAITING_THRESHOLD = 15 * 1024 * 1024;
+const BUFFERED_AMOUNT_LOW_THRESHOLD = 256 * 1024;
+const BUF_WAITING_THRESHOLD = 1024 * 1024;
 
 export default class Peer extends EventEmitter {
   constructor() {
     super();
-    this.id = null;
+    this.id = null; // not used
     this.targetId = null;
     this.pc = null; // RTCPeerConnection
     this.dc = null; // RTCDataChannel
-
     this.waitingCallback = null;
+    this.isCaller = null;
 
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.onDescription = this.onDescription.bind(this);
@@ -35,7 +35,7 @@ export default class Peer extends EventEmitter {
   }
 
   onS2cSignal(payload) {
-    if (!this.targetId) {
+    if (!this.isCaller) {
       this.targetId = payload.srcId;
     }
     if (!this.pc) {
@@ -45,8 +45,7 @@ export default class Peer extends EventEmitter {
       this.pc.setRemoteDescription(new RTCSessionDescription(payload.sdp))
       .then(_ => {
         if (payload.sdp.type === 'offer') {
-          return this.pc.createAnswer()
-          .then(d => this.onDescription(d));
+          return this.makeAnswer();
         }
       });
     } else if (payload.ice) {
@@ -70,7 +69,9 @@ export default class Peer extends EventEmitter {
 
   onConnectionStateChange() {
     if (this.pc.connectionState === 'disconnected') {
-      this.dc.close();
+      if (this.dc) {
+        this.dc.close();
+      }
       if (this.waitingCallback) {
         this.waitingCallback(new Error('peer disconnected, cannot send'));
         this.waitingCallback = null;
@@ -94,7 +95,7 @@ export default class Peer extends EventEmitter {
     const config = {
       iceServers: [
         {
-          urls: 'stun:stun.l.google.com:19302',
+          urls: 'stun:deershare.com',
         },
         {
           urls: 'turn:0.peerjs.com:3478',
@@ -105,13 +106,15 @@ export default class Peer extends EventEmitter {
     };
     const pc = new RTCPeerConnection(config);
     this.pc = pc;
-    pc.onicecandidate = this.onIceCandidate;
     pc.onconnectionstatechange = e => this.onConnectionStateChange(e);
-    pc.onnegotiationneeded = e => this.onNegotiationNeeded(e);
+    pc.onicecandidate = this.onIceCandidate;
+
+    this.isCaller = isCaller;
 
     if (isCaller) {
-      const dc = pc.createDataChannel('file-transfer', { reliable: true });
+      const dc = pc.createDataChannel('file-transfer', { ordered: true });
       this.setupDataChannel(dc);
+      this.makeOffer();
     } else {
       this.pc.ondatachannel = e => {
         const dc = e.channel || e.target;
@@ -130,16 +133,35 @@ export default class Peer extends EventEmitter {
     dc.onbufferedamountlow = this.onBufferedAmountLow;
   }
 
-  onNegotiationNeeded(event) {
+  makeOffer() {
     this.pc.createOffer()
     .then(description => {
       return this.onDescription(description);
     });
   }
 
+  makeAnswer() {
+    return this.pc.createAnswer()
+    .then(d => this.onDescription(d));
+  }
+
   connectPeer(targetId) {
     this.targetId = targetId;
     this.createRTCConnection(true);
+  }
+
+  destroy() {
+    this.targetId = null;
+    this.waitingCallback = null;
+    if (this.pc) {
+      this.pc.close();
+      this.pc = null;
+    }
+    if (this.dc) {
+      this.dc.close();
+      this.dc = null;
+    }
+    this.removeAllListeners();
   }
 
   onIceCandidate(e) {
@@ -184,6 +206,7 @@ export default class Peer extends EventEmitter {
             if (err) {
               reject(err);
             } else {
+              this.dc.send(data);
               resolve();
             }
           };
