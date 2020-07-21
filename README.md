@@ -4,7 +4,7 @@
 
 1. Get code
 ```
-git clone https://github.com/fanchangyong/deershare2
+git clone https://github.com/fanchangyong/deershare
 ```
 
 2. Install dependencies
