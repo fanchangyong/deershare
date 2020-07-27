@@ -49,7 +49,9 @@ function NavBar(props) {
             <img src="/images/qrcode_wechat.jpg" />
           </div>
         </a>
+
       </div>
+      <a class="github-button" href="https://github.com/fanchangyong/deershare" data-size="large" data-show-count="true" aria-label="Star fanchangyong/deershare on GitHub">Star</a>
     </div>
   );
 }
