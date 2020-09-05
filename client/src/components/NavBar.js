@@ -51,7 +51,7 @@ function NavBar(props) {
         </a>
 
       </div>
-      <a class="github-button" href="https://github.com/fanchangyong/deershare" data-size="large" data-show-count="true" aria-label="Star fanchangyong/deershare on GitHub">Star</a>
+      <a className="github-button" href="https://github.com/fanchangyong/deershare" data-size="large" data-show-count="true" aria-label="Star fanchangyong/deershare on GitHub">Star</a>
     </div>
   );
 }
