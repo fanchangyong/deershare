@@ -182,6 +182,7 @@ function onListening() {
   if (config.prerender.enabled) {
     prerender({
       port: config.prerender.port,
+      chromeFlags: ['--no-sandbox', '--headless', '--disable-gpu', '--remote-debugging-port=9222', '--hide-scrollbars']
     }).start();
   }
 }
