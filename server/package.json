@@ -22,7 +22,7 @@
     "objection": "^1.6.11",
     "prerender": "^5.6.0",
     "prerender-node": "^3.2.5",
-    "pug": "2.0.0-beta11",
+    "pug": "3.0.1",
     "ws": "^7.2.0"
   },
   "devDependencies": {
