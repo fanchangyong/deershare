@@ -15,7 +15,7 @@
     "express-session": "^1.17.0",
     "express-ws": "^4.0.0",
     "http-errors": "~1.6.3",
-    "knex": "^0.20.3",
+    "knex": "^2.4.0",
     "moment": "^2.24.0",
     "morgan": "~1.9.1",
     "mysql": "^2.17.1",
