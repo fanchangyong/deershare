@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@sentry/browser": "^5.11.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "file-saver": "^2.0.2",
     "immer": "^5.0.0",
