@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:16
 
 WORKDIR /tmp
 
@@ -11,6 +11,7 @@ RUN sed -i 's/deb.debian.org/mirrors.163.com/g' /etc/apt/sources.list \
       wget gnupg fonts-noto-cjk libxss1 \
       fonts-liberation libasound2 libatk-bridge2.0-0 libatspi2.0-0 libdrm2 \
       libgbm1 libgtk-3-0 libnspr4 libnss3 libx11-xcb1 libxkbcommon0 xdg-utils  \
+      libu2f-udev libvulkan1 \
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
