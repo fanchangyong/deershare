@@ -23,7 +23,7 @@
     "prerender": "^5.6.0",
     "prerender-node": "^3.2.5",
     "pug": "2.0.0-beta11",
-    "ws": "^7.2.0"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
